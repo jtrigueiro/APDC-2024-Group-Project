@@ -1,2 +1,3 @@
-# APDC-2024-Group-Project
- 
+**APDC Individual 2023/2024**
+
+Author: José Trigueiro 58119
