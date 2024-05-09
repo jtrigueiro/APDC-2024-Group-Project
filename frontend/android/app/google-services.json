@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "457077558457",
+    "project_id": "adc-2324-group-project",
+    "storage_bucket": "adc-2324-group-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457077558457:android:cee589be6a610d33735f68",
+        "android_client_info": {
+          "package_name": "com.adc2324.group_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJLd5UBe9OLfoTyz83ljA5G87UU1xyAzc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
