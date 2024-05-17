@@ -1,3 +1,4 @@
+import 'package:adc_group_project/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui';
@@ -13,11 +14,13 @@ class SignUp extends StatefulWidget {
 }
 
 class SignUpState extends State<SignUp> {
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   late TextEditingController nameController;
   late TextEditingController emailController;
   late TextEditingController passwordController;
   late TextEditingController confirmPasswordController;
+  late String error = '';
 
   @override
   void initState() {
@@ -118,18 +121,24 @@ class SignUpState extends State<SignUp> {
                                   color: Color(0xFFA8A6A7)),
                             ),
                           ),
-                        ]),
-                  ),
 
-                  TextFormField(
-                    obscureText: true,
-                    controller: confirmPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm Password',
-                      labelStyle: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: Color(0xFFA8A6A7)),
-                    ),
+                          //confirm password
+                          TextFormField(
+                            validator: (val) => val!.isEmpty
+                                ? 'Confirm your password'
+                                : (val != passwordController.text
+                                    ? 'Wrong confirmation password'
+                                    : null),
+                            obscureText: true,
+                            controller: confirmPasswordController,
+                            decoration: const InputDecoration(
+                              labelText: 'Confirm Password',
+                              labelStyle: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Color(0xFFA8A6A7)),
+                            ),
+                          ),
+                        ]),
                   ),
 
                   TextButton(
@@ -145,7 +154,23 @@ class SignUpState extends State<SignUp> {
 
                   //login button
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      {
+                        if (_formKey.currentState!.validate()) {
+                          dynamic result =
+                              await _auth.registerWithEmailAndPassword(
+                                  emailController.text,
+                                  passwordController.text);
+                          if (result == null) {
+                            setState(
+                              () => error = 'Email not valid or already in use',
+                            );
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        }
+                      }
+                    },
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
                           const Color(0xFFFFFFFF)),
@@ -155,6 +180,18 @@ class SignUpState extends State<SignUp> {
                     child: const Text('Sign Up'),
                   ),
                 ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 100),
+              child: Text(
+                error,
+                style: GoogleFonts.getFont(
+                  'Nunito',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                  color: Color.fromARGB(255, 255, 0, 0),
+                ),
               ),
             ),
 

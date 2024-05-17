@@ -1,5 +1,6 @@
 import 'package:adc_group_project/screens/authenticate/sign_up.dart';
 import 'package:adc_group_project/screens/home/home.dart';
+import 'package:adc_group_project/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,9 +14,11 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   late TextEditingController emailController;
   late TextEditingController passwordController;
+  late String error = '';
 
   @override
   void initState() {
@@ -110,6 +113,8 @@ class _SignInState extends State<SignIn> {
                         children: [
                           //email
                           TextFormField(
+                            validator: (val) =>
+                                val!.isEmpty ? 'Enter an email' : null,
                             controller: emailController,
                             decoration: const InputDecoration(
                               labelText: 'Email',
@@ -121,6 +126,8 @@ class _SignInState extends State<SignIn> {
 
                           //password
                           TextFormField(
+                            validator: (val) =>
+                                val!.isEmpty ? 'Enter a password' : null,
                             obscureText: true,
                             controller: passwordController,
                             decoration: const InputDecoration(
@@ -149,8 +156,23 @@ class _SignInState extends State<SignIn> {
 
                   //login button
                   ElevatedButton(
-                    onPressed: () => logInButtonPressed(
-                        emailController.text, passwordController.text),
+                    onPressed: () async {
+                      {
+                        if (_formKey.currentState!.validate()) {
+                          dynamic result =
+                              await _auth.registerWithEmailAndPassword(
+                                  emailController.text,
+                                  passwordController.text);
+                          if (result == null) {
+                            setState(
+                              () => error = 'Email not valid or already in use',
+                            );
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        }
+                      }
+                    },
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
                           const Color(0xFFFFFFFF)),
@@ -158,6 +180,18 @@ class _SignInState extends State<SignIn> {
                           const Color.fromARGB(255, 130, 196, 112)),
                     ),
                     child: const Text('Log In'),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 100),
+                    child: Text(
+                      error,
+                      style: GoogleFonts.getFont(
+                        'Nunito',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                        color: Color.fromARGB(255, 255, 0, 0),
+                      ),
+                    ),
                   ),
                 ],
               ),
