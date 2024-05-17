@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_app/pages/objects/categoryRow.dart';
+import 'package:flutter_app/pages/home_screen.dart';
 
 class SearchContainer extends StatelessWidget {
   @override
@@ -36,26 +37,34 @@ class SearchContainer extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(1.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: InputBorder.none, // Remover a linha ao redor
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.black, // Ícone da lupa preto
-                  ),
-                  hintText: 'Search for Restaurants',
-                  hintStyle: GoogleFonts.lato(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                    color: Colors.black,
-                  ),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.search,
+                      color: Colors.black,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Search for Restaurants',
+                      style: GoogleFonts.lato(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
-                style:
-                    TextStyle(color: Colors.black), // Texto digitado em preto
               ),
             ),
           ),
-          SizedBox(height: 20), // Espaçamento entre o TextField e o CategoryRow
+          SizedBox(height: 20), // Espaçamento entre o botão e o CategoryRow
           CategoryRow(),
           SizedBox(height: 20), // Espaço extra após o CategoryRow
         ],

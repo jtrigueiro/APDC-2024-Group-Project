@@ -4,12 +4,12 @@ class CategoryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> categoryImages = [
-      {'imagePath': 'assets/images/ellipse_2.png', 'category': 'Italian'},
-      {'imagePath': 'assets/images/ellipse_4.png', 'category': 'Burger'},
+      {'imagePath': 'assets/images/ellipse_2.png', 'category': 'Burger'},
+      {'imagePath': 'assets/images/ellipse_4.png', 'category': 'Sushi'},
       {'imagePath': 'assets/images/ellipse.png', 'category': 'Traditional'},
-      {'imagePath': 'assets/images/las_1.jpeg', 'category': 'Sushi'},
-      {'imagePath': 'assets/images/ellipse_3.png', 'category': 'Pizza'},
-      {'imagePath': 'assets/images/ellipse_1.png', 'category': 'Chinese'},
+      {'imagePath': 'assets/images/las_1.jpeg', 'category': 'Italian'},
+      {'imagePath': 'assets/images/las_11.jpeg', 'category': 'Pizza'},
+      {'imagePath': 'assets/images/las_12.jpeg', 'category': 'Chinese'},
       // Adicione mais categorias conforme necessário
     ];
 

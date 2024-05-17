@@ -70,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                           },
                         ),
                         MenuItem(
-                          iconPath: 'assets/vectors/vector_43_x2.svg',
+                          iconData: Icons.menu_book,
                           label: 'Reservations',
                           labelColor: Color(0xFF222222),
                           iconWidth: 20,
