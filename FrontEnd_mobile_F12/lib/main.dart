@@ -44,6 +44,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
       home: Scaffold(
 
+
+        body: SignInScreen(),
+         //body: SignUpScreen(),
+
         //body: AchievementsScreen(),
         // body: CarbonFootprintScreen(),
         // body: CreateDishScreen(),
@@ -70,8 +74,7 @@ class MyApp extends StatelessWidget {
         // body: ReviewsScreenempty(),
         // body: SearchScreen(),
         // body: SettingsScreen(),
-         body: SignInScreen(),
-        // body: SignUpScreen(),
+         
         // body: StateOff(),
         // body: StateOn(),
         // body: ViewDishesScreen(),
