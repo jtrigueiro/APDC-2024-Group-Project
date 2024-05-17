@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/sign_up_screen.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -145,36 +146,21 @@ class SignInScreenState extends State<SignInScreen> {
               children: [
                 Container(
                   margin: const EdgeInsets.all(10),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Don’t have an account? ',
-                      style: GoogleFonts.getFont(
-                        'Nunito',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: Color(0xFF000000),
-                      ),
-                      
-                      children: [
-                        //on tap??
-                        TextSpan( 
-                          text: ' Sign up',
-                          style: GoogleFonts.getFont(
-                            'Nunito',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            decoration: TextDecoration.underline,
-                            height: 1.3,
-                            color: Color(0xFF34A853),
-                            decorationColor: Color(0xFF34A853),
-
-                          ),
-                        ),
-                      ],
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                    );
+                    },
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 130, 196, 112)),
+                      overlayColor: MaterialStateProperty.all(const Color.fromARGB(255, 221, 223, 194)),
                     ),
-                  ),
+                    child: const Text("Don't have an account? Sign up!"),
+                  ),  
                 ),
-              
+                 
 
                 Container(
                   margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),

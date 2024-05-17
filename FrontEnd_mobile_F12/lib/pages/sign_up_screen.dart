@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_app/utils.dart';
@@ -13,254 +14,207 @@ class SignUpScreen extends StatefulWidget {
 
 class SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+  late TextEditingController nameController;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController confirmPasswordController;
+
+   @override
+  void initState() {
+    nameController = TextEditingController();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    
     return 
-    Container(
-      decoration: BoxDecoration(
+
+     Container(
+      decoration: const BoxDecoration(
         color: Color(0xFFFFFFFF),
       ),
-      child: Container(
-        padding: EdgeInsets.fromLTRB(28, 98, 27.3, 144.5),
-        child: Column(
+      child:  Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
+            //para a imagem
             Container(
-              margin: EdgeInsets.fromLTRB(0.3, 0, 0, 49.2),
+              margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+              child:
+              SizedBox(
+                    width: 70,
+                    height: 70,
+                    child: SvgPicture.asset(
+                      "assets/vectors/logo.svg",
+              ),
+              ),
+            ),
+            //text 
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 3.7, 0),
               child: Text(
                 'Sign Up',
                 style: GoogleFonts.getFont(
                   'Nunito',
                   fontWeight: FontWeight.w700,
                   fontSize: 40,
-                  color: Color(0xFF000000),
+                  color: const Color(0xFF000000),
                 ),
               ),
             ),
+
+            //forms
             Container(
-              margin: EdgeInsets.fromLTRB(3, 0, 3.7, 67.3),
+              margin: const EdgeInsets.fromLTRB(18.2, 20, 16.1,50),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0.1, 0, 0, 135),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        'Fist creat your account',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xFFA8A6A7),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 8.2),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Full name',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xFFA8A6A7),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0.3, 7.2),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFA8A6A7),
-                      ),
-                      child: Container(
-                        width: 297.7,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 8.2),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Email',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xFFA8A6A7),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0.3, 7.2),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFA8A6A7),
-                      ),
-                      child: Container(
-                        width: 297.7,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 8.2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              
+                 //forms
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 11, 0),
-                          child: SizedBox(
-                            width: 268.4,
-                            child: Text(
-                              'Password',
-                              style: GoogleFonts.getFont(
-                                'Nunito',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                                color: Color(0xFFA8A6A7),
-                              ),
-                            ),
+
+                         TextFormField(
+                          controller: nameController,
+                          decoration: const InputDecoration(                          
+                          labelText: 'Name',
+                          labelStyle: TextStyle(fontStyle: FontStyle.italic, color: Color(0xFFA8A6A7)),
+                          
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 3.2, 0, 3.1),
-                          child: SizedBox(
-                            width: 18.5,
-                            height: 15.7,
-                            child: SvgPicture.asset(
-                              'assets/vectors/eye_x2.svg',
-                            ),
+                      
+                        //email
+                        TextFormField(
+                          controller: emailController,
+                          decoration: const InputDecoration(                          
+                          labelText: 'Email',
+                          labelStyle: TextStyle(fontStyle: FontStyle.italic, color: Color(0xFFA8A6A7)),
+                          
                           ),
                         ),
-                      ],
-                    ),
+
+                      //password
+                        TextFormField(
+                          obscureText: true,
+                          controller: passwordController,
+                          decoration: const InputDecoration(                          
+                          labelText: 'Password',
+                          labelStyle: TextStyle(fontStyle: FontStyle.italic, color: Color(0xFFA8A6A7)),
+                          ),
+                        ),
+                      ]
+                    ),  
                   ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0.3, 7.2),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFA8A6A7),
-                      ),
-                      child: Container(
-                        width: 297.7,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 8.2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 11, 0),
-                          child: SizedBox(
-                            width: 268.4,
-                            child: Text(
-                              'Confirm your password',
-                              style: GoogleFonts.getFont(
-                                'Nunito',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                                color: Color(0xFFA8A6A7),
-                              ),
-                            ),
+
+                   TextFormField(
+                          obscureText: true,
+                          controller: confirmPasswordController,
+                          decoration: const InputDecoration(                          
+                          labelText: 'Confirm Password',
+                          labelStyle: TextStyle(fontStyle: FontStyle.italic, color: Color(0xFFA8A6A7)),
+                          
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 3.2, 0, 3.1),
-                          child: SizedBox(
-                            width: 18.5,
-                            height: 15.7,
-                            child: SvgPicture.asset(
-                              'assets/vectors/eye_1_x2.svg',
-                            ),
-                          ),
-                        ),
-                      ],
+
+                  TextButton(
+                   
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 130, 196, 112)),
+                      overlayColor: MaterialStateProperty.all(const Color.fromARGB(255, 221, 223, 194)),
                     ),
+                    child: const Text('Already have an account? Login!'),
                   ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0.3, 0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFA8A6A7),
+                
+                 //login button
+                  ElevatedButton(
+                    onPressed: () { },
+                    style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(const Color(0xFFFFFFFF)),
+                        backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 130, 196, 112)),
                       ),
-                      child: Container(
-                        width: 297.7,
-                        height: 1,
-                      ),
-                    ),
+                    child: const Text('Sign Up'),
                   ),
                 ],
               ),
             ),
+            
             Container(
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 22.7),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF222222),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(0, 4.5, 0.7, 3.8),
-                  child: Text(
-                    'SIGN UP',
-                    style: GoogleFonts.getFont(
-                      'Nunito',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 22,
-                      color: Color(0xFFFFFFFF),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(0.3, 0, 0, 0),
-              child: RichText(
-                text: TextSpan(
-                  text: 'Already have an account? ',
-                  style: GoogleFonts.getFont(
-                    'Nunito',
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                    color: Color(0xFF000000),
-                  ),
-                  children: [
-                    TextSpan(
-                      text: ' Login',
-                      style: GoogleFonts.getFont(
-                        'Nunito',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        decoration: TextDecoration.underline,
-                        height: 1.3,
-                        color: Color(0xFF34A853),
-                        decorationColor: Color(0xFF34A853),
+                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //line entre o sign in with
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(0, 11.9, 9.1, 9.1),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFA8A6A7),
+                            ),
+                            child: Container(
+                              height: 1,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(0, 0, 8.8, 0),
+                        child: Text(
+                          ' or Sign Up with ',
+                          style: GoogleFonts.getFont(
+                            'Nunito',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                            color:const  Color(0xFF000000),
+                          ),
+                        ),
+                      ),
+                      //line entre o sign in with
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(0, 11.9, 0, 9.1),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFA8A6A7),
+                            ),
+                            child: Container(
+                              height: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+
+
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: SizedBox(
+                    width: 57.5,
+                    height: 58.4,
+                    child: SvgPicture.asset(
+                      'assets/vectors/grommet_iconsgoogle_x2.svg',
+                    ),
+                  ),
+                ),
+          
           ],
         ),
-      ),
+      
     );
+  
   }
 }
