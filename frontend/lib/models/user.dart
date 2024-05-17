@@ -1,4 +1,4 @@
-class User {
+class CustomUser {
   final String? uid;
-  User({this.uid});
+  CustomUser({this.uid});
 }
