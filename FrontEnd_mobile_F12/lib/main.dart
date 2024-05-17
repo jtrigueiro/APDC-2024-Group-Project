@@ -32,7 +32,6 @@ import 'package:flutter_app/pages/state_off.dart';
 import 'package:flutter_app/pages/state_on.dart';
 import 'package:flutter_app/pages/view_dishes_screen.dart';
 
-
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -43,14 +42,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       home: Scaffold(
-
-        body: AchievementsScreen(),
+        //body: AchievementsScreen(),
         // body: CarbonFootprintScreen(),
         // body: CreateDishScreen(),
         // body: FavoritesScreenempty(),
         // body: FavoritesScreenfilled(),
         // body: HelpAndSupportScreen(),
-        // body: HomeScreen(),
+        body: HomeScreen(),
         // body: MyRestaurantScreenhasRestaurant(),
         // body: MyRestaurantScreennoRestaurant(),
         // body: MyRestaurantScreenwaitingForApproval(),
@@ -75,7 +73,6 @@ class MyApp extends StatelessWidget {
         // body: StateOff(),
         // body: StateOn(),
         // body: ViewDishesScreen(),
-
       ),
     );
   }
