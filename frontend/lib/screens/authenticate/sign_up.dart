@@ -142,7 +142,7 @@ class SignUpState extends State<SignUp> {
                   ),
 
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {Navigator.pop(context);},
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
                           const Color.fromARGB(255, 130, 196, 112)),

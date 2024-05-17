@@ -65,10 +65,11 @@ class _SignInState extends State<SignIn> {
                 width: 70,
                 height: 70,
                 child: SvgPicture.asset(
-                  "assets/vectors/grommet_iconsgoogle_x2.svg",
+                  "assets/vectors/logo.svg",
                 ),
               ),
             ),
+
             //text
             Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 3.7, 0),
@@ -141,10 +142,7 @@ class _SignInState extends State<SignIn> {
                   ),
 
                   TextButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignUp()),
-                    ),
+                    onPressed: () => {},
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
                           const Color.fromARGB(255, 130, 196, 112)),
@@ -197,39 +195,29 @@ class _SignInState extends State<SignIn> {
               ),
             ),
 
+
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   margin: const EdgeInsets.all(10),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Don’t have an account? ',
-                      style: GoogleFonts.getFont(
-                        'Nunito',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: Color(0xFF000000),
-                      ),
-                      children: [
-                        //on tap??
-                        TextSpan(
-                          text: ' Sign up',
-                          style: GoogleFonts.getFont(
-                            'Nunito',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            decoration: TextDecoration.underline,
-                            height: 1.3,
-                            color: Color(0xFF34A853),
-                            decorationColor: Color(0xFF34A853),
-                          ),
-                        ),
-                      ],
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignUp()),
+                    );
+                    },
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 130, 196, 112)),
+                      overlayColor: MaterialStateProperty.all(const Color.fromARGB(255, 221, 223, 194)),
                     ),
-                  ),
+                    child: const Text("Don't have an account? Sign up!"),
+                  ),  
                 ),
+                 
+
                 Container(
                   margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                   child: Row(
@@ -259,7 +247,7 @@ class _SignInState extends State<SignIn> {
                             'Nunito',
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
-                            color: const Color(0xFF000000),
+                            color:const  Color(0xFF000000),
                           ),
                         ),
                       ),
@@ -280,6 +268,8 @@ class _SignInState extends State<SignIn> {
                     ],
                   ),
                 ),
+
+
                 Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   child: SizedBox(
