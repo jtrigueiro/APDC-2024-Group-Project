@@ -1,4 +1,4 @@
-import 'package:adc_group_project/screens/profile/profile.dart';
+import 'package:adc_group_project/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/screens/home/objects/searchbar.dart';
 import 'package:adc_group_project/screens/home/objects/top_carousel.dart';
@@ -6,7 +6,7 @@ import 'package:adc_group_project/screens/home/objects/middle_carousel.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
-
+  final AuthService _auth = AuthService();
   final List<String> topCarouselImages = [
     'assets/images/italian.png',
     'assets/images/burger.png',
@@ -35,15 +35,6 @@ class Home extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Home()),
-    );
-  }
-
-  void _onProfilePressed(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              ProfilePage()), // Navegue para a página de perfil
     );
   }
 
@@ -88,10 +79,11 @@ class Home extends StatelessWidget {
         ],
         currentIndex: 0,
         selectedItemColor: Colors.amber[800],
-        onTap: (index) {
+        onTap: (index) async {
           if (index == 4) {
+            await _auth.signOut();
             // Se o índice for 4 (índice do ícone de perfil), chame a função _onProfilePressed
-            _onProfilePressed(context);
+            //_onProfilePressed(context);
           } else {
             // Caso contrário, manipule conforme necessário
           }
