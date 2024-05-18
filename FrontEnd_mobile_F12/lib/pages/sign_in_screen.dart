@@ -1,192 +1,179 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/sign_up_screen.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_app/utils.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
+    const SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => SignInScreenState();
+}
+
+
+class SignInScreenState extends State<SignInScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return 
-    Container(
-      decoration: BoxDecoration(
+    
+    return Container(
+      decoration: const BoxDecoration(
         color: Color(0xFFFFFFFF),
       ),
-      child: Container(
-        padding: EdgeInsets.fromLTRB(14, 98, 9.3, 64.9),
-        child: Column(
+      child:  Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
+            //para a imagem
             Container(
-              margin: EdgeInsets.fromLTRB(0, 0, 3.7, 49.5),
+              margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+              child:
+              SizedBox(
+                    width: 70,
+                    height: 70,
+                    child: SvgPicture.asset(
+                      "assets/vectors/logo.svg",
+              ),
+              ),
+            ),
+            //text 
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 3.7, 0),
               child: Text(
                 'Sign In',
                 style: GoogleFonts.getFont(
                   'Nunito',
                   fontWeight: FontWeight.w700,
                   fontSize: 40,
-                  color: Color(0xFF000000),
+                  color: const Color(0xFF000000),
                 ),
               ),
             ),
+
+            //forms
             Container(
-              margin: EdgeInsets.fromLTRB(18.2, 0, 16.1, 42.5),
+              margin: const EdgeInsets.fromLTRB(18.2, 0, 16.1,50),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    margin: EdgeInsets.fromLTRB(10.2, 0, 0, 134.8),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        'Enter your email and password',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xFFA8A6A7),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 60),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Enter your email and password',
+                            style: GoogleFonts.getFont(
+                              'Nunito',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                              color: const Color(0xFFA8A6A7),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 8.5),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Email',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xFFA8A6A7),
+
+                 //form for email and password
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      
+                        //email
+                        TextFormField(
+                          controller: emailController,
+                          decoration: const InputDecoration(                          
+                          labelText: 'Email',
+                          labelStyle: TextStyle(fontStyle: FontStyle.italic, color: Color(0xFFA8A6A7)),
+                          
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 7.5),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFA8A6A7),
-                      ),
-                      child: Container(
-                        width: 302.4,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 8.5),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Password',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xFFA8A6A7),
+
+                      //password
+                        TextFormField(
+                          obscureText: true,
+                          controller: passwordController,
+                          decoration: const InputDecoration(                          
+                          labelText: 'Password',
+                          labelStyle: TextStyle(fontStyle: FontStyle.italic, color: Color(0xFFA8A6A7)),
+                          ),
                         ),
-                      ),
-                    ),
+                      ]
+                    ),  
                   ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 20.8),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFA8A6A7),
-                      ),
-                      child: Container(
-                        width: 302.4,
-                        height: 1,
-                      ),
+
+                  TextButton(
+                   
+                    onPressed: () {},
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 130, 196, 112)),
+                      overlayColor: MaterialStateProperty.all(const Color.fromARGB(255, 221, 223, 194)),
                     ),
+                    child: const Text('Forgot Password?'),
                   ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 7.8, 0),
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        'Forgot password?',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Color(0xFF34A853),
-                        ),
+                
+                 //login button
+                  ElevatedButton(
+                    onPressed: () { },
+                    style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(const Color(0xFFFFFFFF)),
+                        backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 130, 196, 112)),
                       ),
-                    ),
+                    child: const Text('Log In'),
                   ),
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.fromLTRB(14, 0, 13.3, 10.2),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF222222),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(0.5, 4.6, 0, 4.3),
-                  child: Text(
-                    'LOGIN',
-                    style: GoogleFonts.getFont(
-                      'Nunito',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 22,
-                      color: Color(0xFFFFFFFF),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            
+          
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  margin: EdgeInsets.fromLTRB(1.3, 0, 0, 48),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Don’t have an account? ',
-                      style: GoogleFonts.getFont(
-                        'Nunito',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: Color(0xFF000000),
-                      ),
-                      children: [
-                        TextSpan(
-                          text: ' Sign up',
-                          style: GoogleFonts.getFont(
-                            'Nunito',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            decoration: TextDecoration.underline,
-                            height: 1.3,
-                            color: Color(0xFF34A853),
-                            decorationColor: Color(0xFF34A853),
-                          ),
-                        ),
-                      ],
+                  margin: const EdgeInsets.all(10),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                    );
+                    },
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 130, 196, 112)),
+                      overlayColor: MaterialStateProperty.all(const Color.fromARGB(255, 221, 223, 194)),
                     ),
-                  ),
+                    child: const Text("Don't have an account? Sign up!"),
+                  ),  
                 ),
+                 
+
                 Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 20.6),
+                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      //line entre o sign in with
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 11.9, 9.1, 9.1),
+                          margin: const EdgeInsets.fromLTRB(0, 11.9, 9.1, 9.1),
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Color(0xFFA8A6A7),
                             ),
                             child: Container(
@@ -195,23 +182,25 @@ class SignInScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+
                       Container(
-                        margin: EdgeInsets.fromLTRB(0, 0, 8.8, 0),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 8.8, 0),
                         child: Text(
                           'Sign In with ',
                           style: GoogleFonts.getFont(
                             'Nunito',
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
-                            color: Color(0xFF000000),
+                            color:const  Color(0xFF000000),
                           ),
                         ),
                       ),
+                      //line entre o sign in with
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 11.9, 0, 9.1),
+                          margin: const EdgeInsets.fromLTRB(0, 11.9, 0, 9.1),
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Color(0xFFA8A6A7),
                             ),
                             child: Container(
@@ -223,8 +212,10 @@ class SignInScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+
+
                 Container(
-                  margin: EdgeInsets.fromLTRB(0.8, 0, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   child: SizedBox(
                     width: 57.5,
                     height: 58.4,
@@ -237,7 +228,7 @@ class SignInScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      
     );
   }
 }

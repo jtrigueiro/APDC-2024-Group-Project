@@ -1,65 +1,34 @@
+import 'package:adc_group_project/firebase_options.dart';
+import 'package:adc_group_project/services/auth.dart';
+import 'package:adc_group_project/wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:adc_group_project/models/user.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-import 'resources/data/users_local_storage.dart';
-import 'resources/presentation/login_screen.dart';
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+/*void main() {
+  runApp(MyApp());
+}*/
 
-  // Uncomment later on to test the Local DB
-  // Test it on Android! Doesn't work on the browser
-  void accessDB() {
-    LocalDB db = LocalDB(localDatabaseName);
-    db.initDB();
-    db.countUsers();
-    db.listAllTables();
-  }
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'ADC First App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          textSelectionTheme:
-              const TextSelectionThemeData(cursorColor: Colors.black),
-          textTheme: const TextTheme(
-            titleMedium: TextStyle(color: Colors.black),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            hintStyle: TextStyle(color: Colors.black.withOpacity(0.7)),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            border: const OutlineInputBorder(borderSide: BorderSide.none),
-          ),
-        ),
-        home: Scaffold(
-            appBar: AppBar(
-              title: const Text('Our First App - Login Screen'),
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-            ),
-            body: Center(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 70),
-                  child: const FlutterLogo(
-                    size: 40,
-                  ),
-                ),
-                const LoginScreen(),
-                // TODO: uncomment to test the Local DB (Android)
-                //FloatingActionButton(onPressed: accessDB),
-              ],
-            ))));
+    return StreamProvider<CustomUser?>.value(
+        catchError: (_, __) => null,
+        initialData: null,
+        value: AuthService().user,
+        child: const MaterialApp(
+          home: Wrapper(),
+        ));
   }
 }

@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
+  provider: ^6.1.2
+  english_words: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +49,8 @@ flutter:
   - assets/vectors/vector_29_x2.svg
   - assets/vectors/vector_26_x2.svg
   - assets/vectors/vector_11_x2.svg
+  - assets/vectors/logo.svg
+  - assets/images/logo-color-cut.png
   - assets/images/las_12.jpeg
   - assets/images/las_11.jpeg
   - assets/images/las_1.jpeg

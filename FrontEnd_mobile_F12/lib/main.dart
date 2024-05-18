@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:english_words/english_words.dart';
 
 import 'package:flutter_app/pages/achievements_screen.dart';
 import 'package:flutter_app/pages/carbon_footprint_screen.dart';
@@ -43,6 +45,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
       home: Scaffold(
         //body: AchievementsScreen(),
+        body: SignUpScreen(),
+        //body: SignUpScreen(),
+
+        //body: AchievementsScreen(),
         // body: CarbonFootprintScreen(),
         // body: CreateDishScreen(),
         // body: FavoritesScreenempty(),
@@ -68,8 +74,7 @@ class MyApp extends StatelessWidget {
         // body: ReviewsScreenempty(),
         // body: SearchScreen(),
         // body: SettingsScreen(),
-        // body: SignInScreen(),
-        // body: SignUpScreen(),
+
         // body: StateOff(),
         // body: StateOn(),
         // body: ViewDishesScreen(),
