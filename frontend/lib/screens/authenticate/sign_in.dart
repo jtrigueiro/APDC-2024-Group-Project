@@ -158,15 +158,13 @@ class _SignInState extends State<SignIn> {
                       {
                         if (_formKey.currentState!.validate()) {
                           dynamic result =
-                              await _auth.registerWithEmailAndPassword(
+                              await _auth.signInWithEmailAndPassword(
                                   emailController.text,
                                   passwordController.text);
                           if (result == null) {
                             setState(
-                              () => error = 'Email not valid or already in use',
+                              () => error = 'Wrong email or password.',
                             );
-                          } else {
-                            Navigator.pop(context);
                           }
                         }
                       }
@@ -195,7 +193,6 @@ class _SignInState extends State<SignIn> {
               ),
             ),
 
-
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -205,19 +202,19 @@ class _SignInState extends State<SignIn> {
                   child: TextButton(
                     onPressed: () {
                       Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignUp()),
-                    );
+                        context,
+                        MaterialPageRoute(builder: (context) => const SignUp()),
+                      );
                     },
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 130, 196, 112)),
-                      overlayColor: MaterialStateProperty.all(const Color.fromARGB(255, 221, 223, 194)),
+                      foregroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromARGB(255, 130, 196, 112)),
+                      overlayColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 221, 223, 194)),
                     ),
                     child: const Text("Don't have an account? Sign up!"),
-                  ),  
+                  ),
                 ),
-                 
-
                 Container(
                   margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                   child: Row(
@@ -247,7 +244,7 @@ class _SignInState extends State<SignIn> {
                             'Nunito',
                             fontWeight: FontWeight.w400,
                             fontSize: 16,
-                            color:const  Color(0xFF000000),
+                            color: const Color(0xFF000000),
                           ),
                         ),
                       ),
@@ -268,8 +265,6 @@ class _SignInState extends State<SignIn> {
                     ],
                   ),
                 ),
-
-
                 Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   child: SizedBox(
