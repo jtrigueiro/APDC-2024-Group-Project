@@ -1,11 +1,11 @@
 {
-    "name": "adc_handson_session",
-    "short_name": "adc_handson_session",
+    "name": "apdc_2024_group_project",
+    "short_name": "apdc_2024_group_project",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "ADC HandsOn Session",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

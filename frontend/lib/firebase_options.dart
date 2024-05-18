@@ -23,11 +23,20 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -41,49 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDcO-fgSN8C1ldU3_uI-U2wPmdmOpIBmTk',
-    appId: '1:457077558457:web:b3614297746ded39735f68',
-    messagingSenderId: '457077558457',
-    projectId: 'adc-2324-group-project',
-    authDomain: 'adc-2324-group-project.firebaseapp.com',
-    storageBucket: 'adc-2324-group-project.appspot.com',
-    measurementId: 'G-JMMQVG237R',
+    apiKey: 'AIzaSyAKeuKGSBD6rgwCirR-AzZ0v8Bo-sU72Ag',
+    appId: '1:265295731397:web:0869120b2ea2362c0f2eac',
+    messagingSenderId: '265295731397',
+    projectId: 'apdc2024groupproject',
+    authDomain: 'apdc2024groupproject.firebaseapp.com',
+    storageBucket: 'apdc2024groupproject.appspot.com',
+    measurementId: 'G-0D9J554F08',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBJLd5UBe9OLfoTyz83ljA5G87UU1xyAzc',
-    appId: '1:457077558457:android:0872c0e938d66a5f735f68',
-    messagingSenderId: '457077558457',
-    projectId: 'adc-2324-group-project',
-    storageBucket: 'adc-2324-group-project.appspot.com',
+    apiKey: 'AIzaSyDAY9TRsz2j8VJqXB5tnO_2GmfGG_3fHxY',
+    appId: '1:265295731397:android:e0643dd1333cd6db0f2eac',
+    messagingSenderId: '265295731397',
+    projectId: 'apdc2024groupproject',
+    storageBucket: 'apdc2024groupproject.appspot.com',
   );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCf4vUM-xgrzTRp_R9LFNumVLhsFehZH4A',
-    appId: '1:457077558457:ios:c985d9bf31be6cf8735f68',
-    messagingSenderId: '457077558457',
-    projectId: 'adc-2324-group-project',
-    storageBucket: 'adc-2324-group-project.appspot.com',
-    iosBundleId: 'com.example.adcHandsonSession',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCf4vUM-xgrzTRp_R9LFNumVLhsFehZH4A',
-    appId: '1:457077558457:ios:c985d9bf31be6cf8735f68',
-    messagingSenderId: '457077558457',
-    projectId: 'adc-2324-group-project',
-    storageBucket: 'adc-2324-group-project.appspot.com',
-    iosBundleId: 'com.example.adcHandsonSession',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDcO-fgSN8C1ldU3_uI-U2wPmdmOpIBmTk',
-    appId: '1:457077558457:web:1901d1d42fe8401f735f68',
-    messagingSenderId: '457077558457',
-    projectId: 'adc-2324-group-project',
-    authDomain: 'adc-2324-group-project.firebaseapp.com',
-    storageBucket: 'adc-2324-group-project.appspot.com',
-    measurementId: 'G-WD5T2WHJ4G',
-  );
-
 }

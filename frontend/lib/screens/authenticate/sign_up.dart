@@ -142,7 +142,9 @@ class SignUpState extends State<SignUp> {
                   ),
 
                   TextButton(
-                    onPressed: () {Navigator.pop(context);},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
                           const Color.fromARGB(255, 130, 196, 112)),
@@ -163,7 +165,8 @@ class SignUpState extends State<SignUp> {
                                   passwordController.text);
                           if (result == null) {
                             setState(
-                              () => error = 'Email not valid or already in use',
+                              () =>
+                                  error = 'Email not valid or already in use.',
                             );
                           } else {
                             Navigator.pop(context);

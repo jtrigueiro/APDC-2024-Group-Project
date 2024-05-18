@@ -1,40 +1,21 @@
 {
   "project_info": {
-    "project_number": "457077558457",
-    "project_id": "adc-2324-group-project",
-    "storage_bucket": "adc-2324-group-project.appspot.com"
+    "project_number": "265295731397",
+    "project_id": "apdc2024groupproject",
+    "storage_bucket": "apdc2024groupproject.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:457077558457:android:cee589be6a610d33735f68",
+        "mobilesdk_app_id": "1:265295731397:android:e0643dd1333cd6db0f2eac",
         "android_client_info": {
-          "package_name": "com.adc2324.group_project"
+          "package_name": "com.example.apdc_2024_group_project"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBJLd5UBe9OLfoTyz83ljA5G87UU1xyAzc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:457077558457:android:0872c0e938d66a5f735f68",
-        "android_client_info": {
-          "package_name": "com.example.adc_handson_session"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBJLd5UBe9OLfoTyz83ljA5G87UU1xyAzc"
+          "current_key": "AIzaSyDAY9TRsz2j8VJqXB5tnO_2GmfGG_3fHxY"
         }
       ],
       "services": {
