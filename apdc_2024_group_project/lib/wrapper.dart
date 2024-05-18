@@ -1,5 +1,5 @@
 import 'package:adc_group_project/screens/authenticate/sign_in.dart';
-import 'package:adc_group_project/screens/home/home_test.dart';
+import 'package:adc_group_project/screens/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:adc_group_project/models/user.dart';
@@ -14,7 +14,7 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return const SignIn();
     } else {
-      return HomeScreen();
+      return Home();
     }
   }
 }

@@ -1,146 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:adc_group_project/screens/objects/menubar.dart';
-import 'package:adc_group_project/screens/objects/restaurantbox.dart';
-import 'package:adc_group_project/screens/objects/searchbar.dart';
-import 'package:adc_group_project/screens/objects/categoryRow.dart';
+import 'package:adc_group_project/screens/home/objects/searchbar.dart';
+import 'package:adc_group_project/screens/home/objects/top_carousel.dart';
+import 'package:adc_group_project/screens/home/objects/middle_carousel.dart';
 
-class HomeScreen extends StatelessWidget {
+class Home extends StatelessWidget {
+  Home({super.key});
+
+  final List<String> topCarouselImages = [
+    'assets/images/italian.png',
+    'assets/images/burger.png',
+    'assets/images/traditional.png',
+    'assets/images/sushi.png',
+  ];
+  final List<Map<String, String>> middleCarouselItems = [
+    {
+      'image': 'assets/images/restaurant1.png',
+      'name': 'Restaurante Verde',
+      'location': 'Almada'
+    },
+    {
+      'image': 'assets/images/restaurant2.png',
+      'name': 'Restaurante Vermelho',
+      'location': 'Algueirão Mem Martins'
+    },
+    {
+      'image': 'assets/images/restaurant3.png',
+      'name': 'Restaurante Azul',
+      'location': 'Lisboa'
+    },
+  ];
+
+  void _onSearchPressed(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFFFFFFF),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SearchContainer(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: RestaurantsContainer(),
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x80000000),
-                      offset: Offset(4, 0),
-                      blurRadius: 2,
-                    ),
-                  ],
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        MenuItem(
-                          iconPath: 'assets/vectors/iconhome_2_x2.svg',
-                          label: 'Home',
-                          labelColor: Color(0xFF222222),
-                          iconWidth: 20,
-                          iconHeight: 20,
-                          iconMargin: EdgeInsets.zero,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        MenuItem(
-                          iconData: Icons.menu_book,
-                          label: 'Reservations',
-                          labelColor: Color.fromARGB(255, 110, 106, 106),
-                          iconWidth: 20,
-                          iconHeight: 20,
-                          iconMargin: EdgeInsets.zero,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        MenuItem(
-                          iconPath: 'assets/images/image_2.png',
-                          label: 'Carbon Footprint',
-                          labelColor: Color(0xFF222222),
-                          iconWidth: 20,
-                          iconHeight: 20,
-                          iconMargin: EdgeInsets.zero,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        MenuItem(
-                          iconPath: 'assets/vectors/vector_44_x2.svg',
-                          label: 'Favorites',
-                          labelColor: Color(0xFF222222),
-                          iconWidth: 20,
-                          iconHeight: 20,
-                          iconMargin: EdgeInsets.zero,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        MenuItem(
-                          iconPath: 'assets/vectors/iconuser_3_x2.svg',
-                          label: 'Profile',
-                          labelColor: Color(0xFF222222),
-                          iconWidth: 20,
-                          iconHeight: 20,
-                          iconMargin: EdgeInsets.zero,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            children: [
+              SizedBox(
+                  height: 20.0), // Espaçamento extra acima do botão de pesquisa
+              SearchButton(onPressed: () => _onSearchPressed(context)),
+              TopCarousel(images: topCarouselImages),
+              MiddleCarousel(items: middleCarouselItems),
+            ],
+          );
+        },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'Reservations',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eco),
+            label: 'Carbon Footprint',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: Colors.amber[800],
+        onTap: (index) {
+          // Handle bottom nav bar tap
+        },
       ),
     );
+  }
+}
+
+extension StringCasingExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1)}";
   }
 }
