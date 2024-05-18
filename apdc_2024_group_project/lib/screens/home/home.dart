@@ -1,3 +1,4 @@
+import 'package:adc_group_project/screens/search/search.dart';
 import 'package:adc_group_project/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/screens/home/objects/searchbar.dart';
@@ -34,7 +35,7 @@ class Home extends StatelessWidget {
   void _onSearchPressed(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Home()),
+      MaterialPageRoute(builder: (context) => SearchScreen()),
     );
   }
 

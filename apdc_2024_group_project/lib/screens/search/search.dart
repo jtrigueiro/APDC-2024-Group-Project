@@ -10,7 +10,7 @@ class SearchScreen extends StatefulWidget {
   _MyScreenState createState() => _MyScreenState();
 }
 
-class _MyScreenState extends State<MyScreen> {
+class _MyScreenState extends State<SearchScreen> {
   GoogleMapController? mapController;
 
   final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
