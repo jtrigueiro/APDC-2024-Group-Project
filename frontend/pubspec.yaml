@@ -77,6 +77,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/vectors/grommet_iconsgoogle_x2.svg
+    - assets/vectors/logo.svg
     - assets/images/logo-color-cut.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

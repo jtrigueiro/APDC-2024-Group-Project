@@ -1,5 +1,6 @@
 import 'package:adc_group_project/screens/authenticate/sign_up.dart';
 import 'package:adc_group_project/screens/home/home.dart';
+import 'package:adc_group_project/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,9 +14,11 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   late TextEditingController emailController;
   late TextEditingController passwordController;
+  late String error = '';
 
   @override
   void initState() {
@@ -62,10 +65,11 @@ class _SignInState extends State<SignIn> {
                 width: 70,
                 height: 70,
                 child: SvgPicture.asset(
-                  "assets/vectors/grommet_iconsgoogle_x2.svg",
+                  "assets/vectors/logo.svg",
                 ),
               ),
             ),
+
             //text
             Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 3.7, 0),
@@ -110,6 +114,8 @@ class _SignInState extends State<SignIn> {
                         children: [
                           //email
                           TextFormField(
+                            validator: (val) =>
+                                val!.isEmpty ? 'Enter an email' : null,
                             controller: emailController,
                             decoration: const InputDecoration(
                               labelText: 'Email',
@@ -121,6 +127,8 @@ class _SignInState extends State<SignIn> {
 
                           //password
                           TextFormField(
+                            validator: (val) =>
+                                val!.isEmpty ? 'Enter a password' : null,
                             obscureText: true,
                             controller: passwordController,
                             decoration: const InputDecoration(
@@ -134,10 +142,7 @@ class _SignInState extends State<SignIn> {
                   ),
 
                   TextButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignUp()),
-                    ),
+                    onPressed: () => {},
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
                           const Color.fromARGB(255, 130, 196, 112)),
@@ -149,8 +154,21 @@ class _SignInState extends State<SignIn> {
 
                   //login button
                   ElevatedButton(
-                    onPressed: () => logInButtonPressed(
-                        emailController.text, passwordController.text),
+                    onPressed: () async {
+                      {
+                        if (_formKey.currentState!.validate()) {
+                          dynamic result =
+                              await _auth.signInWithEmailAndPassword(
+                                  emailController.text,
+                                  passwordController.text);
+                          if (result == null) {
+                            setState(
+                              () => error = 'Wrong email or password.',
+                            );
+                          }
+                        }
+                      }
+                    },
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all<Color>(
                           const Color(0xFFFFFFFF)),
@@ -158,6 +176,18 @@ class _SignInState extends State<SignIn> {
                           const Color.fromARGB(255, 130, 196, 112)),
                     ),
                     child: const Text('Log In'),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 100),
+                    child: Text(
+                      error,
+                      style: GoogleFonts.getFont(
+                        'Nunito',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                        color: Color.fromARGB(255, 255, 0, 0),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -169,31 +199,20 @@ class _SignInState extends State<SignIn> {
               children: [
                 Container(
                   margin: const EdgeInsets.all(10),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Don’t have an account? ',
-                      style: GoogleFonts.getFont(
-                        'Nunito',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                        color: Color(0xFF000000),
-                      ),
-                      children: [
-                        //on tap??
-                        TextSpan(
-                          text: ' Sign up',
-                          style: GoogleFonts.getFont(
-                            'Nunito',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            decoration: TextDecoration.underline,
-                            height: 1.3,
-                            color: Color(0xFF34A853),
-                            decorationColor: Color(0xFF34A853),
-                          ),
-                        ),
-                      ],
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SignUp()),
+                      );
+                    },
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromARGB(255, 130, 196, 112)),
+                      overlayColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 221, 223, 194)),
                     ),
+                    child: const Text("Don't have an account? Sign up!"),
                   ),
                 ),
                 Container(

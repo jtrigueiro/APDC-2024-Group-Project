@@ -1,4 +1,4 @@
-import 'package:adc_group_project/screens/authenticate/authenticate.dart';
+import 'package:adc_group_project/screens/authenticate/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:adc_group_project/models/user.dart';
@@ -11,7 +11,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<CustomUser?>(context);
     if (user == null) {
-      return const Authenticate();
+      return const SignIn();
     } else {
       return const Home();
     }
