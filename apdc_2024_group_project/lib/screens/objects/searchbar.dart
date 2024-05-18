@@ -1,9 +1,12 @@
+import 'package:adc_group_project/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'categoryRow.dart';
 import 'package:adc_group_project/screens/home/home.dart';
 
 class SearchContainer extends StatelessWidget {
+  final AuthService _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,11 +41,8 @@ class SearchContainer extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(1.0),
               child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
+                onPressed: () async {
+                  await _auth.signOut();
                 },
                 child: Row(
                   children: [
