@@ -12,7 +12,12 @@
           "package_name": "com.example.apdc_2024_group_project"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "265295731397-e9dpv16qml28jv3jkds0itb20e588vtp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDAY9TRsz2j8VJqXB5tnO_2GmfGG_3fHxY"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "265295731397-e9dpv16qml28jv3jkds0itb20e588vtp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

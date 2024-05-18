@@ -16,12 +16,14 @@ class AuthService {
         .map((User? user) => _userfromFirebaseToCostum(user));
   }
 
-  // sign in anon
-  Future signInAnon() async {
+  //sign in with google
+  Future signInWithGoogle() async {
     try {
-      UserCredential result = await _auth.signInAnonymously();
+      final GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
+      UserCredential result =
+          await _auth.signInWithProvider(_googleAuthProvider);
       User? user = result.user;
-      return user;
+      return _userfromFirebaseToCostum(user);
     } catch (e) {
       print(e.toString());
       return null;
