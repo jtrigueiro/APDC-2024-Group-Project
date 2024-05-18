@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
       home: Scaffold(
         //body: AchievementsScreen(),
-        body: SignUpScreen(),
+        //body: SignUpScreen(),
         //body: SignUpScreen(),
 
         //body: AchievementsScreen(),
