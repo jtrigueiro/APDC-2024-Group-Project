@@ -13,7 +13,7 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return const SignIn();
     } else {
-      return const Home();
+      return HomeScreen();
     }
   }
 }
