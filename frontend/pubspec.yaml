@@ -79,6 +79,21 @@ flutter:
     - assets/vectors/grommet_iconsgoogle_x2.svg
     - assets/vectors/logo.svg
     - assets/images/logo-color-cut.png
+    - assets/vectors/iconhome_2_x2.svg
+    - assets/images/image_2.png
+    - assets/vectors/vector_44_x2.svg
+    - assets/vectors/iconuser_3_x2.svg
+    - assets/images/ellipse_2.png
+    - assets/images/ellipse_4.png
+    - assets/images/ellipse.png
+    - assets/images/las_1.jpeg
+    - assets/images/las_11.jpeg
+    - assets/images/las_12.jpeg
+    - assets/images/restaurant_1.png
+    - assets/images/restaurant_2.png
+    - assets/images/restaurant_3.png
+    - assets/images/restaurant_4.jpeg
+    - assets/images/restaurant_5.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
