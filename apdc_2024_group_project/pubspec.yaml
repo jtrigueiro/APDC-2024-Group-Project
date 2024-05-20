@@ -52,6 +52,8 @@ dependencies:
   firebase_core: ^2.31.0
   carousel_slider: ^4.0.0
   google_maps_flutter: ^2.2.5
+  http: ^1.2.1
+
 
 
 dev_dependencies:
