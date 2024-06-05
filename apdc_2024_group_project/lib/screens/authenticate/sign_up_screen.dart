@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
-//import 'package:flutter_app/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<SignUp> createState() => SignUpState();
+  State<SignUpScreen> createState() => SignUpScreenState();
 }
 
-class SignUpState extends State<SignUp> {
+class SignUpScreenState extends State<SignUpScreen> {
   late ScrollController scrollController;
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();

@@ -1,4 +1,4 @@
-import 'package:adc_group_project/screens/home/home.dart';
+import 'package:adc_group_project/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 

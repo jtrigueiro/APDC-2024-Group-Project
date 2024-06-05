@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../home/home.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -21,7 +20,8 @@ class _MyScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Prevent resizing when the keyboard appears
+      resizeToAvoidBottomInset:
+          false, // Prevent resizing when the keyboard appears
       body: Container(
         decoration: BoxDecoration(
           color: Color(0xFFFFFFFF),
@@ -43,10 +43,7 @@ class _MyScreenState extends State<SearchScreen> {
                       height: 21.6,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Home()),
-                          );
+                          Navigator.pop(context);
                         },
                         child: SizedBox(
                           width: 10.8,
@@ -83,7 +80,8 @@ class _MyScreenState extends State<SearchScreen> {
                           padding: EdgeInsets.fromLTRB(16.3, 10, 19.6, 11),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center, // Adjusted
+                            crossAxisAlignment:
+                                CrossAxisAlignment.center, // Adjusted
                             children: [
                               Container(
                                 margin: EdgeInsets.fromLTRB(0, 0, 11, 0),
@@ -134,7 +132,8 @@ class _MyScreenState extends State<SearchScreen> {
                           padding: EdgeInsets.fromLTRB(16, 10, 17, 11),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center, // Adjusted
+                            crossAxisAlignment:
+                                CrossAxisAlignment.center, // Adjusted
                             children: [
                               Container(
                                 margin: EdgeInsets.fromLTRB(0, 0, 11, 0),
