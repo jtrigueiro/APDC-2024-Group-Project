@@ -41,3 +41,19 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Diretório de build
+build/
+
+# VS Code
+.vscode/
+
+# Arquivos de logs
+*.log
+
+# Arquivos de depuração
+*.bak
+*.swp
+
+# Arquivos de sistema
+.DS_Store
