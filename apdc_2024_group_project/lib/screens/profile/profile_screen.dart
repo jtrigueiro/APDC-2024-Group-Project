@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/services/auth.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/personal_information.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -45,7 +46,11 @@ class ProfileScreen extends StatelessWidget {
                       icon: Icons.person,
                       text: 'Personal Information',
                       onTap: () {
-                        // Adicione a lógica para navegar para Personal Information
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PersonalInformationScreen(),
+                          ),
+                        );
                       },
                     ),
                     ProfileMenuItem(
