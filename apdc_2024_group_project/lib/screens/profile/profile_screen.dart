@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/personal_information.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -92,7 +93,11 @@ class ProfileScreen extends StatelessWidget {
                       icon: Icons.help,
                       text: 'Help and Support',
                       onTap: () {
-                        // Adicione a lógica para navegar para Help and Support
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => HelpAndSupportScreen(),
+                          ),
+                        );
                       },
                     ),
                     ProfileMenuItem(
