@@ -37,6 +37,18 @@ class SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Sign Up'),
+        surfaceTintColor: Colors.green,
+        shadowColor: Colors.green[400],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+     
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
