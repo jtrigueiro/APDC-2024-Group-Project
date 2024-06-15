@@ -37,7 +37,7 @@ class MiddleCarousel extends StatelessWidget {
         options: CarouselOptions(
           height: double.infinity,
           autoPlay: true,
-          autoPlayInterval: const Duration(seconds: 4),
+          autoPlayInterval: const Duration(seconds: 6),
           scrollDirection: Axis.vertical,
           viewportFraction: MediaQuery.of(context).size.width > 600 ? 0.7 : 0.5,
           enableInfiniteScroll: true,

@@ -20,6 +20,14 @@ class _MyScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       resizeToAvoidBottomInset:
           false, // Prevent resizing when the keyboard appears
       body: Container(
@@ -27,35 +35,14 @@ class _MyScreenState extends State<SearchScreen> {
           color: Color(0xFFFFFFFF),
         ),
         child: Container(
-          padding: EdgeInsets.fromLTRB(18.3, 16.7, 19, 156),
+          padding: EdgeInsets.fromLTRB(18.3, 10.7, 19, 0),
           child: Padding(
             padding: EdgeInsets.only(top: 20.0), // Add top padding here
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 7.7),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      width: 10.8,
-                      height: 21.6,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: SizedBox(
-                          width: 10.8,
-                          height: 21.6,
-                          child: SvgPicture.asset(
-                            'assets/vectors/vector_34_x2.svg',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+
                 Container(
                   margin: EdgeInsets.fromLTRB(5.7, 0, 0, 40.5),
                   child: Column(
