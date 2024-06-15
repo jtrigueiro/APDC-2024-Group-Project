@@ -1,8 +1,8 @@
 import 'dart:typed_data';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert'; // Para codificação Base64
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/personal_information.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support.dart';
@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 40), // Adiciona espaço no topo
+              SizedBox(height: 40), // Espaço no topo
               Container(
                 padding: EdgeInsets.all(20.0),
                 child: Column(
@@ -111,35 +111,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.reviews,
                       text: 'Reviews',
                       onTap: () {
-                        // Adicione a lógica para navegar para Reviews
+                        // Navegar para Reviews
                       },
                     ),
                     ProfileMenuItem(
                       icon: Icons.card_giftcard,
                       text: 'Promo codes',
                       onTap: () {
-                        // Adicione a lógica para navegar para Promo codes
+                        // Navegar para Promo codes
                       },
                     ),
                     ProfileMenuItem(
                       icon: Icons.emoji_events,
                       text: 'Achievements',
                       onTap: () {
-                        // Adicione a lógica para navegar para Achievements
+                        // Navegar para Achievements
                       },
                     ),
                     ProfileMenuItem(
                       icon: Icons.restaurant,
                       text: 'My Restaurant',
                       onTap: () {
-                        // Adicione a lógica para navegar para My Restaurant
+                        // Navegar para My Restaurant
                       },
                     ),
                     ProfileMenuItem(
                       icon: Icons.settings,
                       text: 'Settings',
                       onTap: () {
-                        // Adicione a lógica para navegar para Settings
+                        // Navegar para Settings
                       },
                     ),
                     ProfileMenuItem(
