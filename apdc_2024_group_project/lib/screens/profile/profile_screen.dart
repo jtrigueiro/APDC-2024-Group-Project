@@ -1,12 +1,62 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert'; // Para codificação Base64
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/personal_information.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
 
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   final AuthService _auth = AuthService();
+  Uint8List? _imageBytes;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
+  }
+
+  Future<void> _loadImage() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? imageBase64 = prefs.getString('profile_image');
+      if (imageBase64 != null) {
+        setState(() {
+          _imageBytes = base64Decode(imageBase64);
+        });
+      }
+    } catch (e) {
+      print("Erro ao carregar a imagem: $e");
+    }
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      print("Imagem selecionada: ${pickedFile?.path}");
+
+      if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
+        String imageBase64 = base64Encode(bytes);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile_image', imageBase64);
+        setState(() {
+          _imageBytes = bytes;
+        });
+      }
+    } catch (e) {
+      print("Erro ao selecionar a imagem: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +72,17 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Colors.grey,
-                          child: IconButton(
-                            icon: Icon(Icons.camera_alt),
-                            onPressed: () {
-                              // Adicione a lógica para adicionar uma foto
-                            },
+                        GestureDetector(
+                          onTap: _pickImage,
+                          child: CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.grey,
+                            backgroundImage: _imageBytes != null
+                                ? MemoryImage(_imageBytes!)
+                                : null,
+                            child: _imageBytes == null
+                                ? Icon(Icons.camera_alt, color: Colors.white)
+                                : null,
                           ),
                         ),
                         SizedBox(width: 20),
