@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'dart:convert';
+import 'package:adc_group_project/screens/my_restaurant/my_restaurant_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -132,7 +133,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.restaurant,
                       text: 'My Restaurant',
                       onTap: () {
-                        // Navegar para My Restaurant
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => MyRestaurantScreen(),
+                          ),
+                        );
                       },
                     ),
                     ProfileMenuItem(
