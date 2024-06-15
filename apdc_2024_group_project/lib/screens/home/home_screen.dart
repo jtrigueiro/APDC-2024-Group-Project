@@ -13,23 +13,26 @@ class HomeScreen extends StatelessWidget {
     'assets/images/traditional.png',
     'assets/images/sushi.png',
   ];
+
+  // TODO - replace this with actual data
   final List<Map<String, String>> middleCarouselItems = [
-    {
-      'image': 'assets/images/restaurant1.png',
-      'name': 'Restaurante Verde',
-      'location': 'Almada'
-    },
-    {
-      'image': 'assets/images/restaurant2.png',
-      'name': 'Restaurante Vermelho',
-      'location': 'Algueirão Mem Martins'
-    },
-    {
-      'image': 'assets/images/restaurant3.png',
-      'name': 'Restaurante Azul',
-      'location': 'Lisboa'
-    },
-  ];
+      {
+        'image': 'assets/images/restaurant1.png',
+        'name': 'Restaurante Verde',
+        'location': 'Almada',
+        'menu': 'name: "Bife à Portuguesa", price: 10.0, description: "Bife com batatas fritas e ovo estrelado"',
+      },
+      {
+        'image': 'assets/images/restaurant2.png',
+        'name': 'Restaurante Vermelho',
+        'location': 'Algueirão Mem Martins'
+      },
+      {
+        'image': 'assets/images/restaurant3.png',
+        'name': 'Restaurante Azul',
+        'location': 'Lisboa'
+      },
+    ];
 
   void _onSearchPressed(BuildContext context) {
     Navigator.push(
