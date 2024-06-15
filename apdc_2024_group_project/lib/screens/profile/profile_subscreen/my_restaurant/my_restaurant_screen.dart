@@ -1,10 +1,7 @@
-<<<<<<< Updated upstream
-import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_personalize_screen.dart';
-=======
 
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_dishes_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/restaurant_personalize_screen.dart';
->>>>>>> Stashed changes
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -48,7 +45,7 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
           controller: scrollController,
           child: Container(
             padding: EdgeInsets.all(20),
-<<<<<<< Updated upstream
+
             child: ListView(shrinkWrap: true, children: [
               tiles('Personalize', Icons.warehouse, toPersonalizePage),
               tiles('My Dishes', Icons.food_bank, () {}),
@@ -56,27 +53,8 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
               tiles('PromoCodes', Icons.card_giftcard, () {}),
               tiles('Settings', Icons.settings, () {}),
             ]),
-=======
-            child:
-                  ListView(
-                    shrinkWrap: true,
-                    children:[
-
-                      tiles('Personalize', Icons.warehouse, toPersonalizePage),
-
-                      tiles('My Dishes', Icons.food_bank, toMyDishesPage),
-
-                      tiles('Reviews', Icons.star, () {}),
-
-                      tiles('PromoCodes', Icons.card_giftcard, () {}),
-
-                      tiles('Settings', Icons.settings, () {}),
-                    ]
-                  ),
 
 
-
->>>>>>> Stashed changes
           ),
         ),
       ),
@@ -100,17 +78,6 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
     );
   }
 
-<<<<<<< Updated upstream
-  Text texts(String text, double size) {
-    return Text(
-      text,
-=======
-  Future toPersonalizePage ()
-  {
-    return Navigator.of(context).push( MaterialPageRoute(
-    builder: (context) => RestaurantPersonalizeScreen(),),
-    );
-  }
 
   Future toMyDishesPage ()
   {
@@ -124,7 +91,6 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
   Text texts(String text, double size)
   {
     return Text(text,
->>>>>>> Stashed changes
       style: GoogleFonts.getFont(
         'Nunito',
         fontWeight: FontWeight.normal,

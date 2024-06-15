@@ -57,6 +57,21 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                         SizedBox(height: 20),
                         Utils.textForms(nameController, 'Ingredients //wrong', 'Please enter a ingredients'),
 
+                        SizedBox(
+                          child:ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+
+                              backgroundColor: Colors.green[100],
+                              foregroundColor: Colors.green[900],
+                              shape: CircleBorder(),
+                            ),
+                            child: const Icon(Icons.add),
+                          ),
+
+                        ),
                       ]
                   ),
                 ),

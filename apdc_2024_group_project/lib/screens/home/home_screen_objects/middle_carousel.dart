@@ -1,7 +1,5 @@
-<<<<<<< Updated upstream
+
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
-=======
->>>>>>> Stashed changes
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
