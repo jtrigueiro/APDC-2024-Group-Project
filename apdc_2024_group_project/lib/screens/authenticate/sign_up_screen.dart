@@ -1,4 +1,5 @@
 import 'package:adc_group_project/services/auth.dart';
+import 'package:adc_group_project/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui';
@@ -101,12 +102,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                                 validator: (val) =>
                                     val!.isEmpty ? 'Enter a name' : null,
                                 controller: nameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Name',
-                                  labelStyle: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFFA8A6A7)),
-                                ),
+                                decoration: textInputDecoration.copyWith(
+                                    labelText: 'Name'),
                               ),
 
                               //email
@@ -114,12 +111,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                                 validator: (val) =>
                                     val!.isEmpty ? 'Enter an email' : null,
                                 controller: emailController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Email',
-                                  labelStyle: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFFA8A6A7)),
-                                ),
+                                decoration: textInputDecoration.copyWith(
+                                    labelText: 'Email'),
                               ),
 
                               //password
@@ -131,12 +124,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                                         : null),
                                 obscureText: true,
                                 controller: passwordController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Password',
-                                  labelStyle: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFFA8A6A7)),
-                                ),
+                                decoration: textInputDecoration.copyWith(
+                                    labelText: 'Password'),
                               ),
 
                               //confirm password
@@ -148,12 +137,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                                         : null),
                                 obscureText: true,
                                 controller: confirmPasswordController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Confirm Password',
-                                  labelStyle: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFFA8A6A7)),
-                                ),
+                                decoration: textInputDecoration.copyWith(
+                                    labelText: 'Confirm Password'),
                               ),
                             ]),
                       ),

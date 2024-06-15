@@ -134,12 +134,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                     val!.isEmpty ? 'Enter a password' : null,
                                 obscureText: true,
                                 controller: passwordController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Password',
-                                  labelStyle: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFFA8A6A7)),
-                                ),
+                                decoration: textInputDecoration.copyWith(
+                                    labelText: 'Password'),
                               ),
                             ]),
                       ),
