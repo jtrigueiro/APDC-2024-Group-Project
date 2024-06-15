@@ -1,4 +1,4 @@
-import 'package:adc_group_project/screens/my_restaurant/restaurant_requested_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_requested_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,18 +32,18 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     nameController = TextEditingController();
     phoneController = TextEditingController();
     locationController = TextEditingController();
-  
+
     super.initState();
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor:  Colors.green[100],
-        title:  texts('My Restaurant', 20),
+        backgroundColor: Colors.green[100],
+        title: texts('My Restaurant', 20),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () {
@@ -51,12 +51,11 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           },
         ),
       ),
-     
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
           controller: scrollController,
-          child: Container (
+          child: Container(
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
@@ -65,36 +64,35 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 10,
                   children: [
-                    texts('Seems like you have no restaurant yet!',20),
-                    texts('add one now!',20),
+                    texts('Seems like you have no restaurant yet!', 20),
+                    texts('add one now!', 20),
                   ],
                 ),
-
                 Form(
                   key: _formKey,
-                  child:Column(
-                      children: [
-                        const SizedBox(height: 50),
-                        textForms(nameController, 'Restaurant Name', 'Please enter a restaurant name'),
-                        const SizedBox(height: 10),
-                        textForms(phoneController, 'Phone number','Please enter a phone number'),
-                        const SizedBox(height: 10),
-                        textForms(locationController, 'Location','Please enter a location'),
-                        const SizedBox(height: 30),
-                      ]
-                  ),
+                  child: Column(children: [
+                    const SizedBox(height: 50),
+                    textForms(nameController, 'Restaurant Name',
+                        'Please enter a restaurant name'),
+                    const SizedBox(height: 10),
+                    textForms(phoneController, 'Phone number',
+                        'Please enter a phone number'),
+                    const SizedBox(height: 10),
+                    textForms(locationController, 'Location',
+                        'Please enter a location'),
+                    const SizedBox(height: 30),
+                  ]),
                 ),
-
-
                 Container(
                   alignment: Alignment.bottomLeft,
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacement(context, MaterialPageRoute<
-                            void>(
-                            builder: (
-                                BuildContext context) => const RestaurantRequestScreen()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute<void>(
+                                builder: (BuildContext context) =>
+                                    const RestaurantRequestScreen()));
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -115,22 +113,20 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     );
   }
 
-
-
-  TextFormField textForms(TextEditingController controller, text, String textNoValue)
-  {
-    return  TextFormField(
+  TextFormField textForms(
+      TextEditingController controller, text, String textNoValue) {
+    return TextFormField(
       controller: controller,
       decoration: InputDecoration(
           labelText: '$text*',
-          labelStyle: const TextStyle(fontStyle: FontStyle.italic, color: Colors.black),
+          labelStyle:
+              const TextStyle(fontStyle: FontStyle.italic, color: Colors.black),
           border: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.green),
               borderRadius: BorderRadius.circular(10)),
           focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.green),
-          )
-      ),
+          )),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return textNoValue;
@@ -140,15 +136,15 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     );
   }
 
-
-  Text texts(String text, double size)
-  {
-    return Text(text,
-                style: GoogleFonts.getFont(
-                'Nunito',
-                fontWeight: FontWeight.normal,
-                fontSize: size,
-                color: const Color(0xFF000000),),
-              );
+  Text texts(String text, double size) {
+    return Text(
+      text,
+      style: GoogleFonts.getFont(
+        'Nunito',
+        fontWeight: FontWeight.normal,
+        fontSize: size,
+        color: const Color(0xFF000000),
+      ),
+    );
   }
 }

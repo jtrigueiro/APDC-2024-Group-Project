@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'dart:convert';
-import 'package:adc_group_project/screens/my_restaurant/my_restaurant_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';

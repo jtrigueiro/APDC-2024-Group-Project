@@ -1,4 +1,4 @@
-import 'package:adc_group_project/screens/restaurant/restaurant_screen.dart';
+import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -46,46 +46,45 @@ class MiddleCarousel extends StatelessWidget {
           return Builder(
             builder: (BuildContext context) {
               return Center(
-                child: 
-                  InkWell(
-                    onTap: () => { itemClicked(context, item) },
-                    child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width > 600
-                            ? 400
-                            : MediaQuery.of(context).size.width * 0.85,
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 3,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: Image.asset(item['image']!, fit: BoxFit.cover),
+                  child: InkWell(
+                onTap: () => {itemClicked(context, item)},
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width > 600
+                          ? 400
+                          : MediaQuery.of(context).size.width * 0.85,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
                           ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Image.asset(item['image']!, fit: BoxFit.cover),
                         ),
                       ),
-                      const SizedBox(height: 5.0),
-                      Text(item['name']!,
-                          style: const TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold)),
-                      Text(item['location']!,
-                          style: const TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                ));
+                    ),
+                    const SizedBox(height: 5.0),
+                    Text(item['name']!,
+                        style: const TextStyle(
+                            fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    Text(item['location']!,
+                        style: const TextStyle(color: Colors.grey)),
+                  ],
+                ),
+              ));
             },
           );
         }).toList(),

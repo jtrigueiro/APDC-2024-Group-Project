@@ -1,5 +1,4 @@
-
-import 'package:adc_group_project/screens/my_restaurant/restaurant_personalize_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_personalize_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,7 +13,6 @@ class MyRestaurantScreen extends StatefulWidget {
 
 class MyRestaurantScreenState extends State<MyRestaurantScreen> {
   late ScrollController scrollController;
-
 
   @override
   void initState() {
@@ -38,65 +36,51 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
           },
         ),
       ),
-
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
           controller: scrollController,
-          child:  Container(
+          child: Container(
             padding: EdgeInsets.all(20),
-            child:
-                  ListView(
-                    shrinkWrap: true,
-                    children:[
-
-                      tiles('Personalize', Icons.warehouse, toPersonalizePage),
-
-                      tiles('My Dishes', Icons.food_bank, () {}),
-
-                      tiles('Reviews', Icons.star, () {}),
-
-                      tiles('PromoCodes', Icons.card_giftcard, () {}),
-
-                      tiles('Settings', Icons.settings, () {}),
-                    ]
-                  ),
-
-
-
+            child: ListView(shrinkWrap: true, children: [
+              tiles('Personalize', Icons.warehouse, toPersonalizePage),
+              tiles('My Dishes', Icons.food_bank, () {}),
+              tiles('Reviews', Icons.star, () {}),
+              tiles('PromoCodes', Icons.card_giftcard, () {}),
+              tiles('Settings', Icons.settings, () {}),
+            ]),
           ),
         ),
       ),
     );
   }
 
-
-  ListTile tiles (String text, IconData icon, Function ontapFunction)
-  {
+  ListTile tiles(String text, IconData icon, Function ontapFunction) {
     return ListTile(
         title: texts(text, 20),
-        leading:  Icon(icon),
-        onTap:() {ontapFunction();}
+        leading: Icon(icon),
+        onTap: () {
+          ontapFunction();
+        });
+  }
+
+  Future toPersonalizePage() {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => RestaurantPersonalizeScreen(),
+      ),
     );
   }
 
-  Future toPersonalizePage ()
-  {
-    return Navigator.of(context).push( MaterialPageRoute(
-    builder: (context) => RestaurantPersonalizeScreen(),),
-    );
-  }
-
-
-
-  Text texts(String text, double size)
-  {
-    return Text(text,
+  Text texts(String text, double size) {
+    return Text(
+      text,
       style: GoogleFonts.getFont(
         'Nunito',
         fontWeight: FontWeight.normal,
         fontSize: size,
-        color: const Color(0xFF000000),),
+        color: const Color(0xFF000000),
+      ),
     );
   }
 }
