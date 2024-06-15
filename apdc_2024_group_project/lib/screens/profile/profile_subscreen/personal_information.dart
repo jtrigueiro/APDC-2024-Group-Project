@@ -30,26 +30,39 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     _loadUserData();
   }
 
-  void _loadUserData() async {
-    DocumentSnapshot userData =
-        await _firestore.collection('users').doc(_user.uid).get();
-    setState(() {
-      _firstNameController.text = userData['firstName'] ?? '';
-      _lastNameController.text = userData['lastName'] ?? '';
-      _phoneController.text = userData['phone'] ?? '';
-    });
+  Future<void> _loadUserData() async {
+    try {
+      DocumentSnapshot userData =
+          await _firestore.collection('users').doc(_user.uid).get();
+      if (userData.exists) {
+        setState(() {
+          _firstNameController.text = userData['firstName'] ?? '';
+          _lastNameController.text = userData['lastName'] ?? '';
+          _phoneController.text = userData['phone'] ?? '';
+        });
+      } else {
+        print("Documento do usuário não existe.");
+      }
+    } catch (e) {
+      print("Erro ao carregar os dados do usuário: $e");
+    }
   }
 
-  void _updateUserData() async {
+  Future<void> _updateUserData() async {
     if (_formKey.currentState!.validate()) {
-      await _firestore.collection('users').doc(_user.uid).update({
-        'firstName': _firstNameController.text,
-        'lastName': _lastNameController.text,
-        'phone': _phoneController.text,
-      });
-      await _user.updateEmail(_emailController.text);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Information updated successfully')));
+      try {
+        await _firestore.collection('users').doc(_user.uid).update({
+          'firstName': _firstNameController.text,
+          'lastName': _lastNameController.text,
+          'phone': _phoneController.text,
+        });
+        await _user.updateEmail(_emailController.text);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Informações atualizadas com sucesso')),
+        );
+      } catch (e) {
+        print("Erro ao atualizar os dados do usuário: $e");
+      }
     }
   }
 
@@ -78,18 +91,22 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   child: Icon(Icons.person, size: 40, color: Colors.white),
                 ),
                 SizedBox(height: 10),
-                Text('User Name',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text(_user.email ?? '',
-                    style: TextStyle(fontSize: 16, color: Colors.grey)),
+                Text(
+                  'User Name',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  _user.email ?? '',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _firstNameController,
                   decoration: InputDecoration(
                     labelText: 'First name*',
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -104,7 +121,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   decoration: InputDecoration(
                     labelText: 'Last name*',
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -119,7 +137,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   decoration: InputDecoration(
                     labelText: 'Email*',
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -137,7 +156,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   decoration: InputDecoration(
                     labelText: 'Phone number*',
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -154,7 +174,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         decoration: InputDecoration(
                           labelText: 'Password',
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                         obscureText: true,
                       ),
@@ -175,7 +196,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.amber[800], // Change to orange
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
               ],
