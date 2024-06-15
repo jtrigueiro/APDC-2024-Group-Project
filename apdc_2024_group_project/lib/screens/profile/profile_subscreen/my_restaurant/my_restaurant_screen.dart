@@ -1,4 +1,6 @@
-import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_dishes_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_Dishes_subscreens/my_dishes_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_Dishes_subscreens/my_restaurant_settings_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/promo_codes_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/restaurant_personalize_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +49,8 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
               tiles('Personalize', Icons.warehouse, toPersonalizePage),
               tiles('My Dishes', Icons.food_bank, toMyDishesPage),
               tiles('Reviews', Icons.star, () {}),
-              tiles('PromoCodes', Icons.card_giftcard, () {}),
-              tiles('Settings', Icons.settings, () {}),
+              tiles('PromoCodes', Icons.card_giftcard, toPromoCodesPage),
+              tiles('Settings', Icons.settings, toMyRestaurantSettingsPage),
             ]),
           ),
         ),
@@ -80,6 +82,24 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
       ),
     );
   }
+
+  Future toPromoCodesPage() {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PromoCodesScreen(),
+      ),
+    );
+  }
+
+  Future toMyRestaurantSettingsPage() {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MyRestaurantSettingsScreen(),
+      ),
+    );
+  }
+
+
 
   Text texts(String text, double size) {
     return Text(

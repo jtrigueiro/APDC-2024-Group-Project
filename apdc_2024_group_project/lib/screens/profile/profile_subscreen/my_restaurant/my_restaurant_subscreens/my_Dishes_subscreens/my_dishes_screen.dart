@@ -1,3 +1,4 @@
+import 'package:adc_group_project/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -43,7 +44,7 @@ class MyDishesScreenState extends State<MyDishesScreen> {
           child: Column(
             children: [
 
-              SizedBox(height: 25),
+              CustomSpaceBetweenColumns(25),
               texts('Add Dishes',20),
               //dishes se tem
               Center(
