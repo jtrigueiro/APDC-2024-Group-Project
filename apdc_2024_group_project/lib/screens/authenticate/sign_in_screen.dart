@@ -1,5 +1,6 @@
 import 'package:adc_group_project/screens/authenticate/sign_up_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
+import 'package:adc_group_project/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -123,12 +124,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                 validator: (val) =>
                                     val!.isEmpty ? 'Enter an email' : null,
                                 controller: emailController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Email',
-                                  labelStyle: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFFA8A6A7)),
-                                ),
+                                decoration: textInputDecoration.copyWith(
+                                    labelText: 'Email'),
                               ),
 
                               //password

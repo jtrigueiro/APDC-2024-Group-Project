@@ -48,7 +48,6 @@ class SignUpScreenState extends State<SignUpScreen> {
           },
         ),
       ),
-     
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
