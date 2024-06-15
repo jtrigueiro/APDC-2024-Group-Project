@@ -48,7 +48,7 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
 
             child: ListView(shrinkWrap: true, children: [
               tiles('Personalize', Icons.warehouse, toPersonalizePage),
-              tiles('My Dishes', Icons.food_bank, () {}),
+              tiles('My Dishes', Icons.food_bank, toMyDishesPage),
               tiles('Reviews', Icons.star, () {}),
               tiles('PromoCodes', Icons.card_giftcard, () {}),
               tiles('Settings', Icons.settings, () {}),
