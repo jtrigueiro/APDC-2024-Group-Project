@@ -14,22 +14,18 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-/*void main() {
-  runApp(MyApp());
-}*/
-
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return StreamProvider<CustomUser?>.value(
-        catchError: (_, __) => null,
-        initialData: null,
-        value: AuthService().user,
-        child: const MaterialApp(
-          home: Wrapper(),
-        ));
+      catchError: (_, __) => null,
+      initialData: null,
+      value: AuthService().user,
+      child: const MaterialApp(
+        home: Wrapper(),
+      ),
+    );
   }
 }
