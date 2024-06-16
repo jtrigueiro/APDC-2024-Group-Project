@@ -23,7 +23,7 @@ class AuthService {
     try {
       final GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
       UserCredential result;
-      // if sign is through a web browser, else must be mobile
+      // if sign is through a web browser, else must be throught the mobile app
       if (kIsWeb) {
         result = await _auth.signInWithPopup(_googleAuthProvider);
       } else {
