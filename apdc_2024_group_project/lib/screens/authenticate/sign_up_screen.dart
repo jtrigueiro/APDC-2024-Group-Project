@@ -2,9 +2,6 @@ import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/shared/constants.dart';
 import 'package:adc_group_project/shared/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'dart:ui';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignUpScreen extends StatefulWidget {
