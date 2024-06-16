@@ -50,7 +50,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         children: [
                           ClipRRect(
                           borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-                            child: Image.network("assets/images/logo-color-cut.png",
+                            child: SvgPicture.asset("assets/vectors/logo.svg",
                                 width: 80,
                                 height: 80,
                                 fit: BoxFit.fill),
@@ -130,7 +130,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             }
                           }
                         },
-                        child: const Text('Log In'),
+                        child:  Text('Log In'),
                       ),
 
 
@@ -180,7 +180,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 'Nunito',
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
-                                color: const Color(0xFF000000),
+                                color: const Color.fromARGB(255, 208, 182, 136),
                               ),
                             ),
                           ),
@@ -209,7 +209,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         splashColor: Color.fromARGB(255, 208, 182, 136),
                         child: ClipRRect(
                           borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-                          child: SvgPicture.network("assets/vectors/grommet_iconsgoogle_x2.svg",
+                          child: SvgPicture.asset("assets/vectors/grommet_iconsgoogle_x2.svg",
                               width: 70,
                               height: 60,
                               fit: BoxFit.fill,

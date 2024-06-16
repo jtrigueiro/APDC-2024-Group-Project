@@ -12,7 +12,7 @@ class TextThemeApp {
       fontSize: 20, color:  Color.fromARGB(255, 39, 65, 58),),
 
     titleLarge:  GoogleFonts.getFont('Nunito', fontWeight: FontWeight.w600,
-      fontSize: 30, color:  Color.fromARGB(255, 39, 65, 58),),
+      fontSize: 30, color:  Color.fromARGB(255, 209, 173, 98),),
 
     displayLarge: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
       fontSize: 40, color:  Color.fromARGB(255, 39, 65, 58),),
@@ -23,13 +23,14 @@ class TextThemeApp {
     //logo
     headlineLarge: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
       fontStyle: FontStyle.italic,
-      fontSize: 40, color:  Color.fromARGB(255, 39, 65, 58), decoration: TextDecoration.underline,
-      decorationColor:   Color.fromARGB(255, 39, 65, 58),
+      fontSize: 40, color:  Color.fromARGB(255, 182, 141, 64), decoration: TextDecoration.underline,
+      decorationColor:   Color.fromARGB(255, 182, 141, 64),
       decorationThickness: 2,
     ),
+
     bodySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.normal,
       fontStyle: FontStyle.italic,
-      fontSize: 13, color:  Color.fromARGB(255, 39, 65, 58),
+      fontSize: 13, color:  Color.fromARGB(255, 208, 182, 136),
     ),
 
   );
