@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/promo_codes_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -113,7 +114,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.card_giftcard,
                       text: 'Promo codes',
                       onTap: () {
-                        // Navegar para Promo codes
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PromoCodesScreen(),
+                          ),
+                        );
                       },
                     ),
                     ProfileMenuItem(
