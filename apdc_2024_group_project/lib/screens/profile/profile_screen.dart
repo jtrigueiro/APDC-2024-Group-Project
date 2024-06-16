@@ -78,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(width: 20),
                         Text(
-                          _userName ?? 'User Name',
+                          _userName?.toUpperCase() ?? 'User Name',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
