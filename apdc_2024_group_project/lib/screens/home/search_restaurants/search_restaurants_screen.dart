@@ -31,10 +31,6 @@ class _MyScreenState extends State<SearchScreen> {
       resizeToAvoidBottomInset:
           false, // Prevent resizing when the keyboard appears
       body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFFFFFFF),
-        ),
-        child: Container(
           padding: EdgeInsets.fromLTRB(18.3, 10.7, 19, 0),
           child: Padding(
             padding: EdgeInsets.only(top: 20.0), // Add top padding here
@@ -157,23 +153,9 @@ class _MyScreenState extends State<SearchScreen> {
                     ],
                   ),
                 ),
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                    child: Text(
-                      'Map',
-                      style: GoogleFonts.getFont(
-                        'Nunito',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        color: Color(0xFF34A853),
-                      ),
-                    ),
-                  ),
-                ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.fromLTRB(10.2, 0, 8.6, 0),
+                    margin: EdgeInsets.fromLTRB(10.2, 0, 8.6, 10),
                     child: GoogleMap(
                       onMapCreated: _onMapCreated,
                       initialCameraPosition: CameraPosition(
@@ -183,34 +165,11 @@ class _MyScreenState extends State<SearchScreen> {
                     ),
                   ),
                 ),
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(10.2, 20, 8.6, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 0.9, 24.5),
-                          child: Text(
-                            'Restaurants',
-                            style: GoogleFonts.getFont(
-                              'Nunito',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                              color: Color(0xFF34A853),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
         ),
-      ),
+
     );
   }
 }

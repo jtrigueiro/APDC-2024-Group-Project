@@ -19,7 +19,7 @@ class InputTheme {
 
 
   static final DarkInputTheme =  InputDecorationTheme(
-    labelStyle: const TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+    labelStyle: const TextStyle(fontStyle: FontStyle.italic, color: Color.fromARGB(255, 32, 67, 55)),
     border: OutlineInputBorder(
         borderSide: const BorderSide(color: Color.fromARGB(255, 182, 141, 64)),
         borderRadius: BorderRadius.circular(10)),

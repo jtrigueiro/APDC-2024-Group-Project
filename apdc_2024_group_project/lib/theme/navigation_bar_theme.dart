@@ -10,7 +10,7 @@ class AppNavBarTheme {
   );
 
   static const darkAppNavBarTheme =  BottomNavigationBarThemeData(
-    backgroundColor:  Color.fromARGB(255, 18, 38, 32),
+    backgroundColor:  Color.fromARGB(255, 32, 67, 55),
     selectedItemColor: Color.fromARGB(255, 133, 98, 22),
     unselectedItemColor: Color.fromARGB(255, 250, 248, 223),
   );
