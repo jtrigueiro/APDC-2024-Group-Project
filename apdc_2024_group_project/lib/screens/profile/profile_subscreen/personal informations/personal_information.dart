@@ -14,49 +14,52 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
   late User _user;
-  late TextEditingController _firstNameController;
-  late TextEditingController _lastNameController;
+  late TextEditingController _nameController;
   late TextEditingController _emailController;
-  late TextEditingController _phoneController;
+  late TextEditingController _passwordController;
+
+  late SharedPreferences _prefs;
 
   @override
   void initState() {
     super.initState();
     _user = _auth.currentUser!;
-    _firstNameController = TextEditingController();
-    _lastNameController = TextEditingController();
-    _emailController = TextEditingController(text: _user.email);
-    _phoneController = TextEditingController();
+    _nameController = TextEditingController();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _initPreferences();
+  }
+
+  Future<void> _initPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
     _loadUserData();
   }
 
   Future<void> _loadUserData() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      // Verificar se existem dados salvos localmente
-      if (prefs.containsKey('userData')) {
-        Map<String, dynamic> userData =
-            Map<String, dynamic>.from(prefs.getString('userData')! as Map);
-        setState(() {
-          _firstNameController.text = userData['firstName'] ?? '';
-          _lastNameController.text = userData['lastName'] ?? '';
-          _phoneController.text = userData['phone'] ?? '';
-        });
-      } else {
-        // Caso não haja dados salvos localmente, buscar no Firestore
+      String name = _prefs.getString('userName') ?? '';
+      String email = _prefs.getString('userEmail') ?? '';
+
+      if (name.isEmpty || email.isEmpty) {
         DocumentSnapshot userData =
             await _firestore.collection('users').doc(_user.uid).get();
         if (userData.exists) {
           setState(() {
-            _firstNameController.text = userData['firstName'] ?? '';
-            _lastNameController.text = userData['lastName'] ?? '';
-            _phoneController.text = userData['phone'] ?? '';
+            name = userData['name'] ?? '';
+            email = userData['email'] ?? _user.email!;
+            _nameController.text = name;
+            _emailController.text = email;
           });
-          // Salvar os dados localmente para futuros acessos rápidos
-          prefs.setString('userData', userData.data()!.toString());
+          _prefs.setString('userName', name);
+          _prefs.setString('userEmail', email);
         } else {
-          print("Documento do usuário não existe.");
+          print("Documento do usuário não existe no Firestore.");
         }
+      } else {
+        setState(() {
+          _nameController.text = name;
+          _emailController.text = email;
+        });
       }
     } catch (e) {
       print("Erro ao carregar os dados do usuário: $e");
@@ -66,26 +69,16 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Future<void> _updateUserData() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Atualizar os dados no Firestore
         await _firestore.collection('users').doc(_user.uid).update({
-          'firstName': _firstNameController.text,
-          'lastName': _lastNameController.text,
-          'phone': _phoneController.text,
+          'name': _nameController.text,
+          'email': _emailController.text,
         });
 
-        // Atualizar os dados localmente após a atualização no Firestore
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        Map<String, dynamic> userData = {
-          'firstName': _firstNameController.text,
-          'lastName': _lastNameController.text,
-          'phone': _phoneController.text,
-        };
-        prefs.setString('userData', userData.toString());
+        setState(() {
+          _prefs.setString('userName', _nameController.text);
+          _prefs.setString('userEmail', _emailController.text);
+        });
 
-        // Atualizar o email do usuário no FirebaseAuth
-        await _user.updateEmail(_emailController.text);
-
-        // Exibir uma mensagem de sucesso
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Informações atualizadas com sucesso')),
         );
@@ -102,7 +95,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber[800], // Change to orange
+        backgroundColor: Colors.amber[800],
         title: Text('Personal Information'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -115,6 +108,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 20),
                 CircleAvatar(
@@ -124,41 +118,28 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'User Name',
+                  _nameController.text,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
+                SizedBox(height: 10),
                 Text(
-                  _user.email ?? '',
+                  _emailController.text,
                   style: TextStyle(fontSize: 16, color: Colors.grey),
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
                 TextFormField(
-                  controller: _firstNameController,
+                  controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: 'First name*',
+                    labelText: 'Name*',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your first name';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: _lastNameController,
-                  decoration: InputDecoration(
-                    labelText: 'Last name*',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your last name';
+                      return 'Please enter your name';
                     }
                     return null;
                   },
@@ -184,49 +165,21 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  controller: _phoneController,
+                  controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Phone number*',
+                    labelText: 'Password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        obscureText: true,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Adicione a lógica para mudar a senha
-                      },
-                      child: Text('Change'),
-                    ),
-                  ],
+                  obscureText: true,
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _updateUserData,
                   child: Text('Save'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber[800], // Change to orange
+                    backgroundColor: Colors.amber[800],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
