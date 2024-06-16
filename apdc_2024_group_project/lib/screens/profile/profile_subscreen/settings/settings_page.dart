@@ -23,8 +23,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _loadUserSettings() async {
     try {
-      DocumentSnapshot userSettings =
-          await _firestore.collection('settings').doc(_user.uid).get();
+      DocumentSnapshot userSettings = await _firestore
+          .collection('NotificationSettings')
+          .doc(_user.uid)
+          .get();
       if (userSettings.exists) {
         setState(() {
           _specialOffers = userSettings['specialOffers'] ?? false;
@@ -38,7 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _updateUserSettings() async {
     try {
-      await _firestore.collection('settings').doc(_user.uid).set({
+      await _firestore.collection('NotificationSettings').doc(_user.uid).set({
         'specialOffers': _specialOffers,
         'reservationInfo': _reservationInfo,
       });
@@ -85,7 +87,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _deleteAccount() async {
     try {
       // Remover dados do Firestore
-      await _firestore.collection('settings').doc(_user.uid).delete();
+      await _firestore
+          .collection('NotificationSettings')
+          .doc(_user.uid)
+          .delete();
+      await _firestore.collection('Users').doc(_user.uid).delete();
+      await _firestore.collection('supportMessages').doc(_user.uid).delete();
       // Outros dados relacionados ao usuário no Firestore também devem ser removidos aqui
 
       // Deletar usuário do Firebase Authentication
