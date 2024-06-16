@@ -70,18 +70,16 @@ class MiddleCarousel extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
-                        child: AspectRatio(
-                          aspectRatio: 12 / 4,
-                          child: Image.asset(item['image']!, fit: BoxFit.cover),
-                        ),
+                        child:  Image.asset(item['image']!, fit: BoxFit.cover),
+
                       ),
                     ),
-                   /* const SizedBox(height: 5.0),
+                    const SizedBox(height: 5.0),
                     Text(item['name']!,
                         style: const TextStyle(
                             fontSize: 16.0, fontWeight: FontWeight.bold)),
                     Text(item['location']!,
-                        style: const TextStyle(color: Colors.grey)),*/
+                        style: const TextStyle(color: Colors.grey)),
                   ],
                 ),
               ));

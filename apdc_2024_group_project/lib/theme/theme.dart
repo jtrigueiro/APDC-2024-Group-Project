@@ -29,13 +29,10 @@ class AppThemeStyle {
   brightness: Brightness.dark,
   primaryColor: Color.fromARGB(255, 18, 38, 32),
   scaffoldBackgroundColor: Color.fromARGB(255, 18, 38, 32),
-  textTheme: TextTheme(
-  bodyMedium: GoogleFonts.getFont(
-  'Nunito',
-  fontWeight: FontWeight.normal,
-  fontSize: 20,
-  color: const Color(0xFF000000),),
-  ),
+  textTheme: TextThemeApp.DarkTextTheme,
+      elevatedButtonTheme: ElButtonThemeApp.DarkElButtonTheme,
+      inputDecorationTheme: InputTheme.DarkInputTheme,
+      appBarTheme: AppBarAppTheme.DarkAppBarTheme,
       bottomNavigationBarTheme: AppNavBarTheme.darkAppNavBarTheme
   );
 

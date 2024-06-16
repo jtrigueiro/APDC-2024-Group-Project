@@ -12,7 +12,7 @@ class TextThemeApp {
       fontSize: 20, color:  Color.fromARGB(255, 39, 65, 58),),
 
     titleLarge:  GoogleFonts.getFont('Nunito', fontWeight: FontWeight.w600,
-      fontSize: 30, color:  Color.fromARGB(255, 209, 173, 98),),
+      fontSize: 30, color:  Color.fromARGB(255, 182, 141, 64),),
 
     displayLarge: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
       fontSize: 40, color:  Color.fromARGB(255, 39, 65, 58),),
@@ -36,15 +36,20 @@ class TextThemeApp {
   );
 
   static TextTheme DarkTextTheme =  TextTheme(
-    bodyMedium: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.normal,
-      fontSize: 15, color: Colors.white,),
+    titleLarge:  GoogleFonts.getFont('Nunito', fontWeight: FontWeight.w600,
+      fontSize: 30, color:  Color.fromARGB(255, 182, 141, 64),),
 
-    titleMedium: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.normal,
-      fontSize: 20, color: Colors.white,),
+    headlineLarge: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
+      fontStyle: FontStyle.italic,
+      fontSize: 40, color:  Color.fromARGB(255, 182, 141, 64), decoration: TextDecoration.underline,
+      decorationColor:   Color.fromARGB(255, 182, 141, 64),
+      decorationThickness: 2,
+    ),
 
-    displayLarge: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.normal,
-      fontSize: 50, color: Colors.white,),
-
+    bodySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.normal,
+      fontStyle: FontStyle.italic,
+      fontSize: 13, color:  Color.fromARGB(255, 208, 182, 136),
+    ),
   );
 
 }

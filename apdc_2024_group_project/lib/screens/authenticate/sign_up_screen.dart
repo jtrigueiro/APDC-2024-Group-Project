@@ -41,7 +41,7 @@ class SignUpScreenState extends State<SignUpScreen> {
               title: const Text('EcoDine'),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 18, 38, 32)),
+                    color: Color.fromARGB(255, 204, 178, 133)),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -58,7 +58,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       ClipRRect(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(50.0)),
-                        child: Image.network("assets/images/logo-color-cut.png",
+                        child: Image.asset("assets/images/logo-color-cut.png",
                             width: 100, height: 100, fit: BoxFit.fill),
                       ),
                       Text(
