@@ -25,11 +25,13 @@ class MyApp extends StatelessWidget {
       initialData: null,
       value: AuthService().user,
       child: MaterialApp(
-        themeMode: ThemeMode.light,
-        theme: AppThemeStyle.lightTheme,
-        darkTheme: AppThemeStyle.darkTheme,
-        home: Wrapper(),
-      ),
+          themeMode: ThemeMode.light,
+          theme: AppThemeStyle.lightTheme,
+          darkTheme: AppThemeStyle.darkTheme,
+          home: Wrapper(),
+          routes: {
+            '/home': (context) => Wrapper(),
+          }),
     );
   }
 }

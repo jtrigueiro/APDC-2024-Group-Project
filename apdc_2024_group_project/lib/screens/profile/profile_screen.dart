@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/personal_information.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/review/reviews.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settings_page.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
@@ -112,7 +114,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.reviews,
                       text: 'Reviews',
                       onTap: () {
-                        // Navegar para Reviews
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ReviewsPage(),
+                          ),
+                        );
                       },
                     ),
                     ProfileMenuItem(
@@ -144,7 +150,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.settings,
                       text: 'Settings',
                       onTap: () {
-                        // Navegar para Settings
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => SettingsPage(),
+                          ),
+                        );
                       },
                     ),
                     ProfileMenuItem(
