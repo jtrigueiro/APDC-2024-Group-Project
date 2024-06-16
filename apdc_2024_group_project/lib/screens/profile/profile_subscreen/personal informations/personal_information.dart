@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   @override
@@ -12,7 +13,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-
   late User _user;
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
@@ -32,16 +32,31 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
   Future<void> _loadUserData() async {
     try {
-      DocumentSnapshot userData =
-          await _firestore.collection('users').doc(_user.uid).get();
-      if (userData.exists) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // Verificar se existem dados salvos localmente
+      if (prefs.containsKey('userData')) {
+        Map<String, dynamic> userData =
+            Map<String, dynamic>.from(prefs.getString('userData')! as Map);
         setState(() {
           _firstNameController.text = userData['firstName'] ?? '';
           _lastNameController.text = userData['lastName'] ?? '';
           _phoneController.text = userData['phone'] ?? '';
         });
       } else {
-        print("Documento do usuário não existe.");
+        // Caso não haja dados salvos localmente, buscar no Firestore
+        DocumentSnapshot userData =
+            await _firestore.collection('users').doc(_user.uid).get();
+        if (userData.exists) {
+          setState(() {
+            _firstNameController.text = userData['firstName'] ?? '';
+            _lastNameController.text = userData['lastName'] ?? '';
+            _phoneController.text = userData['phone'] ?? '';
+          });
+          // Salvar os dados localmente para futuros acessos rápidos
+          prefs.setString('userData', userData.data()!.toString());
+        } else {
+          print("Documento do usuário não existe.");
+        }
       }
     } catch (e) {
       print("Erro ao carregar os dados do usuário: $e");
@@ -51,17 +66,34 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Future<void> _updateUserData() async {
     if (_formKey.currentState!.validate()) {
       try {
+        // Atualizar os dados no Firestore
         await _firestore.collection('users').doc(_user.uid).update({
           'firstName': _firstNameController.text,
           'lastName': _lastNameController.text,
           'phone': _phoneController.text,
         });
+
+        // Atualizar os dados localmente após a atualização no Firestore
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        Map<String, dynamic> userData = {
+          'firstName': _firstNameController.text,
+          'lastName': _lastNameController.text,
+          'phone': _phoneController.text,
+        };
+        prefs.setString('userData', userData.toString());
+
+        // Atualizar o email do usuário no FirebaseAuth
         await _user.updateEmail(_emailController.text);
+
+        // Exibir uma mensagem de sucesso
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Informações atualizadas com sucesso')),
         );
       } catch (e) {
         print("Erro ao atualizar os dados do usuário: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao atualizar informações: $e')),
+        );
       }
     }
   }

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adc_group_project/services/auth.dart';
-import 'package:adc_group_project/screens/profile/profile_subscreen/personal_information.dart';
-import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/personal%20informations/personal_information.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/helpAndSupport/help_and_support.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/review/reviews.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settings_page.dart';
 
