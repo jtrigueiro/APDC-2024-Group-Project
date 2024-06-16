@@ -1,6 +1,7 @@
 import 'package:adc_group_project/services/database.dart';
 import "package:firebase_auth/firebase_auth.dart";
 import 'package:adc_group_project/models/user.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,8 +22,13 @@ class AuthService {
   Future signInWithGoogle() async {
     try {
       final GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
-      UserCredential result =
-          await _auth.signInWithProvider(_googleAuthProvider);
+      UserCredential result;
+      // if sign is through a web browser, else must be mobile
+      if (kIsWeb) {
+        result = await _auth.signInWithPopup(_googleAuthProvider);
+      } else {
+        result = await _auth.signInWithProvider(_googleAuthProvider);
+      }
       User? user = result.user;
       await DatabaseService(uid: user!.uid).updateUserData(user.displayName!);
       return _userfromFirebaseToCostum(user);
