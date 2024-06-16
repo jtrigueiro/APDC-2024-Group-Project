@@ -9,7 +9,7 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('users');
 
   Future updateUserData(String name) async {
-    return await usersCollection.doc().set({
+    return await usersCollection.doc(uid).set({
       'name': name,
     });
   }
