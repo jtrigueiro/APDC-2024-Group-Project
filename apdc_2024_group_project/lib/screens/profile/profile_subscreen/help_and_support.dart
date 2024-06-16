@@ -10,6 +10,7 @@ class HelpAndSupportScreen extends StatefulWidget {
 }
 
 class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
+  final _auth = FirebaseAuth.instance;
   final TextEditingController _controller = TextEditingController();
   bool _showContactForm = false;
 
@@ -17,21 +18,38 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
     final String body = _controller.text.trim();
 
     try {
-      // Adicionar a mensagem ao Firestore
-      DocumentReference docRef =
-          await FirebaseFirestore.instance.collection('supportMessages').add({
-        'email': FirebaseAuth.instance.currentUser!.email,
-        'message': body,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+      User? user = _auth.currentUser;
+      if (user != null) {
+        String userId = user.uid;
 
-      // Exibir uma mensagem de sucesso
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mensagem enviada com sucesso!')),
-      );
+        // Gerar um ID único para cada mensagem
+        String messageId =
+            FirebaseFirestore.instance.collection('supportMessages').doc().id;
 
-      // Realizar o pop da navegação após o sucesso
-      Navigator.of(context).pop();
+        // Adicionar a mensagem ao Firestore com um novo ID único
+        await FirebaseFirestore.instance
+            .collection('supportMessages')
+            .doc(messageId)
+            .set({
+          'userId': userId, // Associar à ID do usuário
+          'email': user.email,
+          'message': body,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+
+        // Exibir uma mensagem de sucesso
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Mensagem enviada com sucesso!')),
+        );
+
+        // Realizar o pop da navegação após o sucesso
+        Navigator.of(context).pop();
+      } else {
+        // Trate o caso em que o usuário não está autenticado
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Usuário não autenticado.')),
+        );
+      }
     } catch (e) {
       // Tratar erros ao enviar mensagem ou adicionar ao Firestore
       ScaffoldMessenger.of(context).showSnackBar(
