@@ -3,13 +3,9 @@ import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/shared/constants.dart';
 import 'package:adc_group_project/shared/loading.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../theme/InputTheme.dart';
-import '../../theme/InputTheme.dart';
-import '../../theme/text_theme.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});

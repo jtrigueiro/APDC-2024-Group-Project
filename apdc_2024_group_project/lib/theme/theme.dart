@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'AppBarTheme.dart';
+import 'navigation_bar_theme.dart';
 
 class AppThemeStyle {
 
@@ -19,12 +20,13 @@ class AppThemeStyle {
     elevatedButtonTheme: ElButtonThemeApp.LightElButtonTheme,
     inputDecorationTheme: InputTheme.LightInputTheme,
     appBarTheme: AppBarAppTheme.LightAppBarTheme,
+    bottomNavigationBarTheme: AppNavBarTheme.lightAppNavBarTheme
 
   );
 
   static ThemeData darkTheme =  ThemeData(
   useMaterial3: true,
-  brightness: Brightness.light,
+  brightness: Brightness.dark,
   primaryColor: Color.fromARGB(255, 18, 38, 32),
   scaffoldBackgroundColor: Color.fromARGB(255, 18, 38, 32),
   textTheme: TextTheme(
@@ -34,6 +36,8 @@ class AppThemeStyle {
   fontSize: 20,
   color: const Color(0xFF000000),),
   ),
+      bottomNavigationBarTheme: AppNavBarTheme.darkAppNavBarTheme
   );
+
 
 }

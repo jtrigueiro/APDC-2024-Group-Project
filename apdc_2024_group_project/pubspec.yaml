@@ -59,6 +59,7 @@ dependencies:
   url_launcher: ^6.0.20
   flutter_spinkit: ^5.2.1
   google_sign_in: ^6.2.1
+  flutter_svg: ^2.0.10+1
 
 
 
@@ -66,7 +67,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_svg: ^2.0.10+1
+
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
