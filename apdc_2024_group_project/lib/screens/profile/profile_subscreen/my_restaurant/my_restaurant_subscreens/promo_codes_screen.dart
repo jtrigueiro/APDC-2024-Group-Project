@@ -48,41 +48,45 @@ class PromoCodesScreenState extends State<PromoCodesScreen> {
         controller: scrollController,
         child: SingleChildScrollView(
           controller: scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              spaceBetweenColumns(),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                spaceBetweenColumns(),
 
-              Row(
-                children: [
-                SizedBox(
-                  width: 350,
-                  child: Form(
-                  key: _formKey,
-                    child:
-                        textForms(promoController, 'PromoCode', 'Please enter a code'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  SizedBox(
+                    width: 350,
+                    child: Form(
+                    key: _formKey,
+                      child:
+                          textForms(promoController, 'PromoCode', 'Please enter a code'),
+                    ),
                   ),
+
+                    spaceBetweenColumns(),
+                    SizedBox(
+                          width: 100,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green[100],
+                              foregroundColor: Colors.green[900],
+                              shape: CircleBorder(),
+                            ),
+                            child: const Icon(Icons.add),
+                          ),
+                        ),
+                  ]
                 ),
 
-                  spaceBetweenColumns(),
-                      SizedBox(
-                        width: 100,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green[100],
-                            foregroundColor: Colors.green[900],
-                            shape: CircleBorder(),
-                          ),
-                          child: const Icon(Icons.add),
-                        ),
-                      ),
-                ]
-              ),
-
-              texts('Add your promotions code here', 15),
-            ],
+                texts('Add your promotions code here', 15),
+              ],
+            ),
           ),
         ),
       ),

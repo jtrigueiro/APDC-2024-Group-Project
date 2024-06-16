@@ -1,4 +1,5 @@
 import 'package:adc_group_project/screens/authenticate/sign_in_screen.dart';
+import 'package:adc_group_project/screens/authenticate/sign_up_screen.dart';
 import 'package:adc_group_project/screens/navigation_bar.dart';
 
 import 'package:flutter/material.dart';

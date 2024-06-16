@@ -37,10 +37,10 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 182, 141, 64),
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.green[100],
+          backgroundColor: Colors.transparent,
           title: texts('My Restaurant', 20),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -54,136 +54,139 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
           controller: scrollController, 
           child: SingleChildScrollView(
             controller: scrollController, 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Form(
-                  key: _formKey, 
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        
-                        SizedBox(height: 20),
-                        texts("Restaurant Name",10),
-                        textForms(nameController, 'Restaurant Name', 'Please enter a restaurant name'),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
 
-                        const SizedBox(height: 10),
-                        texts("Phone Number",10),
-                        textForms(phoneController, 'Phone number','Please enter a phone number'),
+                          SizedBox(height: 20),
+                          texts("Restaurant Name",10),
+                          textForms(nameController, 'Restaurant Name', 'Please enter a restaurant name'),
 
-                        const SizedBox(height: 10),
-                        texts("Location",10),
-                        textForms(locationController, 'Location','Please enter a location'),
+                          const SizedBox(height: 10),
+                          texts("Phone Number",10),
+                          textForms(phoneController, 'Phone number','Please enter a phone number'),
 
-                        const SizedBox(height: 10),
+                          const SizedBox(height: 10),
+                          texts("Location",10),
+                          textForms(locationController, 'Location','Please enter a location'),
 
-                      ]
+                          const SizedBox(height: 10),
+
+                        ]
+                    ),
                   ),
-                ),
 
-                texts("Open Days", 15),
+                  texts("Open Days", 15),
 
-                Row(
-                  children: [
+                  Row(
+                    children: [
 
-                    texts("Sun", 12),
-                    Checkbox(
+                      texts("Sun", 12),
+                      Checkbox(
+                          activeColor: Colors.green,
+                          value: sunday,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              sunday = value!;
+                            });
+                          }
+                      ),
+
+                      texts("Mon", 12),
+                      Checkbox(
                         activeColor: Colors.green,
-                        value: sunday,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            sunday = value!;
-                          });
-                        }
-                    ),
+                          value: monday,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              monday = value!;
+                            });
+                          }
+                      ),
 
-                    texts("Mon", 12),
-                    Checkbox(
-                      activeColor: Colors.green,
-                        value: monday,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            monday = value!;
-                          });
-                        }
-                    ),
+                      texts("Tue", 12),
+                      Checkbox(
+                          activeColor: Colors.green,
+                          value: tuesday,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              tuesday = value!;
+                            });
+                          }
+                      ),
 
-                    texts("Tue", 12),
-                    Checkbox(
-                        activeColor: Colors.green,
-                        value: tuesday,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            tuesday = value!;
-                          });
-                        }
-                    ),
+                      texts("Wed", 12),
+                      Checkbox(
+                          activeColor: Colors.green,
+                          value: wednesday,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              wednesday = value!;
+                            });
+                          }
+                      ),
 
-                    texts("Wed", 12),
-                    Checkbox(
-                        activeColor: Colors.green,
-                        value: wednesday,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            wednesday = value!;
-                          });
-                        }
-                    ),
+                      texts("Thu", 12),
+                      Checkbox(
+                          activeColor: Colors.green,
+                          value: thursday,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              thursday = value!;
+                            });
+                          }
+                      ),
 
-                    texts("Thu", 12),
-                    Checkbox(
-                        activeColor: Colors.green,
-                        value: thursday,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            thursday = value!;
-                          });
-                        }
-                    ),
+                      texts("Fri", 12),
+                      Checkbox(
+                          activeColor: Colors.green,
+                          value: friday,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              friday = value!;
+                            });
+                          }
+                      ),
 
-                    texts("Fri", 12),
-                    Checkbox(
-                        activeColor: Colors.green,
-                        value: friday,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            friday = value!;
-                          });
-                        }
-                    ),
+                      texts("Sat", 12),
+                      Checkbox(
+                          activeColor: Colors.green,
+                          value: saturday,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              saturday = value!;
+                            });
+                          }
+                      ),
 
-                    texts("Sat", 12),
-                    Checkbox(
-                        activeColor: Colors.green,
-                        value: saturday,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            saturday = value!;
-                          });
-                        }
-                    ),
-
-                  ]
-                ),
-
-                Container(
-                  alignment: Alignment.bottomRight,
-                  child: ElevatedButton(
-                    onPressed: () {
-                        Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-
-                      backgroundColor: Colors.green[100],
-                      foregroundColor: Colors.green[900],
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    child: const Text('Save'),
+                    ]
                   ),
-                ),
 
-              ],
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                          Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+
+                        backgroundColor: Colors.green[100],
+                        foregroundColor: Colors.green[900],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      child: const Text('Save'),
+                    ),
+                  ),
+
+                ],
+              ),
             ),
           ),
         ),

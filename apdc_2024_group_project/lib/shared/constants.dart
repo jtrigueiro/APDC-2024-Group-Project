@@ -19,6 +19,37 @@ Text texts(String text, double size)  {
 TextFormField textForms(TextEditingController controller, text, String textNoValue) {
   return TextFormField(
     controller: controller,
+    decoration: InputDecoration().copyWith(
+        labelText: '$text',
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return textNoValue;
+      }
+      return null;
+    },
+  );
+}
+
+TextFormField textFormsObscure(TextEditingController controller, text, String textNoValue) {
+  return TextFormField(
+    obscureText: true,
+    controller: controller,
+    decoration: InputDecoration().copyWith(
+      labelText: '$text',
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return textNoValue;
+      }
+      return null;
+    },
+  );
+}
+
+TextFormField textForms1(TextEditingController controller, text, String textNoValue) {
+  return TextFormField(
+    controller: controller,
     decoration: InputDecoration(
         labelText: '$text*',
         labelStyle: const TextStyle(

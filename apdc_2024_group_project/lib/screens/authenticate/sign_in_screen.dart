@@ -7,6 +7,10 @@ import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../theme/InputTheme.dart';
+import '../../theme/InputTheme.dart';
+import '../../theme/text_theme.dart';
+
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -37,219 +41,157 @@ class _SignInScreenState extends State<SignInScreen> {
     return loading
         ? const Loading()
         : Scaffold(
-            backgroundColor: Colors.white,
             body: Scrollbar(
               controller: scrollController,
               child: SingleChildScrollView(
                 controller: scrollController,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFFFFFF),
-                  ),
+                child: Center(
+                  heightFactor: 1.2,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      //para a imagem
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-                        child: SizedBox(
-                          width: 70,
-                          height: 70,
-                          child: SvgPicture.asset(
-                            "assets/vectors/logo.svg",
-                          ),
-                        ),
-                      ),
-
-                      //text
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(0, 0, 3.7, 0),
-                        child: Text(
-                          'Sign In',
-                          style: GoogleFonts.getFont(
-                            'Nunito',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 40,
-                            color: const Color(0xFF000000),
-                          ),
-                        ),
-                      ),
-
-                      //forms
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(18.2, 0, 16.1, 50),
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 60),
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'Enter your email and password',
-                                  style: GoogleFonts.getFont(
-                                    'Nunito',
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 16,
-                                    color: const Color(0xFFA8A6A7),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //form for email and password
-                            Form(
-                              key: _formKey,
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    //email
-                                    TextFormField(
-                                      validator: (val) => val!.isEmpty
-                                          ? 'Enter an email'
-                                          : null,
-                                      controller: emailController,
-                                      decoration: textInputDecoration.copyWith(
-                                          labelText: 'Email'),
-                                    ),
-
-                                    //password
-                                    TextFormField(
-                                      validator: (val) => val!.isEmpty
-                                          ? 'Enter a password'
-                                          : null,
-                                      obscureText: true,
-                                      controller: passwordController,
-                                      decoration: textInputDecoration.copyWith(
-                                          labelText: 'Password'),
-                                    ),
-                                  ]),
-                            ),
-
-                            TextButton(
-                              onPressed: () => {},
-                              style: ButtonStyle(
-                                foregroundColor: MaterialStateProperty.all<
-                                        Color>(
-                                    const Color.fromARGB(255, 130, 196, 112)),
-                                overlayColor: MaterialStateProperty.all(
-                                    const Color.fromARGB(255, 221, 223, 194)),
-                              ),
-                              child: const Text('Forgot Password?'),
-                            ),
-
-                            //login button
-                            ElevatedButton(
-                              onPressed: () async {
-                                {
-                                  if (_formKey.currentState!.validate()) {
-                                    setState(() => loading = true);
-                                    dynamic result =
-                                        await _auth.signInWithEmailAndPassword(
-                                            emailController.text,
-                                            passwordController.text);
-                                    if (result == null) {
-                                      setState(() {
-                                        loading = false;
-                                        error = 'Wrong email or password.';
-                                      });
-                                    }
-                                  }
-                                }
-                              },
-                              style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        const Color(0xFFFFFFFF)),
-                                backgroundColor: MaterialStateProperty.all<
-                                        Color>(
-                                    const Color.fromARGB(255, 130, 196, 112)),
-                              ),
-                              child: const Text('Log In'),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                              child: Text(
-                                error,
-                                style: GoogleFonts.getFont(
-                                  'Nunito',
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                  color: Color.fromARGB(255, 255, 0, 0),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SignUpScreen()),
-                                );
-                              },
-                              style: ButtonStyle(
-                                foregroundColor: MaterialStateProperty.all<
-                                        Color>(
-                                    const Color.fromARGB(255, 130, 196, 112)),
-                                overlayColor: MaterialStateProperty.all(
-                                    const Color.fromARGB(255, 221, 223, 194)),
-                              ),
-                              child:
-                                  const Text("Don't have an account? Sign up!"),
-                            ),
+                          ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                            child: Image.network("assets/images/logo-color-cut.png",
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.fill),
                           ),
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                //line entre o sign in with
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.fromLTRB(
-                                        0, 11.9, 9.1, 9.1),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFA8A6A7),
-                                      ),
-                                      child: Container(
-                                        height: 1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
 
-                                Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(0, 0, 8.8, 0),
-                                  child: Text(
-                                    'Sign In with ',
-                                    style: GoogleFonts.getFont(
-                                      'Nunito',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
-                                      color: const Color(0xFF000000),
-                                    ),
-                                  ),
+                          SizedBox(width: 10),
+
+                          Column(
+                            children: [
+                              Text(
+                                'EcoDine',
+                                style: Theme.of(context).textTheme.headlineLarge,
+                              ),
+                              Text(
+                                'Eat while healping the world',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 50),
+                      Text('Sign In',
+                          style: Theme.of(context).textTheme.titleLarge,
+                      ),
+
+                      Text(
+                        'Enter your email and password',
+                        style: Theme.of(context).textTheme.bodySmall
+                        ),
+
+                    //form for email and password
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                              children: [
+
+                                textForms(emailController, 'Email', 'Enter a Email'),
+                                spaceBetweenColumns(),
+                                textFormsObscure(passwordController, 'Password', 'Enter a password'),
+                              ]
+                          ),
+                        ),
+                      ),
+
+
+                      TextButton(
+                        onPressed: () => {},
+                        style: ButtonStyle(
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 208, 182, 136)),
+                          overlayColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 221, 223, 194)),
+                        ),
+                        child: const Text('Forgot Password?'),
+                      ),
+
+                      //login button
+                      ElevatedButton(
+                        onPressed: () async {
+                          {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() => loading = true);
+                              dynamic result =
+                                  await _auth.signInWithEmailAndPassword(
+                                      emailController.text,
+                                      passwordController.text);
+                              if (result == null) {
+                                setState(() {
+                                  loading = false;
+                                  error = 'Wrong email or password.';
+                                });
+                              }
+                            }
+                          }
+                        },
+                        child: const Text('Log In'),
+                      ),
+
+
+                      CustomSpaceBetweenColumns(50),
+                      TextButton(
+                        onPressed: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                const SignUpScreen()),
+                          ),
+                        },
+
+                        style: ButtonStyle(
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 208, 182, 136)),
+                          overlayColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 221, 223, 194)),
+                        ),
+                        child: const Text("Don't have an account? Sign up!"),
+                      ),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.fromLTRB(0, 11.9, 9.1, 9.1),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFA8A6A7),
                                 ),
-                                //line entre o sign in with
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.fromLTRB(
-                                        0, 11.9, 0, 9.1),
+                                child: Container(
+                                  height: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(0, 0, 8.8, 0),
+                            child: Text(
+                              'Sign In with ',
+                              style: GoogleFonts.getFont(
+                                'Nunito',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: const Color(0xFF000000),
+                              ),
+                            ),
+                          ),
+
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.fromLTRB(0, 11.9, 0, 9.1),
                                     child: Container(
                                       decoration: const BoxDecoration(
                                         color: Color(0xFFA8A6A7),
@@ -258,27 +200,25 @@ class _SignInScreenState extends State<SignInScreen> {
                                         height: 1,
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              _auth.signInWithGoogle();
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                              child: SizedBox(
-                                width: 57.5,
-                                height: 58.4,
-                                child: SvgPicture.asset(
-                                  'assets/vectors/grommet_iconsgoogle_x2.svg',
-                                ),
-                              ),
                             ),
                           ),
                         ],
+                      ),
+                      spaceBetweenColumns(),
+
+                      InkWell(
+                        onTap: () {
+                          _auth.signInWithGoogle();
+                          },
+                        splashColor: Color.fromARGB(255, 208, 182, 136),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                          child: SvgPicture.network("assets/vectors/grommet_iconsgoogle_x2.svg",
+                              width: 70,
+                              height: 60,
+                              fit: BoxFit.fill,
+                          ),
+                        ),
                       ),
                     ],
                   ),

@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../../../../../shared/constants.dart';
 
 class CreateDishesScreen extends StatefulWidget {
@@ -54,63 +51,66 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
               children: [
                 Form(
                   key: _formKey,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        spaceBetweenColumns(),
-                        textForms(nameController, 'Dish Name', 'Please enter a dish name'),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          spaceBetweenColumns(),
+                          textForms(nameController, 'Dish Name', 'Please enter a dish name'),
 
-                        spaceBetweenColumns(),
+                          spaceBetweenColumns(),
 
-                        textForms(nameController, 'Ingredients //wrong', 'Please enter a ingredients'),
+                          textForms(nameController, 'Ingredients //wrong', 'Please enter a ingredients'),
 
-                        spaceBetweenColumns(),
-                        SizedBox(
+                          spaceBetweenColumns(),
+                          SizedBox(
 
-                          child:ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
+                            child:ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
 
-                              backgroundColor: Colors.green[100],
-                              foregroundColor: Colors.green[900],
-                              shape: CircleBorder(),
-                            ),
-                            child: const Icon(Icons.add),
-                          ),
-                        ),
-
-                        spaceBetweenColumns(),
-                        textForms(priceController, 'price', 'Dishes must have a price!'),
-
-                        spaceBetweenColumns(),
-                        textForms(CO2Controller, 'CO2', 'Dishes mst have a carbon footprint!'),
-
-                        //Photos appears here
-
-                        CustomSpaceBetweenColumns(50),
-                        Center(
-                          child: Column(
-                            children: [
-
-                              SizedBox(
-                                width: 100,
-                                height: 50,
-                                child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green[100],
-                                      foregroundColor: Colors.green[900],
-                                      shape: CircleBorder(),
-                                    ),
-                                    child: const Icon(Icons.add),
-                                  ),
+                                backgroundColor: Colors.green[100],
+                                foregroundColor: Colors.green[900],
+                                shape: CircleBorder(),
                               ),
-
-                              texts('Add Photos', 15),
-                            ],
+                              child: const Icon(Icons.add),
+                            ),
                           ),
-                        ),
-                      ]
+
+                          spaceBetweenColumns(),
+                          textForms(priceController, 'price', 'Dishes must have a price!'),
+
+                          spaceBetweenColumns(),
+                          textForms(CO2Controller, 'CO2', 'Dishes mst have a carbon footprint!'),
+
+                          //Photos appears here
+
+                          CustomSpaceBetweenColumns(50),
+                          Center(
+                            child: Column(
+                              children: [
+
+                                SizedBox(
+                                  width: 100,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green[100],
+                                        foregroundColor: Colors.green[900],
+                                        shape: CircleBorder(),
+                                      ),
+                                      child: const Icon(Icons.add),
+                                    ),
+                                ),
+
+                                texts('Add Photos', 15),
+                              ],
+                            ),
+                          ),
+                        ]
+                    ),
                   ),
                 ),
 

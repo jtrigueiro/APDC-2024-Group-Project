@@ -1,5 +1,6 @@
 import 'package:adc_group_project/firebase_options.dart';
 import 'package:adc_group_project/services/auth.dart';
+import 'package:adc_group_project/theme/theme.dart';
 import 'package:adc_group_project/wrapper.dart';
 
 import 'package:flutter/material.dart';
@@ -23,7 +24,10 @@ class MyApp extends StatelessWidget {
       catchError: (_, __) => null,
       initialData: null,
       value: AuthService().user,
-      child: const MaterialApp(
+      child: MaterialApp(
+        themeMode: ThemeMode.light,
+        theme: AppThemeStyle.lightTheme,
+        darkTheme: AppThemeStyle.darkTheme,
         home: Wrapper(),
       ),
     );
