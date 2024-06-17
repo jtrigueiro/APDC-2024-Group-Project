@@ -1,4 +1,5 @@
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_requested_screen.dart';
+import 'package:adc_group_project/services/auth.dart';
 //import 'package:adc_group_project/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,7 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NoRestaurantScreen extends StatefulWidget {
-  const NoRestaurantScreen({super.key});
+  //const NoRestaurantScreen({super.key});
+
+  Function checkCurrentIndex;
+  NoRestaurantScreen({
+    Key? key,
+    required this.checkCurrentIndex,
+  }) : super(key: key);
 
   @override
   State<NoRestaurantScreen> createState() => NoRestaurantScreenState();
@@ -18,16 +25,11 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   late TextEditingController phoneController;
   late TextEditingController locationController;
 
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
-  late User _user;
-
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    _user = _auth.currentUser!;
-
     scrollController = ScrollController();
     nameController = TextEditingController();
     phoneController = TextEditingController();
@@ -39,18 +41,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.green[100],
-        title: texts('My Restaurant', 20),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
@@ -65,7 +55,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                   spacing: 10,
                   children: [
                     texts('Seems like you have no restaurant yet!', 20),
-                    texts('add one now!', 20),
+                    texts('Add one now!', 20),
                   ],
                 ),
                 Form(
@@ -86,13 +76,18 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                 Container(
                   alignment: Alignment.bottomLeft,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    const RestaurantRequestScreen()));
+                        dynamic result =
+                            await _auth.registerRestaurantApplication(
+                                nameController.text,
+                                phoneController.text,
+                                locationController.text);
+                        if (result == null) {
+                          // TODO: expor um erro de como falhou o envio
+                        } else {
+                          widget.checkCurrentIndex();
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(

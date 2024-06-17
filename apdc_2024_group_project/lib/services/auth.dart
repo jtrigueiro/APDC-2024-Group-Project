@@ -80,4 +80,30 @@ class AuthService {
       return null;
     }
   }
+
+  //  ----------------- My Restaurant -----------------
+
+  // register restaurant request
+  Future registerRestaurantApplication(
+      String name, String phone, String location) async {
+    try {
+      User? user = _auth.currentUser;
+      await DatabaseService(uid: user!.uid)
+          .updateRestaurantApplicationData(name, phone, location);
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future hasRestaurantApplication() async {
+    try {
+      User? user = _auth.currentUser;
+      return await DatabaseService(uid: user!.uid).hasRestaurantApplication();
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
 }

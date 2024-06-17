@@ -27,18 +27,6 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.green[400],
-        title: texts('My Restaurant', 20),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
