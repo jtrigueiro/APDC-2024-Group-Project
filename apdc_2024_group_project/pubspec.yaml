@@ -59,6 +59,7 @@ dependencies:
   url_launcher: ^6.0.20
   flutter_spinkit: ^5.2.1
   flutter_svg: 2.0.10+1
+  geolocator: ^8.0.0
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/map_style.json
     - assets/vectors/grommet_iconsgoogle_x2.svg
     - assets/vectors/logo.svg
     - assets/images/logo-color-cut.png

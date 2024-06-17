@@ -17,6 +17,9 @@
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug"></script>
+
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
 
@@ -34,31 +37,26 @@
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = null;
+    const serviceWorkerVersion = '{{flutter_service_worker_version}}';
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
-
-    <!-- Google Maps JavaScript API -->
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0OOPYblYD811QX4jIDqsc_4ve2ifeCvM&libraries=places&callback=initMap">
-</script>
 </head>
 <body>
-  <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
+<script>
+  window.addEventListener('load', function(ev) {
+    // Download main.dart.js
+    _flutter.loader.loadEntrypoint({
+      serviceWorker: {
+        serviceWorkerVersion: serviceWorkerVersion,
+      },
+      onEntrypointLoaded: function(engineInitializer) {
+        engineInitializer.initializeEngine().then(function(appRunner) {
+          appRunner.runApp();
+        });
+      }
     });
-  </script>
+  });
+</script>
 </body>
 </html>
