@@ -1,3 +1,5 @@
+import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settingsSubPages/privacy_police.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settingsSubPages/terms_of_use_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -160,30 +162,25 @@ class _SettingsPageState extends State<SettingsPage> {
               });
             },
           ),
-          _buildSectionTitle('Geo Location'),
-          _buildListTile(
-            'Set Location Preferences',
-            onTap: () {
-              // Ação para definir preferências de localização
-            },
-          ),
           _buildSectionTitle('Privacy'),
           _buildListTile(
             'Terms of Use',
             onTap: () {
-              // Ação para exibir os Termos de Uso
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => TermsOfUsePage(),
+                ),
+              );
             },
           ),
           _buildListTile(
             'Privacy Policy',
             onTap: () {
-              // Ação para exibir a Política de Privacidade
-            },
-          ),
-          _buildListTile(
-            'Manage Privacy',
-            onTap: () {
-              // Ação para gerenciar a privacidade
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PrivacyPolicyPage(),
+                ),
+              );
             },
           ),
           _buildListTile(
