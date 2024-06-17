@@ -55,16 +55,13 @@ class MiddleCarousel extends StatelessWidget {
                       double boxwidth = constraints.maxWidth;
 
                       return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
 
                           Expanded(
+                              child: Image.asset( item['image']!, fit: BoxFit.cover)),
 
-                                 child: Image.asset( item['image']!, fit: BoxFit.cover)),
-
-                          SizedBox(
-                            height: boxheight/8,
-                            child: Column(
+                           Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
 
@@ -82,14 +79,14 @@ class MiddleCarousel extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
+
                         ],
                 );}
                 ),
 
                 ),
 
-                  
+
                 );
               }).toList(),
       ),
