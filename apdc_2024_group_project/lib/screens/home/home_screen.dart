@@ -50,7 +50,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 20.0),
             SearchButton(onPressed: () => _onSearchPressed(context)),
             TopCarousel(images: topCarouselImages),
-            MiddleCarousel(items: middleCarouselItems),
+            Expanded(child: MiddleCarousel(items: middleCarouselItems)),
           ],
         );
       },

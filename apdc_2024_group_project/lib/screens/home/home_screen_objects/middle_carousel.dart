@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/widgets.dart';
 
 class MiddleCarousel extends StatelessWidget {
   final List<Map<String, String>> items;
@@ -32,84 +36,69 @@ class MiddleCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return  Container(
       child: CarouselSlider(
-        options: CarouselOptions(
-          height: double.infinity,
-          autoPlay: true,
-          autoPlayInterval: const Duration(seconds: 6),
-          scrollDirection: Axis.vertical,
-          viewportFraction: MediaQuery.of(context).size.width > 600 ? 0.7 : 0.5,
-          enableInfiniteScroll: true,
-        ),
-        items: items.map((item) {
-          return Builder(
-            builder: (BuildContext context) {
-              return Center(
-                child: InkWell(
-                  onTap: () => itemClicked(context, item),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width > 600
-                            ? 400
-                            : MediaQuery.of(context).size.width * 0.85,
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 3,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Image.asset(
-                            item['image']!,
-                            fit: BoxFit.cover,
+              options: CarouselOptions(
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 8),
+                scrollDirection: Axis.vertical,
+                enableInfiniteScroll: true,
+              ),
+
+              items: items.map((item) {
+                return  Card(
+                  child: InkWell(
+                    onTap: () => itemClicked(context, item),
+                    child: LayoutBuilder( builder: (context, constraints) {
+                      double boxheight = constraints.maxHeight;
+                      double boxwidth = constraints.maxWidth;
+
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+
+                          Expanded(
+                              child: SizedBox(
+                                height: boxheight*2/3,
+                                  width: boxwidth,
+                                  child: Image.asset( item['image']!, fit: BoxFit.fill))
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 1.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              item['name']!,
-                              style: const TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
+
+                          SizedBox(
+                            width: boxwidth/3,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+
+                                Text(
+                                  item['name']!,
+                                  style: Theme.of(context).textTheme.displaySmall,
+                                  maxLines: 1,
+                                ),
+
+                                Text(
+                                  item['location']!,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 2.0),
-                            Text(
-                              item['location']!,
-                              style: const TextStyle(color: Colors.grey),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                          ),
+                        ],
+                );}
                 ),
-              );
-            },
-          );
-        }).toList(),
+
+                ),
+
+
+
+
+
+
+
+                );
+              }).toList(),
       ),
     );
   }

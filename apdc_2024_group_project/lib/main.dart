@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       initialData: null,
       value: AuthService().user,
       child: MaterialApp(
-          themeMode: ThemeMode.system,
+          themeMode: ThemeMode.light,
           theme: AppThemeStyle.lightTheme,
           darkTheme: AppThemeStyle.darkTheme,
           home: Wrapper(),
