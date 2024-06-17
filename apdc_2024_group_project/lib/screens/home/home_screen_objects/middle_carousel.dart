@@ -47,6 +47,7 @@ class MiddleCarousel extends StatelessWidget {
 
               items: items.map((item) {
                 return  Card(
+                  margin: EdgeInsets.all(5),
                   child: InkWell(
                     onTap: () => itemClicked(context, item),
                     child: LayoutBuilder( builder: (context, constraints) {
@@ -54,18 +55,15 @@ class MiddleCarousel extends StatelessWidget {
                       double boxwidth = constraints.maxWidth;
 
                       return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
 
                           Expanded(
-                              child: SizedBox(
-                                height: boxheight*2/3,
-                                  width: boxwidth,
-                                  child: Image.asset( item['image']!, fit: BoxFit.fill))
-                          ),
+
+                                 child: Image.asset( item['image']!, fit: BoxFit.cover)),
 
                           SizedBox(
-                            width: boxwidth/3,
+                            height: boxheight/8,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -91,12 +89,7 @@ class MiddleCarousel extends StatelessWidget {
 
                 ),
 
-
-
-
-
-
-
+                  
                 );
               }).toList(),
       ),
