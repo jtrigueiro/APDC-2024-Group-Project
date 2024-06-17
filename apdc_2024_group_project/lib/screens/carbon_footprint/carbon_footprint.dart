@@ -39,25 +39,25 @@ class CarbonFootprintScreen extends StatelessWidget {
           ),
 
 
-
           PieChart(
             dataMap: carbonMap,
             colorList: colorList,
             chartType: ChartType.ring,
-            ringStrokeWidth: 50,
-            chartRadius: 200,
+            ringStrokeWidth: 70,
+            chartRadius: MediaQuery.of(context).size.width * 0.6,
             centerText: 'CO2',
             centerTextStyle: Theme.of(context).textTheme.bodySmall,
             legendOptions: const LegendOptions(
               legendPosition: LegendPosition.bottom,
             ),
-            chartValuesOptions: const ChartValuesOptions(
+            chartValuesOptions:  ChartValuesOptions(
+              chartValueStyle: Theme.of(context).textTheme.bodyMedium ?? TextStyle(),
             showChartValueBackground: false,
+              showChartValuesOutside: true,
           ),
           animationDuration: Duration(seconds: 1),
           emptyColor: Colors.green,
           ),
-
 
           Column(
             children: [

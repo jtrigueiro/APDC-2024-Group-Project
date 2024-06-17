@@ -23,6 +23,11 @@ class TextThemeApp {
     displaySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
       fontSize: 15, color:  Color.fromARGB(255, 39, 65, 58),),
 
+    bodyMedium: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
+      fontStyle: FontStyle.italic,
+      fontSize: 15, color: Color.fromARGB(255, 215, 184, 126),
+    ),
+
     bodySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.normal,
       fontStyle: FontStyle.italic,
       fontSize: 13, color:  Color.fromARGB(255, 208, 182, 136),
@@ -43,14 +48,23 @@ class TextThemeApp {
     titleLarge:  GoogleFonts.getFont('Nunito', fontWeight: FontWeight.w600,
       fontSize: 30, color:  Color.fromARGB(255, 182, 141, 64),),
 
+    titleMedium:  GoogleFonts.getFont('Nunito', fontWeight: FontWeight.w600,
+      fontSize: 20, color:  Color.fromARGB(255, 182, 141, 64),),
     //cards carrousel
     displaySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
       fontSize: 15, color: Color.fromARGB(255, 39, 65, 58),),
+
+    bodyMedium: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
+      fontStyle: FontStyle.italic,
+      fontSize: 15, color:  Color.fromARGB(255, 215, 184, 126),
+    ),
 
     bodySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.normal,
       fontStyle: FontStyle.italic,
       fontSize: 13, color:  Color.fromARGB(255, 208, 182, 136),
     ),
+
+
   );
 
 }
