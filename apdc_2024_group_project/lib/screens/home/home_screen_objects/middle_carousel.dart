@@ -36,59 +36,57 @@ class MiddleCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    double cardHeight = screenHeight * 0.2;
+    //TODO: check the card height and width
+
     return  Container(
       child: CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 8),
-                scrollDirection: Axis.vertical,
-                enableInfiniteScroll: true,
+        options: CarouselOptions(
+          autoPlay: true,
+          autoPlayInterval: const Duration(seconds: 8),
+          scrollDirection: Axis.vertical,
+          enableInfiniteScroll: true,
+        ),
+
+        items: items.map((item) {
+          return  Card(
+            margin: EdgeInsets.all(5),
+            child: InkWell(
+              onTap: () => itemClicked(context, item),
+              child:  Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                      child: Image.asset(
+                          item['image']!,
+                          fit: BoxFit.cover),
+                  ),
+
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        item['name']!,
+                        style: Theme.of(context).textTheme.displaySmall,
+                        maxLines: 1,
+                      ),
+
+                      Text(
+                        item['location']!,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ],
               ),
-
-              items: items.map((item) {
-                return  Card(
-                  margin: EdgeInsets.all(5),
-                  child: InkWell(
-                    onTap: () => itemClicked(context, item),
-                    child: LayoutBuilder( builder: (context, constraints) {
-                      double boxheight = constraints.maxHeight;
-                      double boxwidth = constraints.maxWidth;
-
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-
-                          Expanded(
-                              child: Image.asset( item['image']!, fit: BoxFit.cover)),
-
-                           Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-
-                                Text(
-                                  item['name']!,
-                                  style: Theme.of(context).textTheme.displaySmall,
-                                  maxLines: 1,
-                                ),
-
-                                Text(
-                                  item['location']!,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-
-                        ],
-                );}
-                ),
-
-                ),
-
-
-                );
-              }).toList(),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

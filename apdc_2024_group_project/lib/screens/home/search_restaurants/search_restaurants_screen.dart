@@ -221,264 +221,269 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFFFFFFFF),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Color.fromARGB(255, 204, 178, 133)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 7.7),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Container(
-                            width: 10.8,
-                            height: 21.6,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: SizedBox(
-                                width: 10.8,
-                                height: 21.6,
-                                child: SvgPicture.asset(
-                                  'assets/vectors/vector_34_x2.svg',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Add Restaurant',
-                            style: GoogleFonts.getFont(
-                              'Nunito',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                              color: Color(0xFF34A853),
-                            ),
-                          ),
-                          Switch(
-                            value: isAddingMarker,
-                            onChanged: (value) {
-                              setState(() {
-                                isAddingMarker = value;
-                              });
+      ),
+      resizeToAvoidBottomInset: false,
+      
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 7.7),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          width: 10.8,
+                          height: 21.6,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
                             },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(5.7, 0, 0, 40.5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 23),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Color(0xFFA8A6A7)),
-                            borderRadius: BorderRadius.circular(5),
-                            color: const Color(0xFFFFFFFF),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x40000000),
-                                offset: Offset(0, 2),
-                                blurRadius: 2,
+                            child: SizedBox(
+                              width: 10.8,
+                              height: 21.6,
+                              child: SvgPicture.asset(
+                                'assets/vectors/vector_34_x2.svg',
                               ),
-                            ],
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.fromLTRB(16.3, 10, 19.6, 11),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 11, 0),
-                                  child: SizedBox(
-                                    width: 253.7,
-                                    child: TextField(
-                                      controller: locationController,
-                                      decoration: const InputDecoration(
-                                        hintText: 'Location',
-                                        hintStyle: TextStyle(color: Colors.grey), // Set the color to a visible shade
-                                        border: InputBorder.none,
-                                      ),
-                                      style: GoogleFonts.getFont(
-                                        'Nunito',
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16,
-                                        color: const Color(0xFF34A853),
-                                      ),
-                                      onSubmitted: (value) {
-                                        _moveToLocation(value);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 1, 0, 1),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      _moveToLocation(locationController.text);
-                                    },
-                                    child: SizedBox(
-                                      width: 16.4,
-                                      height: 20,
-                                      child: SvgPicture.asset(
-                                        'assets/vectors/iconmap_pin_1_x2.svg',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFA8A6A7)),
-                            borderRadius: BorderRadius.circular(5),
-                            color: const Color(0xFFFFFFFF),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x40000000),
-                                offset: Offset(0, 2),
-                                blurRadius: 2,
-                              ),
-                            ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'Add Restaurant',
+                          style: GoogleFonts.getFont(
+                            'Nunito',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            color: Color(0xFF34A853),
                           ),
-                          child: Container(
-                            padding: const EdgeInsets.fromLTRB(16, 10, 17, 11),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 11, 0),
-                                  child: SizedBox(
-                                    width: 253,
-                                    child: TextField(
-                                      controller: searchController,
-                                      decoration: const InputDecoration(
-                                        hintText: 'Search for Restaurants',
-                                        hintStyle: TextStyle(color: Colors.grey), // Set the color to a visible shade
-                                        border: InputBorder.none,
-                                      ),
-                                      style: GoogleFonts.getFont(
-                                        'Nunito',
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16,
-                                        color: const Color(0xFF34A853),
-                                      ),
-                                      onSubmitted: (value) {
-                                        _searchForRestaurants(value);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 1, 0, 1),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      _searchForRestaurants(searchController.text);
-                                    },
-                                    child: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: SvgPicture.asset(
-                                        'assets/vectors/search_icon_1_x2.svg',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        ),
+                        Switch(
+                          value: isAddingMarker,
+                          onChanged: (value) {
+                            setState(() {
+                              isAddingMarker = value;
+                            });
+                          },
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    initialCameraPosition: CameraPosition(
-                      target: _center,
-                      zoom: 14.0,
-                    ),
-                    onTap: _handleTap,
-                    markers: Set<Marker>.of(markers),
-                  ),
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: FloatingActionButton(
-                      onPressed: _centerOnUserLocation,
-                      child: const Icon(Icons.my_location),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Center(
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(10.2, 20, 8.6, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(0, 0, 0.9, 24.5),
-                      child: Text(
-                        'Restaurant',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: const Color(0xFF34A853),
-                        ),
-                      ),
-                    ),
-                    if (selectedPlace != null) ...[
-                      Text(
-                        selectedPlace!.name ?? "No Name",
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: const Color(0xFF34A853),
-                        ),
-                      ),
-                      Text("Address: ${selectedPlace!.formattedAddress ?? "No Address"}"),
-                      Text("Rating: ${selectedPlace!.rating?.toString() ?? "No Rating"}"),
-                      Text("Phone: ${selectedPlace!.formattedPhoneNumber ?? "No Phone"}"),
-                    ],
                   ],
                 ),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(5.7, 0, 0, 40.5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 23),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFFA8A6A7)),
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFFFFFFF),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x40000000),
+                              offset: Offset(0, 2),
+                              blurRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(16.3, 10, 19.6, 11),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(0, 0, 11, 0),
+                                child: SizedBox(
+                                  width: 253.7,
+                                  child: TextField(
+                                    controller: locationController,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Location',
+                                      hintStyle: TextStyle(color: Colors.grey), // Set the color to a visible shade
+                                      border: InputBorder.none,
+                                    ),
+                                    style: GoogleFonts.getFont(
+                                      'Nunito',
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                      color: const Color(0xFF34A853),
+                                    ),
+                                    onSubmitted: (value) {
+                                      _moveToLocation(value);
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(0, 1, 0, 1),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _moveToLocation(locationController.text);
+                                  },
+                                  child: SizedBox(
+                                    width: 16.4,
+                                    height: 20,
+                                    child: SvgPicture.asset(
+                                      'assets/vectors/iconmap_pin_1_x2.svg',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFA8A6A7)),
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xFFFFFFFF),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x40000000),
+                              offset: Offset(0, 2),
+                              blurRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(16, 10, 17, 11),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(0, 0, 11, 0),
+                                child: SizedBox(
+                                  width: 253,
+                                  child: TextField(
+                                    controller: searchController,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Search for Restaurants',
+                                      hintStyle: TextStyle(color: Colors.grey), // Set the color to a visible shade
+                                      border: InputBorder.none,
+                                    ),
+                                    style: GoogleFonts.getFont(
+                                      'Nunito',
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                      color: const Color(0xFF34A853),
+                                    ),
+                                    onSubmitted: (value) {
+                                      _searchForRestaurants(value);
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(0, 1, 0, 1),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _searchForRestaurants(searchController.text);
+                                  },
+                                  child: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: SvgPicture.asset(
+                                      'assets/vectors/search_icon_1_x2.svg',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Stack(
+              children: [
+                GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: _center,
+                    zoom: 14.0,
+                  ),
+                  onTap: _handleTap,
+                  markers: Set<Marker>.of(markers),
+                ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: FloatingActionButton(
+                    onPressed: _centerOnUserLocation,
+                    child: const Icon(Icons.my_location),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Center(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(10.2, 20, 8.6, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0.9, 24.5),
+                    child: Text(
+                      'Restaurant',
+                      style: GoogleFonts.getFont(
+                        'Nunito',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: const Color(0xFF34A853),
+                      ),
+                    ),
+                  ),
+                  if (selectedPlace != null) ...[
+                    Text(
+                      selectedPlace!.name ?? "No Name",
+                      style: GoogleFonts.getFont(
+                        'Nunito',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: const Color(0xFF34A853),
+                      ),
+                    ),
+                    Text("Address: ${selectedPlace!.formattedAddress ?? "No Address"}"),
+                    Text("Rating: ${selectedPlace!.rating?.toString() ?? "No Rating"}"),
+                    Text("Phone: ${selectedPlace!.formattedPhoneNumber ?? "No Phone"}"),
+                  ],
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
