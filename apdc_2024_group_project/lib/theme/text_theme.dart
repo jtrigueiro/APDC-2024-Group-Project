@@ -16,6 +16,9 @@ class TextThemeApp {
     titleLarge:  GoogleFonts.getFont('Nunito', fontWeight: FontWeight.w600,
       fontSize: 30, color:  Color.fromARGB(255, 182, 141, 64),),
 
+    titleMedium:  GoogleFonts.getFont('Nunito', fontWeight: FontWeight.w600,
+      fontSize: 20, color:  Color.fromARGB(255, 182, 141, 64),),
+
     //cards carrousel
     displaySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
       fontSize: 15, color:  Color.fromARGB(255, 39, 65, 58),),
@@ -42,7 +45,7 @@ class TextThemeApp {
 
     //cards carrousel
     displaySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.bold,
-      fontSize: 15, color:  Color.fromARGB(255, 182, 141, 64),),
+      fontSize: 15, color: Color.fromARGB(255, 39, 65, 58),),
 
     bodySmall: GoogleFonts.getFont('Nunito', fontWeight: FontWeight.normal,
       fontStyle: FontStyle.italic,

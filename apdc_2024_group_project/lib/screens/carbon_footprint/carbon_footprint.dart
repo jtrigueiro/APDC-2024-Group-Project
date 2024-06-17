@@ -1,13 +1,96 @@
+import 'dart:collection';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pie_chart/pie_chart.dart';
+
+import '../../shared/constants.dart';
 
 class CarbonFootprintScreen extends StatelessWidget {
   CarbonFootprintScreen({super.key});
 
+  Map<String, double> carbonMap =
+  {
+    'Food' : 10,
+    'Transport' : 30,
+  };
+
+  List<Color> colorList =
+  [
+    const Color.fromARGB(255, 117, 85, 18),
+    const Color.fromARGB(255, 182, 141, 64),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('Carbon Footprint Screen'),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('My Carbon Footprint',
+                  style: Theme.of(context).textTheme.titleMedium),
+
+              SizedBox(width: 10),
+              Icon(Icons.eco, color: Color.fromARGB(255, 182, 141, 64),),
+            ],
+          ),
+
+
+
+          PieChart(
+            dataMap: carbonMap,
+            colorList: colorList,
+            chartType: ChartType.ring,
+            ringStrokeWidth: 50,
+            chartRadius: 200,
+            centerText: 'CO2',
+            centerTextStyle: Theme.of(context).textTheme.bodySmall,
+            legendOptions: const LegendOptions(
+              legendPosition: LegendPosition.bottom,
+            ),
+            chartValuesOptions: const ChartValuesOptions(
+            showChartValueBackground: false,
+          ),
+          animationDuration: Duration(seconds: 1),
+          emptyColor: Colors.green,
+          ),
+
+
+          Column(
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.food_bank_outlined, color: Color.fromARGB(255, 182, 141, 64),),
+                  SizedBox(width: 5),
+                  Text('Food ',
+                      style: Theme.of(context).textTheme.titleMedium),
+                  SizedBox(width: 60),
+                  Text(carbonMap.values.first.toString(),
+                      style: Theme.of(context).textTheme.titleMedium),
+                 ],
+              ),
+
+              Row(
+                children: [
+                  Icon(Icons.emoji_transportation, color: Color.fromARGB(255, 182, 141, 64),),
+                  SizedBox(width: 5),
+                  Text('Transport ',
+                      style: Theme.of(context).textTheme.titleMedium),
+                  SizedBox(width: 12),
+                  Text(carbonMap.values.last.toString(),
+                      style: Theme.of(context).textTheme.titleMedium),
+                ],
+              ),
+            ],
+          ),
+
+
+
+
+        ]
       ),
     );
   }

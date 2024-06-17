@@ -7,7 +7,7 @@ const textInputDecoration = InputDecoration(
 
 Text texts(String text, double size)  {
   return Text(text,
-    style: GoogleFonts.getFont(
+    style:  GoogleFonts.getFont(
       'Nunito',
       fontWeight: FontWeight.normal,
       fontSize: size,

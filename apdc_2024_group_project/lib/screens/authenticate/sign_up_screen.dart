@@ -85,9 +85,11 @@ class SignUpScreenState extends State<SignUpScreen> {
                                       : null),
                               obscureText: true,
                               controller: passwordController,
-                              decoration: textInputDecoration.copyWith(
-                                  labelText: 'Password'),
+                              decoration: InputDecoration().copyWith(
+                                labelText: 'Password',
+                              ),
                             ),
+
                             spaceBetweenColumns(),
                             TextFormField(
                               validator: (val) => val!.isEmpty
@@ -97,8 +99,9 @@ class SignUpScreenState extends State<SignUpScreen> {
                                       : null),
                               obscureText: true,
                               controller: confirmPasswordController,
-                              decoration: textInputDecoration.copyWith(
-                                  labelText: 'Confirm Password'),
+                              decoration: InputDecoration().copyWith(
+                                labelText: 'Confirm Password',
+                              ),
                             ),
                           ]),
                         ),
