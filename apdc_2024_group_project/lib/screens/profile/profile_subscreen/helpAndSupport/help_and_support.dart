@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HelpAndSupportScreen extends StatefulWidget {
   const HelpAndSupportScreen({Key? key}) : super(key: key);
@@ -62,11 +63,15 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
+        backgroundColor: Colors.green[100],
         title: Text(
           'Help and Support',
-          style: TextStyle(
-              color: Colors.black), // Alterando a cor do título para preto
+          style: GoogleFonts.getFont(
+            'Nunito',
+            fontWeight: FontWeight.normal,
+            fontSize: 20,
+            color: const Color(0xFF000000),
+          ), // Alterando a cor do título para preto
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back,
@@ -94,7 +99,7 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                 child: Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.orange,
+                    color: Colors.orange[200],
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
@@ -143,7 +148,7 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                   child: Text('Send'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.orange[200],
                     padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                     textStyle: TextStyle(fontSize: 18),
                   ),

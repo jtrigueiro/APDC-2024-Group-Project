@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PromoCodesPage extends StatefulWidget {
   PromoCodesPage({Key? key}) : super(key: key);
@@ -51,10 +52,15 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
+        backgroundColor: Colors.green[100],
         title: Text(
           'Promo Codes',
-          style: TextStyle(color: Colors.black),
+          style: GoogleFonts.getFont(
+            'Nunito',
+            fontWeight: FontWeight.normal,
+            fontSize: 20,
+            color: const Color(0xFF000000),
+          ),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: Colors.black),

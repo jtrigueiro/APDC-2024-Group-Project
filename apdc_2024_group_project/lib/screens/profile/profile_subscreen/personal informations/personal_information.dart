@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -122,10 +123,15 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
+        backgroundColor: Colors.green[100],
         title: Text(
           'Personal Information',
-          style: TextStyle(color: Colors.black), // Cor do título preto
+          style: GoogleFonts.getFont(
+            'Nunito',
+            fontWeight: FontWeight.normal,
+            fontSize: 20,
+            color: const Color(0xFF000000),
+          ), // Cor do título preto
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -220,7 +226,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         color: Colors.black), // Cor do texto do botão preto
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[400],
+                    backgroundColor: Colors.green[100],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

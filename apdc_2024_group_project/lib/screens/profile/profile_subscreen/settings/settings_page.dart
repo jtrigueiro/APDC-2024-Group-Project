@@ -3,6 +3,7 @@ import 'package:adc_group_project/screens/profile/profile_subscreen/settings/set
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -126,11 +127,15 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[400], // Cor verde claro
+        backgroundColor: Colors.green[100], // Cor verde claro
         title: Text(
           'Settings',
-          style: TextStyle(
-              color: Colors.black), // Cor do texto alterada para preto
+          style: GoogleFonts.getFont(
+            'Nunito',
+            fontWeight: FontWeight.normal,
+            fontSize: 20,
+            color: const Color(0xFF000000),
+          ), // Cor do texto alterada para preto
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back,

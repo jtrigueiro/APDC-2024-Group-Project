@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'getUserReviews.dart';
 
 class ReviewsPage extends StatefulWidget {
@@ -30,11 +31,15 @@ class _ReviewsPage extends State<ReviewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[400], // Cor alterada para laranja
+        backgroundColor: Colors.green[100], // Cor alterada para laranja
         title: Text(
           'Reviews',
-          style: TextStyle(
-              color: Colors.black), // Cor do texto alterada para preto
+          style: GoogleFonts.getFont(
+            'Nunito',
+            fontWeight: FontWeight.normal,
+            fontSize: 20,
+            color: const Color(0xFF000000),
+          ), // Cor do texto alterada para preto
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back,
