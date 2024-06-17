@@ -30,7 +30,7 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.green[100],
+        backgroundColor: Colors.green[400],
         title: texts('My Restaurant', 20),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -98,8 +98,6 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
       ),
     );
   }
-
-
 
   Text texts(String text, double size) {
     return Text(

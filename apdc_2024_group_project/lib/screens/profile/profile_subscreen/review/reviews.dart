@@ -30,15 +30,21 @@ class _ReviewsPage extends State<ReviewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber[800], // Change to orange
-        title: Text('Reviews'),
+        backgroundColor: Colors.green[400], // Cor alterada para laranja
+        title: Text(
+          'Reviews',
+          style: TextStyle(
+              color: Colors.black), // Cor do texto alterada para preto
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,
+              color: Colors.black), // Cor do ícone alterada para preto
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: Icon(Icons.refresh,
+                color: Colors.black), // Cor do ícone alterada para preto
             onPressed: _refreshReviews,
           ),
         ],

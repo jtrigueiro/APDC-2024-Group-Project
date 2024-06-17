@@ -95,8 +95,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber[800],
-        title: Text('Personal Information'),
+        backgroundColor: Colors.green[400],
+        title: Text(
+          'Personal Information',
+          style: TextStyle(color: Colors.black), // Cor do título preto
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -177,9 +180,13 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _updateUserData,
-                  child: Text('Save'),
+                  child: Text(
+                    'Save',
+                    style: TextStyle(
+                        color: Colors.black), // Cor do texto do botão preto
+                  ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber[800],
+                    backgroundColor: Colors.green[400],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

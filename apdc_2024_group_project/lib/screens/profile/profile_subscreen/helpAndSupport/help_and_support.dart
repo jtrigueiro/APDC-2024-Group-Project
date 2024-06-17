@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HelpAndSupportScreen extends StatefulWidget {
-  const HelpAndSupportScreen({super.key});
+  const HelpAndSupportScreen({Key? key}) : super(key: key);
 
   @override
   _HelpAndSupportScreenState createState() => _HelpAndSupportScreenState();
@@ -62,10 +62,15 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber[800],
-        title: Text('Help and Support'),
+        backgroundColor: Colors.green[400],
+        title: Text(
+          'Help and Support',
+          style: TextStyle(
+              color: Colors.black), // Alterando a cor do título para preto
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,
+              color: Colors.black), // Alterando a cor do ícone para preto
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -105,12 +110,14 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.white, // Mantendo a cor branca
                             ),
                           ),
                           Text(
                             'Send us an email',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white), // Mantendo a cor branca
                           ),
                         ],
                       ),

@@ -124,10 +124,15 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[200], // Cor verde claro
-        title: Text('Settings'),
+        backgroundColor: Colors.green[400], // Cor verde claro
+        title: Text(
+          'Settings',
+          style: TextStyle(
+              color: Colors.black), // Cor do texto alterada para preto
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,
+              color: Colors.black), // Cor do ícone alterada para preto
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -210,7 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
       title: Text(title),
       value: value,
       onChanged: onChanged,
-      activeColor: Colors.amber[800], // Cor do switch ativo
+      activeColor: Colors.green[800], // Cor do switch ativo
     );
   }
 
