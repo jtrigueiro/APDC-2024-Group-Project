@@ -40,9 +40,9 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
         );
       }
     } catch (e) {
-      print('Erro ao resgatar o código promocional: $e');
+      print('Error redeeming promo code: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao resgatar o código promocional')),
+        SnackBar(content: Text('Error redeeming promo code')),
       );
     }
   }
@@ -70,55 +70,65 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.green[100]!, Colors.green[300]!],
+            colors: [Colors.green[100]!, Colors.amber[800]!],
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TextField(
                         controller: _promoCodeController,
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Enter your promo code',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          labelText: 'Promotional Code',
-                          fillColor: Colors.white,
-                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 16.0,
+                            horizontal: 20.0,
+                          ),
                         ),
                       ),
-                      SizedBox(height: 16),
-                      Text(
-                        'You can input any promotional codes here to get amazing rewards!',
-                        style: TextStyle(fontSize: 16, color: Colors.black87),
-                        textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 16),
+                    Center(
+                      child: Text(
+                        'Enter a promo code to redeem rewards!',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
-                      SizedBox(height: 16),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 16),
+                  ],
                 ),
               ),
-              ElevatedButton(
+            ),
+            SizedBox(height: 16),
+            Center(
+              child: ElevatedButton.icon(
                 onPressed: _redeemPromoCode,
+                icon: Icon(Icons.add, size: 24),
+                label: Text('Redeem Code', style: TextStyle(fontSize: 16)),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.blueAccent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
-                child: Text('Redeem Code', style: TextStyle(fontSize: 16)),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
