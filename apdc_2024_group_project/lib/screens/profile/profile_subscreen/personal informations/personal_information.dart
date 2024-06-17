@@ -1,7 +1,10 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:adc_group_project/screens/profile/profile_service.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   @override
@@ -19,6 +22,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   late TextEditingController _passwordController;
 
   late SharedPreferences _prefs;
+  final ProfileService _profileService = ProfileService();
+  Uint8List? _imageBytes;
 
   @override
   void initState() {
@@ -28,11 +33,17 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _initPreferences();
+    _initializeProfile();
   }
 
   Future<void> _initPreferences() async {
     _prefs = await SharedPreferences.getInstance();
     _loadUserData();
+  }
+
+  Future<void> _initializeProfile() async {
+    _imageBytes = await _profileService.loadImage();
+    setState(() {});
   }
 
   Future<void> _loadUserData() async {
@@ -91,6 +102,22 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     }
   }
 
+  Future<void> _pickImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
+        await _profileService.saveImage(bytes);
+        setState(() {
+          _imageBytes = bytes;
+        });
+      }
+    } catch (e) {
+      print("Erro ao selecionar a imagem: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,10 +141,17 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 20),
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.grey,
-                  child: Icon(Icons.person, size: 40, color: Colors.white),
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.grey,
+                    backgroundImage:
+                        _imageBytes != null ? MemoryImage(_imageBytes!) : null,
+                    child: _imageBytes == null
+                        ? Icon(Icons.camera_alt, color: Colors.white)
+                        : null,
+                  ),
                 ),
                 SizedBox(height: 10),
                 Text(
