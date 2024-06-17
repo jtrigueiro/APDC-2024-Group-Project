@@ -63,15 +63,8 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[100],
         title: Text(
           'Help and Support',
-          style: GoogleFonts.getFont(
-            'Nunito',
-            fontWeight: FontWeight.normal,
-            fontSize: 20,
-            color: const Color(0xFF000000),
-          ), // Alterando a cor do título para preto
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back,

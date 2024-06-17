@@ -5,10 +5,8 @@ class PrivacyPolicyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
         title: Text(
           'Privacy Policy',
-          style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),

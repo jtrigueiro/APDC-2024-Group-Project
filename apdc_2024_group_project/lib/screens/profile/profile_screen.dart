@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:adc_group_project/screens/profile/profile_subscreen/achievement/achievement_page.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen_router.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/promoCodes/promo_codes.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +127,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.emoji_events,
                       text: 'Achievements',
                       onTap: () {
-                        // Navegar para Achievements
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AchievementsScreen(),
+                          ),
+                        );
                       },
                     ),
                     ProfileMenuItem(

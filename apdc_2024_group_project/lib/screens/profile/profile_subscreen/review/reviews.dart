@@ -31,15 +31,8 @@ class _ReviewsPage extends State<ReviewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[100], // Cor alterada para laranja
         title: Text(
           'Reviews',
-          style: GoogleFonts.getFont(
-            'Nunito',
-            fontWeight: FontWeight.normal,
-            fontSize: 20,
-            color: const Color(0xFF000000),
-          ), // Cor do texto alterada para preto
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back,

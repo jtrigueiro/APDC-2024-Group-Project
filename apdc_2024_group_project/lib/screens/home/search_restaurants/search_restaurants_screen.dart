@@ -14,7 +14,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
   final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
   List<Marker> markers = [];
   DetailsResult? selectedPlace;
@@ -41,8 +42,10 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<String?> _getAddressFromLatLng(LatLng position) async {
-    const String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug'; // Replace with your actual API key
-    final url = Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey');
+    const String apiKey =
+        'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug'; // Replace with your actual API key
+    final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -116,7 +119,8 @@ class _SearchScreenState extends State<SearchScreen> {
           position: point,
           infoWindow: InfoWindow(
             title: nameController.text,
-            snippet: 'Address: $address<br>Rating: 0<br>Phone: ${phoneController.text}',
+            snippet:
+                'Address: $address<br>Rating: 0<br>Phone: ${phoneController.text}',
           ),
           onTap: () {
             _showPlaceDetails(
@@ -138,7 +142,8 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  void _showPlaceDetails(String name, String address, String rating, String phone) {
+  void _showPlaceDetails(
+      String name, String address, String rating, String phone) {
     setState(() {
       selectedPlace = DetailsResult(
         name: name,
@@ -150,8 +155,10 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _moveToLocation(String location) async {
-    const String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug'; // Replace with your actual API key
-    final url = Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
+    const String apiKey =
+        'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug'; // Replace with your actual API key
+    final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -171,18 +178,38 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _searchForRestaurants(String query) async {
-    List<Marker> matchingMarkers = markers.where((marker) => marker.infoWindow.title?.toLowerCase().contains(query.toLowerCase()) ?? false).toList();
+    List<Marker> matchingMarkers = markers
+        .where((marker) =>
+            marker.infoWindow.title
+                ?.toLowerCase()
+                .contains(query.toLowerCase()) ??
+            false)
+        .toList();
 
     if (matchingMarkers.isNotEmpty) {
       final GoogleMapController controller = await _controller.future;
-      await controller.animateCamera(CameraUpdate.newLatLng(matchingMarkers.first.position));
+      await controller.animateCamera(
+          CameraUpdate.newLatLng(matchingMarkers.first.position));
 
       setState(() {
         selectedPlace = DetailsResult(
           name: matchingMarkers.first.infoWindow.title,
-          formattedAddress: matchingMarkers.first.infoWindow.snippet?.split('\n').firstWhere((element) => element.startsWith('Address: '), orElse: () => 'Address: No Address').substring(9),
-          rating: double.tryParse(matchingMarkers.first.infoWindow.snippet?.split('\n').firstWhere((element) => element.startsWith('Rating: '), orElse: () => 'Rating: No Rating').substring(8) ?? '0'),
-          formattedPhoneNumber: matchingMarkers.first.infoWindow.snippet?.split('\n').firstWhere((element) => element.startsWith('Phone: '), orElse: () => 'Phone: No Phone').substring(7),
+          formattedAddress: matchingMarkers.first.infoWindow.snippet
+              ?.split('\n')
+              .firstWhere((element) => element.startsWith('Address: '),
+                  orElse: () => 'Address: No Address')
+              .substring(9),
+          rating: double.tryParse(matchingMarkers.first.infoWindow.snippet
+                  ?.split('\n')
+                  .firstWhere((element) => element.startsWith('Rating: '),
+                      orElse: () => 'Rating: No Rating')
+                  .substring(8) ??
+              '0'),
+          formattedPhoneNumber: matchingMarkers.first.infoWindow.snippet
+              ?.split('\n')
+              .firstWhere((element) => element.startsWith('Phone: '),
+                  orElse: () => 'Phone: No Phone')
+              .substring(7),
         );
       });
     } else {
@@ -213,30 +240,22 @@ class _SearchScreenState extends State<SearchScreen> {
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+    controller.animateCamera(
+        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Color.fromARGB(255, 204, 178, 133)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      appBar: AppBar(),
       resizeToAvoidBottomInset: false,
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -259,15 +278,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ],
             ),
-
-
             Container(
               margin: const EdgeInsets.all(8),
-
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                     decoration: BoxDecoration(
@@ -294,7 +309,9 @@ class _SearchScreenState extends State<SearchScreen> {
                               controller: locationController,
                               decoration: const InputDecoration(
                                 hintText: 'Location',
-                                hintStyle: TextStyle(color: Colors.grey), // Set the color to a visible shade
+                                hintStyle: TextStyle(
+                                    color: Colors
+                                        .grey), // Set the color to a visible shade
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                               ),
@@ -327,8 +344,6 @@ class _SearchScreenState extends State<SearchScreen> {
                       ],
                     ),
                   ),
-
-
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                     decoration: BoxDecoration(
@@ -357,15 +372,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                 controller: searchController,
                                 decoration: const InputDecoration(
                                   hintText: 'Search for Restaurants',
-                                  hintStyle: TextStyle(color: Colors.grey), // Set the color to a visible shade
+                                  hintStyle: TextStyle(
+                                      color: Colors
+                                          .grey), // Set the color to a visible shade
                                   border: InputBorder.none,
                                   focusedBorder: InputBorder.none,
                                 ),
-                                style: GoogleFonts.getFont(
-                                  'Nunito',
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16
-                                ),
+                                style: GoogleFonts.getFont('Nunito',
+                                    fontWeight: FontWeight.w700, fontSize: 16),
                                 onSubmitted: (value) {
                                   _searchForRestaurants(value);
                                 },
@@ -394,8 +408,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
             ),
-
-
             Expanded(
               child: Stack(
                 children: [
@@ -448,9 +460,12 @@ class _SearchScreenState extends State<SearchScreen> {
                           color: const Color(0xFF34A853),
                         ),
                       ),
-                      Text("Address: ${selectedPlace!.formattedAddress ?? "No Address"}"),
-                      Text("Rating: ${selectedPlace!.rating?.toString() ?? "No Rating"}"),
-                      Text("Phone: ${selectedPlace!.formattedPhoneNumber ?? "No Phone"}"),
+                      Text(
+                          "Address: ${selectedPlace!.formattedAddress ?? "No Address"}"),
+                      Text(
+                          "Rating: ${selectedPlace!.rating?.toString() ?? "No Rating"}"),
+                      Text(
+                          "Phone: ${selectedPlace!.formattedPhoneNumber ?? "No Phone"}"),
                     ],
                   ],
                 ),
@@ -469,5 +484,9 @@ class DetailsResult {
   final double? rating;
   final String? formattedPhoneNumber;
 
-  DetailsResult({this.name, this.formattedAddress, this.rating, this.formattedPhoneNumber});
+  DetailsResult(
+      {this.name,
+      this.formattedAddress,
+      this.rating,
+      this.formattedPhoneNumber});
 }

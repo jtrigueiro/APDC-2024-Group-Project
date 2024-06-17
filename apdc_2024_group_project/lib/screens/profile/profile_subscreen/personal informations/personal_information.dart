@@ -123,15 +123,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[100],
         title: Text(
           'Personal Information',
-          style: GoogleFonts.getFont(
-            'Nunito',
-            fontWeight: FontWeight.normal,
-            fontSize: 20,
-            color: const Color(0xFF000000),
-          ), // Cor do título preto
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
