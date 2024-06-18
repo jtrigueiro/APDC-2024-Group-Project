@@ -63,9 +63,9 @@ class SignUpScreenState extends State<SignUpScreen> {
                       ),
                       Text(
                         'Sign Up',
-                        style: Theme.of(context).textTheme.displayMedium,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      CustomSpaceBetweenColumns(20),
+                      customSpaceBetweenColumns(20),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Form(

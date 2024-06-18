@@ -50,7 +50,7 @@ class MyRestaurantSettingsScreenState
               Divider(thickness: 2),
               activitySettings('Visible', visible, visibleSetting),
               activitySettings('Open', open, openSetting),
-              CustomSpaceBetweenColumns(100),
+              customSpaceBetweenColumns(100),
               SizedBox(
                 width: 400,
                 child: ElevatedButton(

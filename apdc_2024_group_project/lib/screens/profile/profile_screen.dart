@@ -1,6 +1,9 @@
 import 'dart:typed_data';
 import 'package:adc_group_project/screens/profile/profile_subscreen/achievement/achievement_page.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen_router.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/promo_codes_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/promo_codes/promo_codes.dart';
+import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/promo_codes/promo_codes.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -89,92 +92,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 40),
-                    ProfileMenuItem(
-                      icon: Icons.person,
-                      text: 'Personal Information',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => PersonalInformationScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    ProfileMenuItem(
-                      icon: Icons.reviews,
-                      text: 'Reviews',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ReviewsPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    ProfileMenuItem(
-                      icon: Icons.card_giftcard,
-                      text: 'Promo codes',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => PromoCodesPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    ProfileMenuItem(
-                      icon: Icons.emoji_events,
-                      text: 'Achievements',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AchievementsScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    ProfileMenuItem(
-                      icon: Icons.restaurant,
-                      text: 'My Restaurant',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => MyRestaurantScreenRouter(),
-                          ),
-                        );
-                      },
-                    ),
-                    ProfileMenuItem(
-                      icon: Icons.settings,
-                      text: 'Settings',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => SettingsPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    ProfileMenuItem(
-                      icon: Icons.help,
-                      text: 'Help and Support',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => HelpAndSupportScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    ProfileMenuItem(
-                      icon: Icons.logout,
-                      text: 'Log Out',
-                      textColor: Colors.red,
+
+                    customSpaceBetweenColumns(40),
+
+                    profileItem(context,Icons.person, 'Personal Information', ontapPersInformation(context), ),
+
+                    profileItem(context,Icons.reviews, 'Reviews', ontapReviews(context), ),
+
+                    profileItem(context,Icons.card_giftcard, 'Promo codes', ontapPromo(context), ),
+
+                    profileItem(context,Icons.emoji_events, 'Achievements', ontapAchivements(context), ),
+
+                    profileItem(context,Icons.restaurant, 'My Restaurant', ontapMyRestaurant(context), ),
+
+                    profileItem(context,Icons.settings, 'Settings', ontapSettings(context), ),
+
+                    profileItem(context,Icons.help, 'Help and Support', ontapHelpSupport(context), ),
+
+                    ListTile(
+                      leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+                      title: Text('Log Out',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.error ),
+                      ),
                       onTap: () async {
                         await FirebaseAuth.instance.signOut();
                       },
                     ),
+
                   ],
                 ),
               ),
@@ -184,6 +129,92 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+}
+
+
+ProfileMenuItem profileItem (context, icon , texts, ontap)
+{
+  return ProfileMenuItem(
+    icon: icon,
+    text: texts,
+    textColor: Theme.of(context).colorScheme.secondary,
+    onTap: ontap,
+  );
+}
+Function ontapPersInformation(context){
+  return () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PersonalInformationScreen(),
+      ),
+    );
+  };
+}
+
+Function ontapReviews(context)
+{
+  return () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ReviewsPage(),
+      ),
+    );
+  };
+}
+
+Function ontapPromo(context)
+{
+  return () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PromoCodesPage(),
+      ),
+    );
+  };
+}
+
+Function ontapAchivements(context)
+{
+  return () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AchievementsScreen(),
+      ),
+    );
+  };
+}
+
+Function ontapMyRestaurant(context)
+{
+  return () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MyRestaurantScreenRouter(),
+      ),
+    );
+  };
+}
+
+Function ontapSettings(context)
+{
+  return () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SettingsPage(),
+      ),
+    );
+  };
+}
+
+Function ontapHelpSupport(context)
+{
+  return () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => HelpAndSupportScreen(),
+      ),
+    );
+  };
 }
 
 class ProfileMenuItem extends StatelessWidget {

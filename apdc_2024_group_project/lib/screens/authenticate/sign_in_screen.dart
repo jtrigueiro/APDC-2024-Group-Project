@@ -71,8 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
 
                       SizedBox(height: 50),
-                      Text(
-                        'Sign In',
+                      Text('Sign In',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
 
@@ -127,7 +126,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: Text('Log In'),
                       ),
 
-                      CustomSpaceBetweenColumns(50),
+                      customSpaceBetweenColumns(50),
                       TextButton(
                         onPressed: () => {
                           Navigator.push(
@@ -209,11 +208,11 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                       ),
-                    ],
+                ]
                   ),
                 ),
               ),
-            ),
+    ),
           );
   }
 }

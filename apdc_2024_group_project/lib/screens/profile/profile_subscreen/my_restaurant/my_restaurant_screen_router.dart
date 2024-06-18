@@ -73,13 +73,11 @@ class _MyRestaurantScreenRouterState extends State<MyRestaurantScreenRouter> {
     return loading
         ? const LoadingScreen()
         : Scaffold(
-            backgroundColor: Colors.white,
             appBar: AppBar(
-              centerTitle: true,
-              backgroundColor: Colors.green[100],
-              title: texts('My Restaurant', 20),
+              title: const Text('My Restaurant'),
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                    color: Color.fromARGB(255, 204, 178, 133)),
                 onPressed: () {
                   Navigator.pop(context);
                 },

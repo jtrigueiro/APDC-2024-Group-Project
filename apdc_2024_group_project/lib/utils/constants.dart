@@ -92,7 +92,7 @@ SizedBox spaceBetweenColumns()
   return SizedBox(height: 10);
 }
 
-SizedBox CustomSpaceBetweenColumns(double size)
+SizedBox customSpaceBetweenColumns(double size)
 {
   return SizedBox(height: size);
 }

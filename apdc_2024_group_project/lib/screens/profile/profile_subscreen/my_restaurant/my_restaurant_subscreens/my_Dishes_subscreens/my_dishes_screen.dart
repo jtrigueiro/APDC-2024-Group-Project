@@ -42,8 +42,11 @@ class MyDishesScreenState extends State<MyDishesScreen> {
           controller: scrollController,
           child: Column(
             children: [
-              CustomSpaceBetweenColumns(25),
+              customSpaceBetweenColumns(25),
               texts('Add Dishes', 20),
+
+              customSpaceBetweenColumns(25),
+              texts('Add Dishes',20),
               //dishes se tem
               Center(
                 child: ElevatedButton(
