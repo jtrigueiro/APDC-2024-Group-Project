@@ -1,11 +1,11 @@
 import 'package:adc_group_project/firebase_options.dart';
 import 'package:adc_group_project/services/auth.dart';
-import 'package:adc_group_project/theme/theme.dart';
+import 'package:adc_group_project/utils/themes/theme.dart';
 import 'package:adc_group_project/wrapper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:adc_group_project/models/user.dart';
+import 'package:adc_group_project/utils/models/user.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {

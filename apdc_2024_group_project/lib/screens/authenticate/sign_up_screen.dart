@@ -1,6 +1,6 @@
 import 'package:adc_group_project/services/auth.dart';
-import 'package:adc_group_project/shared/constants.dart';
-import 'package:adc_group_project/shared/loading.dart';
+import 'package:adc_group_project/utils/constants.dart';
+import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -35,7 +35,7 @@ class SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Loading()
+        ? const LoadingScreen()
         : Scaffold(
             appBar: AppBar(
               title: const Text('EcoDine'),
@@ -89,7 +89,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                                 labelText: 'Password',
                               ),
                             ),
-
                             spaceBetweenColumns(),
                             TextFormField(
                               validator: (val) => val!.isEmpty

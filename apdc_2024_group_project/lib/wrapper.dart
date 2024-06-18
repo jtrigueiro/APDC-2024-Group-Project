@@ -3,7 +3,7 @@ import 'package:adc_group_project/screens/navigation_bar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:adc_group_project/models/user.dart';
+import 'package:adc_group_project/utils/models/user.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});

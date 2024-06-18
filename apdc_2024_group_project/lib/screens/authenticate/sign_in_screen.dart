@@ -1,11 +1,10 @@
 import 'package:adc_group_project/screens/authenticate/sign_up_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
-import 'package:adc_group_project/shared/constants.dart';
-import 'package:adc_group_project/shared/loading.dart';
+import 'package:adc_group_project/utils/constants.dart';
+import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -35,7 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Loading()
+        ? const LoadingScreen()
         : Scaffold(
             body: Scrollbar(
               controller: scrollController,
@@ -49,20 +48,18 @@ class _SignInScreenState extends State<SignInScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(50.0)),
                             child: SvgPicture.asset("assets/vectors/logo.svg",
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.fill),
+                                width: 80, height: 80, fit: BoxFit.fill),
                           ),
-
                           SizedBox(width: 10),
-
                           Column(
                             children: [
                               Text(
                                 'EcoDine',
-                                style: Theme.of(context).textTheme.headlineLarge,
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge,
                               ),
                               Text(
                                 'Eat while healping the world',
@@ -74,31 +71,28 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
 
                       SizedBox(height: 50),
-                      Text('Sign In',
-                          style: Theme.of(context).textTheme.titleLarge,
+                      Text(
+                        'Sign In',
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
 
-                      Text(
-                        'Enter your email and password',
-                        style: Theme.of(context).textTheme.bodySmall
-                        ),
+                      Text('Enter your email and password',
+                          style: Theme.of(context).textTheme.bodySmall),
 
-                    //form for email and password
+                      //form for email and password
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Form(
                           key: _formKey,
-                          child: Column(
-                              children: [
-
-                                textForms(emailController, 'Email', 'Enter a Email'),
-                                spaceBetweenColumns(),
-                                textFormsObscure(passwordController, 'Password', 'Enter a password'),
-                              ]
-                          ),
+                          child: Column(children: [
+                            textForms(
+                                emailController, 'Email', 'Enter a Email'),
+                            spaceBetweenColumns(),
+                            textFormsObscure(passwordController, 'Password',
+                                'Enter a password'),
+                          ]),
                         ),
                       ),
-
 
                       TextButton(
                         onPressed: () => {},
@@ -130,9 +124,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             }
                           }
                         },
-                        child:  Text('Log In'),
+                        child: Text('Log In'),
                       ),
-
 
                       CustomSpaceBetweenColumns(50),
                       TextButton(
@@ -140,11 +133,9 @@ class _SignInScreenState extends State<SignInScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                const SignUpScreen()),
+                                builder: (context) => const SignUpScreen()),
                           ),
                         },
-
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all<Color>(
                               const Color.fromARGB(255, 208, 182, 136)),
@@ -160,7 +151,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         children: [
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.fromLTRB(0, 11.9, 9.1, 9.1),
+                              margin:
+                                  const EdgeInsets.fromLTRB(0, 11.9, 9.1, 9.1),
                               child: Container(
                                 decoration: const BoxDecoration(
                                   color: Color(0xFFA8A6A7),
@@ -171,7 +163,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             ),
                           ),
-
                           Container(
                             margin: const EdgeInsets.fromLTRB(0, 0, 8.8, 0),
                             child: Text(
@@ -184,18 +175,18 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             ),
                           ),
-
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.fromLTRB(0, 11.9, 0, 9.1),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFA8A6A7),
-                                      ),
-                                      child: Container(
-                                        height: 1,
-                                      ),
-                                    ),
+                              margin:
+                                  const EdgeInsets.fromLTRB(0, 11.9, 0, 9.1),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFA8A6A7),
+                                ),
+                                child: Container(
+                                  height: 1,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -205,14 +196,16 @@ class _SignInScreenState extends State<SignInScreen> {
                       InkWell(
                         onTap: () {
                           _auth.signInWithGoogle();
-                          },
+                        },
                         splashColor: Color.fromARGB(255, 208, 182, 136),
                         child: ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-                          child: SvgPicture.asset("assets/vectors/grommet_iconsgoogle_x2.svg",
-                              width: 70,
-                              height: 60,
-                              fit: BoxFit.fill,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50.0)),
+                          child: SvgPicture.asset(
+                            "assets/vectors/grommet_iconsgoogle_x2.svg",
+                            width: 70,
+                            height: 60,
+                            fit: BoxFit.fill,
                           ),
                         ),
                       ),

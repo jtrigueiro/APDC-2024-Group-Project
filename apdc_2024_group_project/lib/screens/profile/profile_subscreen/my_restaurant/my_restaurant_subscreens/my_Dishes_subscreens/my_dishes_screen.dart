@@ -1,4 +1,4 @@
-import 'package:adc_group_project/shared/constants.dart';
+import 'package:adc_group_project/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -6,7 +6,6 @@ import 'create_dish_screen.dart';
 
 class MyDishesScreen extends StatefulWidget {
   MyDishesScreen({super.key});
-
 
   @override
   State<MyDishesScreen> createState() => MyDishesScreenState();
@@ -21,6 +20,7 @@ class MyDishesScreenState extends State<MyDishesScreen> {
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,27 +36,25 @@ class MyDishesScreenState extends State<MyDishesScreen> {
           },
         ),
       ),
-
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
           controller: scrollController,
           child: Column(
             children: [
-
               CustomSpaceBetweenColumns(25),
-              texts('Add Dishes',20),
+              texts('Add Dishes', 20),
               //dishes se tem
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push( MaterialPageRoute(
-                      builder: (context) => CreateDishesScreen(),),
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CreateDishesScreen(),
+                      ),
                     );
-
                   },
                   style: ElevatedButton.styleFrom(
-
                     backgroundColor: Colors.green[100],
                     foregroundColor: Colors.green[900],
                     shape: CircleBorder(),
@@ -65,21 +63,21 @@ class MyDishesScreenState extends State<MyDishesScreen> {
                 ),
               ),
             ],
-          ),),
+          ),
+        ),
       ),
     );
   }
 
-
-
-  Text texts(String text, double size)
-  {
-    return Text(text,
+  Text texts(String text, double size) {
+    return Text(
+      text,
       style: GoogleFonts.getFont(
         'Nunito',
         fontWeight: FontWeight.normal,
         fontSize: size,
-        color: const Color(0xFF000000),),
+        color: const Color(0xFF000000),
+      ),
     );
   }
 }

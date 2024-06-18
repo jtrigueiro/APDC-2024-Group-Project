@@ -1,16 +1,17 @@
-import 'package:adc_group_project/shared/constants.dart';
+import 'package:adc_group_project/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyRestaurantSettingsScreen extends StatefulWidget {
   MyRestaurantSettingsScreen({super.key});
 
-
   @override
-  State<MyRestaurantSettingsScreen> createState() => MyRestaurantSettingsScreenState();
+  State<MyRestaurantSettingsScreen> createState() =>
+      MyRestaurantSettingsScreenState();
 }
 
-class MyRestaurantSettingsScreenState extends State<MyRestaurantSettingsScreen> {
+class MyRestaurantSettingsScreenState
+    extends State<MyRestaurantSettingsScreen> {
   late ScrollController scrollController;
 
   bool visible = false;
@@ -22,6 +23,7 @@ class MyRestaurantSettingsScreenState extends State<MyRestaurantSettingsScreen> 
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +39,6 @@ class MyRestaurantSettingsScreenState extends State<MyRestaurantSettingsScreen> 
           },
         ),
       ),
-
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
@@ -45,14 +46,13 @@ class MyRestaurantSettingsScreenState extends State<MyRestaurantSettingsScreen> 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              texts('Activity',16),
-              Divider(thickness:2),
+              texts('Activity', 16),
+              Divider(thickness: 2),
               activitySettings('Visible', visible, visibleSetting),
-              activitySettings('Open', open, openSetting ),
-
+              activitySettings('Open', open, openSetting),
               CustomSpaceBetweenColumns(100),
               SizedBox(
-                width:400,
+                width: 400,
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
@@ -65,62 +65,55 @@ class MyRestaurantSettingsScreenState extends State<MyRestaurantSettingsScreen> 
                   child: texts('Delete Restaurant', 16),
                 ),
               ),
-
             ],
-          ),),
+          ),
+        ),
       ),
     );
   }
 
-
-
-  Padding activitySettings (String title, bool val, Function onChange)
-  {
+  Padding activitySettings(String title, bool val, Function onChange) {
     return Padding(
         padding: EdgeInsets.all(0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          texts(title, 16),
-          Transform.scale(
-            scale: 0.7,
-            child: Switch(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            texts(title, 16),
+            Transform.scale(
+              scale: 0.7,
+              child: Switch(
                 value: val,
                 activeColor: Colors.green,
                 onChanged: (bool value) {
                   onChange(value);
                 },
+              ),
             ),
-          ),
-        ],
-      )
-
-    );
+          ],
+        ));
   }
 
-  visibleSetting (bool newValue)
-  {
+  visibleSetting(bool newValue) {
     setState(() {
       visible = newValue;
     });
   }
 
-  openSetting (bool newValue)
-  {
+  openSetting(bool newValue) {
     setState(() {
       open = newValue;
     });
   }
 
-
-  Text texts(String text, double size)
-  {
-    return Text(text,
+  Text texts(String text, double size) {
+    return Text(
+      text,
       style: GoogleFonts.getFont(
         'Nunito',
         fontWeight: FontWeight.normal,
         fontSize: size,
-        color: const Color(0xFF000000),),
+        color: const Color(0xFF000000),
+      ),
     );
   }
 }

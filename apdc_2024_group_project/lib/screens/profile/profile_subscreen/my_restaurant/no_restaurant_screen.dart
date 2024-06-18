@@ -1,6 +1,6 @@
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_requested_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
-import 'package:adc_group_project/shared/loading.dart';
+import 'package:adc_group_project/utils/loading_screen.dart';
 //import 'package:adc_group_project/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,7 +42,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Loading()
+        ? const LoadingScreen()
         : Scaffold(
             body: Scrollbar(
               controller: scrollController,

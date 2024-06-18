@@ -3,7 +3,7 @@ import 'package:adc_group_project/screens/profile/profile_subscreen/my_restauran
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/no_restaurant_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_requested_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
-import 'package:adc_group_project/shared/loading.dart';
+import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -71,7 +71,7 @@ class _MyRestaurantScreenRouterState extends State<MyRestaurantScreenRouter> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Loading()
+        ? const LoadingScreen()
         : Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(

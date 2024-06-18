@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../shared/constants.dart';
+import '../../../../../utils/constants.dart';
 
 class PromoCodesScreen extends StatefulWidget {
   PromoCodesScreen({super.key});
-
 
   @override
   State<PromoCodesScreen> createState() => PromoCodesScreenState();
@@ -33,9 +32,7 @@ class PromoCodesScreenState extends State<PromoCodesScreen> {
         backgroundColor: Colors.green[100],
         title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [texts('PromoCodes', 20), Icon(Icons.card_giftcard)
-            ]
-        ),
+            children: [texts('PromoCodes', 20), Icon(Icons.card_giftcard)]),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () {
@@ -43,7 +40,6 @@ class PromoCodesScreenState extends State<PromoCodesScreen> {
           },
         ),
       ),
-
       body: Scrollbar(
         controller: scrollController,
         child: SingleChildScrollView(
@@ -54,36 +50,32 @@ class PromoCodesScreenState extends State<PromoCodesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 spaceBetweenColumns(),
-
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                  SizedBox(
-                    width: 350,
-                    child: Form(
-                    key: _formKey,
-                      child:
-                          textForms(promoController, 'PromoCode', 'Please enter a code'),
-                    ),
-                  ),
-
-                    spaceBetweenColumns(),
-                    SizedBox(
-                          width: 100,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green[100],
-                              foregroundColor: Colors.green[900],
-                              shape: CircleBorder(),
-                            ),
-                            child: const Icon(Icons.add),
-                          ),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 350,
+                        child: Form(
+                          key: _formKey,
+                          child: textForms(promoController, 'PromoCode',
+                              'Please enter a code'),
                         ),
-                  ]
-                ),
-
+                      ),
+                      spaceBetweenColumns(),
+                      SizedBox(
+                        width: 100,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green[100],
+                            foregroundColor: Colors.green[900],
+                            shape: CircleBorder(),
+                          ),
+                          child: const Icon(Icons.add),
+                        ),
+                      ),
+                    ]),
                 texts('Add your promotions code here', 15),
               ],
             ),

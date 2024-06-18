@@ -1,4 +1,4 @@
-import 'package:adc_group_project/theme/text_theme.dart';
+import 'package:adc_group_project/utils/themes/text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
