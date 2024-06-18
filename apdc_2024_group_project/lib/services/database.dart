@@ -20,7 +20,7 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('restaurants');
 
   // ----------------- User -----------------
-  // add user data
+  // add or update user data
   Future addOrUpdateUserData(String uid, String name) async {
     try {
       await usersCollection.doc(uid).set({
@@ -35,7 +35,7 @@ class DatabaseService {
   }
 
   // ----------------- My Restaurant -----------------
-  // add a restaurant application
+  // add or update a restaurant application
   Future addOrUpdateRestaurantApplicationData(
       String name, String phone, String location) async {
     User? user = _auth.currentUser;
@@ -120,7 +120,7 @@ class DatabaseService {
     }
   }
 
-  // add restaurant
+  // add or update restaurant data
   Future addOrUpdateRestaurantData(
       String uid, String name, String phone, String location) async {
     try {
