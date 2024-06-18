@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 import 'package:adc_group_project/screens/profile/profile_subscreen/achievement/achievement_page.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen_router.dart';
-import 'package:adc_group_project/screens/profile/profile_subscreen/promoCodes/promo_codes.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/promo_codes/promo_codes.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/personal%20informations/personal_information.dart';
-import 'package:adc_group_project/screens/profile/profile_subscreen/helpAndSupport/help_and_support.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support/help_and_support.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/review/reviews.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settings_page.dart';
 import 'profile_service.dart';

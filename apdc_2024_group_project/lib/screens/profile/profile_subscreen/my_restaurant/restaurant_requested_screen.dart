@@ -1,4 +1,4 @@
-import 'package:adc_group_project/screens/profile/profile_subscreen/helpAndSupport/help_and_support.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support/help_and_support.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
