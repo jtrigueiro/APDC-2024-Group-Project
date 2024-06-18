@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:adc_group_project/theme/elevated_button_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -218,12 +219,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     style: TextStyle(
                         color: Colors.black), // Cor do texto do botão preto
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[100],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  style: ElButtonThemeApp.LightElButtonTheme.style,
                 ),
               ],
             ),
