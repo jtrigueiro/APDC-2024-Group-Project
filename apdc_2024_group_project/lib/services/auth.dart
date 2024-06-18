@@ -1,6 +1,6 @@
 import 'package:adc_group_project/services/database.dart';
 import "package:firebase_auth/firebase_auth.dart";
-import 'package:adc_group_project/utils/models/user.dart';
+import 'package:adc_group_project/services/models/user.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthService {
@@ -21,16 +21,16 @@ class AuthService {
   //sign in with google
   Future signInWithGoogle() async {
     try {
-      final GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
+      final GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
       UserCredential result;
       // if sign is through a web browser, else must be throught the mobile app
       if (kIsWeb) {
-        result = await _auth.signInWithPopup(_googleAuthProvider);
+        result = await _auth.signInWithPopup(googleAuthProvider);
       } else {
-        result = await _auth.signInWithProvider(_googleAuthProvider);
+        result = await _auth.signInWithProvider(googleAuthProvider);
       }
       User? user = result.user;
-      await DatabaseService(uid: user!.uid).updateUserData(user.displayName!);
+      await DatabaseService().addOrUpdateUserData(user!.uid, user.displayName!);
       return _userfromFirebaseToCostum(user);
     } catch (e) {
       print(e.toString());
@@ -63,7 +63,7 @@ class AuthService {
       User? user = result.user;
       //await user!.sendEmailVerification();
       //create a new document for the user with the uid
-      await DatabaseService(uid: user!.uid).updateUserData(name);
+      await DatabaseService().addOrUpdateUserData(user!.uid, name);
       return _userfromFirebaseToCostum(user);
     } catch (e) {
       print(e.toString());
@@ -81,29 +81,5 @@ class AuthService {
     }
   }
 
-  //  ----------------- My Restaurant -----------------
-
-  // register restaurant request
-  Future registerRestaurantApplication(
-      String name, String phone, String location) async {
-    try {
-      User? user = _auth.currentUser;
-      await DatabaseService(uid: user!.uid)
-          .updateRestaurantApplicationData(name, phone, location);
-      return true;
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
-
-  Future hasRestaurantApplication() async {
-    try {
-      User? user = _auth.currentUser;
-      return await DatabaseService(uid: user!.uid).hasRestaurantApplication();
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
+  // TODO: reset password
 }

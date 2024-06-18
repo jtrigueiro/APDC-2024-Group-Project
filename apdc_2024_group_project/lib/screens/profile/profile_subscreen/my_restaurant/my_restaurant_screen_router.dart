@@ -3,6 +3,7 @@ import 'package:adc_group_project/screens/profile/profile_subscreen/my_restauran
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/no_restaurant_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_requested_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
+import 'package:adc_group_project/services/database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,7 +19,6 @@ class MyRestaurantScreenRouter extends StatefulWidget {
 class _MyRestaurantScreenRouterState extends State<MyRestaurantScreenRouter> {
   late ScrollController scrollController;
   late int _currentIndex;
-  final AuthService _auth = AuthService();
   bool loading = true;
 
   /*final screens = [
@@ -50,21 +50,41 @@ class _MyRestaurantScreenRouterState extends State<MyRestaurantScreenRouter> {
   }
 
   checkCurrentIndex() async {
-    var status = await _auth.hasRestaurantApplication();
-    if (status != false) {
-      if (status) {
-        setState(() {
-          _currentIndex = 1;
-          loading = false;
-        });
-      } else {
-        Navigator.pop(context);
-      }
-    } else {
+    var status = await DatabaseService().hasRestaurant();
+    // if the user has a restaurant
+    if (status == true) {
       setState(() {
-        _currentIndex = 0;
+        _currentIndex = 2; // MyRestaurantScreen
         loading = false;
       });
+      // if there is a network error
+    } else if (status == null) {
+      setState(() {
+        loading = false;
+      });
+      Navigator.pop(context);
+      // else the user does not have a restaurant but can have a restaurant application or not
+    } else {
+      status = await DatabaseService().hasRestaurantApplication();
+      // if the user has a restaurant application
+      if (status == true) {
+        setState(() {
+          _currentIndex = 1; // RestaurantRequestScreen
+          loading = false;
+        });
+        // if there is a network error
+      } else if (status == null) {
+        setState(() {
+          loading = false;
+        });
+        Navigator.pop(context);
+        // else the user does not have a restaurant application (or a restaurant)
+      } else {
+        setState(() {
+          _currentIndex = 0; // NoRestaurantScreen
+          loading = false;
+        });
+      }
     }
   }
 

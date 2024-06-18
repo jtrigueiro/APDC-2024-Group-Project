@@ -1,5 +1,6 @@
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_requested_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
+import 'package:adc_group_project/services/database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 //import 'package:adc_group_project/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -84,8 +85,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                               setState(() {
                                 loading = true;
                               });
-                              dynamic result =
-                                  await _auth.registerRestaurantApplication(
+                              dynamic result = await DatabaseService()
+                                  .addOrUpdateRestaurantApplicationData(
                                       nameController.text,
                                       phoneController.text,
                                       locationController.text);
