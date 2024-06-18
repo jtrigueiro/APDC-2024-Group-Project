@@ -112,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ListTile(
                       leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
                       title: Text('Log Out',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: Theme.of(context).colorScheme.error ),
                       ),
                       onTap: () async {
@@ -233,12 +233,10 @@ class ProfileMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon),
+      leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
       title: Text(
         text,
-        style: TextStyle(
-          color: textColor ?? Colors.black,
-        ),
+        style: Theme.of(context).textTheme.titleMedium,
       ),
       onTap: onTap,
     );
