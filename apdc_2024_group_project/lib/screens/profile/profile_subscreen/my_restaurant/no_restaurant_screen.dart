@@ -101,7 +101,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                     children: [
                       Column(
                         children: [
-                          Text('Seems like you have nos restaurant yet!', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+                          Text('Seems like you have no restaurant yet!', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
                           customSpaceBetweenColumns(30),
                           Text('Add one now!', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
                         ],
