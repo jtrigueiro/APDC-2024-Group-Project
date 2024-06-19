@@ -39,6 +39,12 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
       return Scaffold(
         appBar: AppBar(
           title: Text('Achievements'),
+           leading: IconButton(
+             icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+             onPressed: () {
+               Navigator.of(context).pop();
+               },
+           ),
         ),
         body: Center(child: CircularProgressIndicator()),
       );
@@ -54,7 +60,15 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Achievements'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+
       ),
+
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
