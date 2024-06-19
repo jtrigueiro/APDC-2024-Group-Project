@@ -30,7 +30,8 @@ class AuthService {
         result = await _auth.signInWithProvider(googleAuthProvider);
       }
       User? user = result.user;
-      await DatabaseService().addOrUpdateUserData(user!.uid, user.displayName!);
+      await DatabaseService().addOrUpdateUserData(
+          user!.uid, user.displayName!, await DatabaseService().isAdmin());
       return _userfromFirebaseToCostum(user);
     } catch (e) {
       print(e.toString());
@@ -63,7 +64,7 @@ class AuthService {
       User? user = result.user;
       //await user!.sendEmailVerification();
       //create a new document for the user with the uid
-      await DatabaseService().addOrUpdateUserData(user!.uid, name);
+      await DatabaseService().addOrUpdateUserData(user!.uid, name, false);
       return _userfromFirebaseToCostum(user);
     } catch (e) {
       print(e.toString());

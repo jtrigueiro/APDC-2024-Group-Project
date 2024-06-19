@@ -1,10 +1,12 @@
 import 'package:adc_group_project/screens/back_office/backoffice_home/helps_and_support_list.dart';
 import 'package:adc_group_project/screens/back_office/backoffice_home/promo_code_main_page.dart';
 import 'package:adc_group_project/screens/back_office/restaurants_applications_screen.dart';
+import 'package:adc_group_project/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class BackOfficeHomeScreen extends StatelessWidget {
   BackOfficeHomeScreen({super.key});
+  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,15 @@ class BackOfficeHomeScreen extends StatelessWidget {
                 );
               },
               child: Text('Promo Codes Management'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await _auth.signOut();
+              },
+              child: Text('Logout'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
             ),
           ],
         ),

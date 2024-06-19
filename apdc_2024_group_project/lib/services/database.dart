@@ -25,10 +25,11 @@ class DatabaseService {
 
   // ----------------- User -----------------
   // add or update user data
-  Future addOrUpdateUserData(String uid, String name) async {
+  Future addOrUpdateUserData(String uid, String name, bool isAdmin) async {
     try {
       await usersCollection.doc(uid).set({
         'name': name,
+        'isAdmin': isAdmin,
       });
       return true;
     } catch (e) {
@@ -38,37 +39,54 @@ class DatabaseService {
     }
   }
 
+  Future<bool> isAdmin() async {
+    User? user = _auth.currentUser;
+    try {
+      final DocumentSnapshot doc = await usersCollection.doc(user!.uid).get();
+      return doc.get('isAdmin') ?? false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
   // ----------------- Search Restaurants -----------------
 
   Future<List<Map<String, dynamic>>> getAllRestaurants() async {
     try {
       final QuerySnapshot result = await restaurantsCollection.get();
-      return result.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      return result.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
     } catch (e) {
       print(e.toString());
       return [];
     }
   }
 
-  Future<List<Map<String, dynamic>>> getRestaurantsbyLocation(String location) async {
+  Future<List<Map<String, dynamic>>> getRestaurantsbyLocation(
+      String location) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where('location', isEqualTo: location)
           .get();
-      return result.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      return result.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
     } catch (e) {
       print(e.toString());
       return [];
     }
   }
-
 
   Future<List<Map<String, dynamic>>> searchRestaurants(String search) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where('name', isGreaterThanOrEqualTo: search)
           .get();
-      return result.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      return result.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
     } catch (e) {
       print(e.toString());
       return [];
