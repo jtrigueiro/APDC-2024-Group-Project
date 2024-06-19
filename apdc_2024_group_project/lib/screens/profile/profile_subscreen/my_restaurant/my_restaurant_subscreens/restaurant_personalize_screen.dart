@@ -17,6 +17,11 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController locationController;
+
+  late TextEditingController weekDaysController;
+  late TextEditingController hourController;
+  late TextEditingController minutesController;
+
   final _formKey = GlobalKey<FormState>();
 
   bool monday = true;
@@ -35,24 +40,37 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
     phoneController = TextEditingController();
     locationController = TextEditingController();
 
+    weekDaysController = TextEditingController();
+    hourController = TextEditingController();
+    minutesController = TextEditingController();
+
     super.initState();
   }
+  
 
-  //selectdays in week
- final List<DayInWeek> _days = [
-   DayInWeek('Sun', dayKey: 'Sun'),
-   DayInWeek('Mon', dayKey: 'Mon'),
-   DayInWeek('Tue', dayKey: 'Tue'),
-   DayInWeek('Wed', dayKey: 'Wed'),
-   DayInWeek('Thu', dayKey: 'Thu'),
-   DayInWeek('Sat', dayKey: 'Sat'),
+  TimeOfDay selectFromTime = TimeOfDay.fromDateTime(DateTime(0));
+  TimeOfDay selectToTime = TimeOfDay.fromDateTime(DateTime(0));
+ 
+  TextButton textTimeButton (TimeOfDay time)
+  {
+    return TextButton(
+      onPressed: () async {
+        final TimeOfDay? timeOfDay = await showTimePicker(
+            context: context,
+            initialTime: time,
+            initialEntryMode: TimePickerEntryMode.dial
+        );
+        if(timeOfDay != null)
+        {
+          setState(() {
+            time = timeOfDay;
+          });
+        }
+      },
+      child:  Text("${time.hour}:${time.minute}", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
 
-  ];
-
-  final _dayPick = ListPickerField(
-    label: 'Week Days',
-    items: const [ "Sun", "Tue", "Wed", "Thu", "Fri", "Sat"]
-  );
+    );
+  }
 
     @override
     Widget build(BuildContext context) {
@@ -74,7 +92,7 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Form(
                     key: _formKey,
@@ -98,82 +116,108 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                     ),
                   ),
 
-                ListPickerField(
-                    label: 'Week Days',
-                    items: const [ "Sunday", "Tuesday", "Wednesday", "Thurday", "Friday", "Saturday"]
-                ),
+                  spaceBetweenColumns(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text("Open Days", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
 
-                  SelectWeekDays(
-                      onSelect: (values) {}, 
-                      days: _days,
+                      Text("Open Hours", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+                    ],
                   ),
 
-
-                  ElevatedButton(
-                    onPressed: () async {
-                     String? fruit = await showPickerDialog(
-                        context: context,
-                        label: "Weekdays",
-                          items: const [ "Sunday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-                      );
-
-                     ScaffoldMessenger.of(context).showSnackBar(
-                       SnackBar(
-                         content: Text(fruit ?? "No weekday selected"),
-                       ),
-                     );
-                     },
-                    child: const Text("Open Days"),
-                  ),
-
-                  Text("Open Days", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
 
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
 
-                      Text("Sun", style: Theme.of(context).textTheme.displaySmall!.copyWith(color: const Color.fromARGB(255, 182, 141, 64))),
-                      Checkbox(
-                          activeColor: const Color.fromARGB(255, 182, 141, 64),
-                          value: sunday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              sunday = value!;
-                            });
-                          }
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: ListPickerField(
+                          controller: weekDaysController,
+                          label: 'Week Days',
+                          items: const [ "Sunday", "Tuesday", "Wednesday", "Thurday", "Friday", "Saturday"]
+                        ),
                       ),
 
-                      Text("Mon", style: Theme.of(context).textTheme.displaySmall!.copyWith(color: const Color.fromARGB(255, 182, 141, 64))),
-                      Checkbox(
-                          activeColor: const Color.fromARGB(255, 182, 141, 64),
-                          value: monday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              monday = value!;
-                            });
-                          }
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.1,
+                        decoration: BoxDecoration( 
+                            color: Color.fromARGB(226, 239, 239, 239),
+                          borderRadius: BorderRadius.circular(10),
+                        ) ,
+                        child: Row(
+                          children: [
+                            TextButton(
+                              onPressed: () async {
+                                final TimeOfDay? timeOfDay = await showTimePicker(
+                                    context: context,
+                                    initialTime: selectFromTime,
+                                    initialEntryMode: TimePickerEntryMode.dial
+                                );
+                                if(timeOfDay != null)
+                                {
+                                  setState(() {
+                                    selectFromTime = timeOfDay;
+                                  });
+                                }
+                              },
+                              child:  Text("${selectFromTime.hour.toString().padLeft(2,'0')}:${selectFromTime.minute.toString().padLeft(2,'0')}", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+
+                            ),
+
+                            const Text('to'),
+
+                            TextButton(
+                              onPressed: () async {
+                                final TimeOfDay? timeOfDay = await showTimePicker(
+                                    context: context,
+                                    initialTime: selectToTime,
+                                    initialEntryMode: TimePickerEntryMode.dial
+                                );
+                                if(timeOfDay != null)
+                                {
+                                  setState(() {
+                                    selectToTime = timeOfDay;
+                                  });
+                                }
+                              },
+                              child:  Text("${selectToTime.hour.toString().padLeft(2,'0')}:${selectToTime.minute.toString().padLeft(2,'0')}", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+
+                            ),
+                          ],
+                        ),
                       ),
 
-                      Text("Tue", style: Theme.of(context).textTheme.displaySmall!.copyWith(color: const Color.fromARGB(255, 182, 141, 64))),
-                      Checkbox(
-                          activeColor: const Color.fromARGB(255, 182, 141, 64),
-                          value: tuesday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              tuesday = value!;
-                            });
-                          }
+                      ElevatedButton(
+                        onPressed: () { },
+                        child: const Icon(Icons.add),
                       ),
-
-                    ]
+                    ],
                   ),
 
-                  Container(
-                    alignment: Alignment.bottomRight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                          Navigator.pop(context);
-                      },
-                      child: const Text('Save'),
+                  customSpaceBetweenColumns(20),
+
+                  Column(
+                    children: [
+                      Text("Add Restaurant Photos", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+                      ElevatedButton(
+                        onPressed: () { },
+                        child: const Icon(Icons.add),
+                      ),
+                    ],
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0,50,0,0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width *0.6,
+                      child: ElevatedButton(
+                        onPressed: () {
+                            Navigator.pop(context);
+                        },
+                        child: const Text('Save'),
+                      ),
                     ),
                   ),
 
