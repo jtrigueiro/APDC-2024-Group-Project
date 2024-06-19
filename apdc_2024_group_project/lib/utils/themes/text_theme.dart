@@ -17,10 +17,11 @@ class TextThemeApp {
       decorationThickness: 2,
     ),
 
+    //appbar
     titleLarge: GoogleFonts.getFont(
       'Nunito',
       fontWeight: FontWeight.w600,
-      fontSize: 30,
+      fontSize: 26,
       color: Color.fromARGB(255, 117, 85, 18),
     ),
 
@@ -68,10 +69,11 @@ class TextThemeApp {
       decorationThickness: 2,
     ),
 
+    //appbar
     titleLarge: GoogleFonts.getFont(
       'Nunito',
       fontWeight: FontWeight.w600,
-      fontSize: 30,
+      fontSize:26,
       color: Color.fromARGB(255, 182, 141, 64),
     ),
 

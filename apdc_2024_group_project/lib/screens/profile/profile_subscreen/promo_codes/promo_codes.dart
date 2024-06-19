@@ -56,7 +56,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
           'Promo Codes',
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop();
           },

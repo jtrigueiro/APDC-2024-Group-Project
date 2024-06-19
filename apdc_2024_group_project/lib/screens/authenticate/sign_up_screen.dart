@@ -41,7 +41,7 @@ class SignUpScreenState extends State<SignUpScreen> {
               title: const Text('EcoDine'),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 204, 178, 133)),
+                    color: Color.fromARGB(255, 117, 85, 18)),
                 onPressed: () {
                   Navigator.pop(context);
                 },

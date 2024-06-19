@@ -128,7 +128,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
           'Personal Information',
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
