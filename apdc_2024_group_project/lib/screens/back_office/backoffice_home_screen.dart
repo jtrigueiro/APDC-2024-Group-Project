@@ -54,6 +54,7 @@ class BackOfficeHomeScreen extends StatelessWidget {
               },
               child: Text('Promo Codes Management'),
             ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 await _auth.signOut();
