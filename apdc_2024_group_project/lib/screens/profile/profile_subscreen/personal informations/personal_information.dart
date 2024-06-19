@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:adc_group_project/utils/themes/elevated_button_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -104,31 +103,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     }
   }
 
-  Future<void> _pickImage() async {
-    try {
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        final bytes = await pickedFile.readAsBytes();
-        await _profileService.saveImage(bytes);
-        setState(() {
-          _imageBytes = bytes;
-        });
-      }
-    } catch (e) {
-      print("Erro ao selecionar a imagem: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Personal Information',
-        ),
+        title: Text('Personal Information'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+          icon: Icon(Icons.arrow_back_ios,
+              color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -141,17 +123,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 20),
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.grey,
-                    backgroundImage:
-                        _imageBytes != null ? MemoryImage(_imageBytes!) : null,
-                    child: _imageBytes == null
-                        ? Icon(Icons.camera_alt, color: Colors.white)
-                        : null,
-                  ),
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.grey,
+                  backgroundImage:
+                      _imageBytes != null ? MemoryImage(_imageBytes!) : null,
+                  child: _imageBytes == null
+                      ? Icon(Icons.person, color: Colors.white, size: 40)
+                      : null,
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -215,9 +194,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 ElevatedButton(
                   onPressed: _updateUserData,
                   style: ElButtonThemeApp.LightElButtonTheme.style,
-                  child: const Text(
-                    'Save',
-                  ),
+                  child: const Text('Save'),
                 ),
               ],
             ),
