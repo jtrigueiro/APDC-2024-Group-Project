@@ -135,7 +135,7 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                         child: ListPickerField(
                           controller: weekDaysController,
                           label: 'Week Days',
-                          items: const [ "Sunday", "Tuesday", "Wednesday", "Thurday", "Friday", "Saturday"]
+                          items: const [ "Sunday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                         ),
                       ),
 
