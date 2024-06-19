@@ -90,14 +90,13 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
           child: SingleChildScrollView(
             controller: scrollController, 
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Form(
                     key: _formKey,
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
 
                           SizedBox(height: 20),
@@ -132,7 +131,7 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                     children: [
 
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.4,
+                        width: MediaQuery.of(context).size.width * 0.45,
                         child: ListPickerField(
                           controller: weekDaysController,
                           label: 'Week Days',
@@ -142,7 +141,7 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
 
                       Container(
                         height: MediaQuery.of(context).size.height*0.1,
-                        decoration: BoxDecoration( 
+                        decoration: BoxDecoration(
                             color: Color.fromARGB(226, 239, 239, 239),
                           borderRadius: BorderRadius.circular(10),
                         ) ,
@@ -188,13 +187,14 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                           ],
                         ),
                       ),
-
-                      ElevatedButton(
-                        onPressed: () { },
-                        child: const Icon(Icons.add),
-                      ),
                     ],
                   ),
+
+                 ElevatedButton(
+                      onPressed: () { },
+                      child:  Text("Add Open hours"),
+                    ),
+
 
                   customSpaceBetweenColumns(20),
 
