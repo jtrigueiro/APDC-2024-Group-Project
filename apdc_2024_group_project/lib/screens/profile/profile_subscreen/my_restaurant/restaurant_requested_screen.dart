@@ -29,9 +29,10 @@ class RestaurantRequestScreenState extends State<RestaurantRequestScreen> {
           child: SingleChildScrollView(
             controller: scrollController,
             child: Column(children: [
-              texts("You have already made a requested,", 20),
-              texts("wait for our approval.", 20),
-              texts("You will be contacted soon.", 20),
+              Text("You have already made a requested,", style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+              Text("wait for our approval.", style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+              Text("You will be contacted soon.", style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
@@ -41,12 +42,7 @@ class RestaurantRequestScreenState extends State<RestaurantRequestScreen> {
                           builder: (BuildContext context) =>
                               const HelpAndSupportScreen()));
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green[100],
-                  foregroundColor: Colors.green[900],
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
+
                 child: const Text('Help & Support'),
               ),
             ]),

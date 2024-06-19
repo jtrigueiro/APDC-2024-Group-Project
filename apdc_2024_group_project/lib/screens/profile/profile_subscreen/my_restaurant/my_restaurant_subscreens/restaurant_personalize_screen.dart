@@ -1,5 +1,9 @@
+import 'package:day_picker/day_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:list_picker/list_picker.dart';
+
+import '../../../../../utils/constants.dart';
 
 class RestaurantPersonalizeScreen extends StatefulWidget {
   const RestaurantPersonalizeScreen({super.key});
@@ -13,6 +17,11 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController locationController;
+
+  late TextEditingController weekDaysController;
+  late TextEditingController hourController;
+  late TextEditingController minutesController;
+
   final _formKey = GlobalKey<FormState>();
 
   bool monday = true;
@@ -31,25 +40,51 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
     phoneController = TextEditingController();
     locationController = TextEditingController();
 
+    weekDaysController = TextEditingController();
+    hourController = TextEditingController();
+    minutesController = TextEditingController();
+
     super.initState();
+  }
+  
+
+  TimeOfDay selectFromTime = TimeOfDay.fromDateTime(DateTime(0));
+  TimeOfDay selectToTime = TimeOfDay.fromDateTime(DateTime(0));
+ 
+  TextButton textTimeButton (TimeOfDay time)
+  {
+    return TextButton(
+      onPressed: () async {
+        final TimeOfDay? timeOfDay = await showTimePicker(
+            context: context,
+            initialTime: time,
+            initialEntryMode: TimePickerEntryMode.dial
+        );
+        if(timeOfDay != null)
+        {
+          setState(() {
+            time = timeOfDay;
+          });
+        }
+      },
+      child:  Text("${time.hour}:${time.minute}", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+
+    );
   }
 
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        backgroundColor: Color.fromARGB(255, 182, 141, 64),
         appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          title: texts('My Restaurant', 20),
+          title: const Text('My Restaurant'),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Color.fromARGB(255, 117, 85, 18)),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
         ),
-
         body: Scrollbar(
           controller: scrollController, 
           child: SingleChildScrollView(
@@ -57,7 +92,7 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Form(
                     key: _formKey,
@@ -66,15 +101,13 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                         children: [
 
                           SizedBox(height: 20),
-                          texts("Restaurant Name",10),
                           textForms(nameController, 'Restaurant Name', 'Please enter a restaurant name'),
 
                           const SizedBox(height: 10),
-                          texts("Phone Number",10),
+
                           textForms(phoneController, 'Phone number','Please enter a phone number'),
 
                           const SizedBox(height: 10),
-                          texts("Location",10),
                           textForms(locationController, 'Location','Please enter a location'),
 
                           const SizedBox(height: 10),
@@ -83,105 +116,108 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                     ),
                   ),
 
-                  texts("Open Days", 15),
-
+                  spaceBetweenColumns(),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      Text("Open Days", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
 
-                      texts("Sun", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: sunday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              sunday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Mon", 12),
-                      Checkbox(
-                        activeColor: Colors.green,
-                          value: monday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              monday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Tue", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: tuesday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              tuesday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Wed", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: wednesday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              wednesday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Thu", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: thursday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              thursday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Fri", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: friday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              friday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Sat", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: saturday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              saturday = value!;
-                            });
-                          }
-                      ),
-
-                    ]
+                      Text("Open Hours", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+                    ],
                   ),
 
-                  Container(
-                    alignment: Alignment.bottomRight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                          Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
 
-                        backgroundColor: Colors.green[100],
-                        foregroundColor: Colors.green[900],
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: ListPickerField(
+                          controller: weekDaysController,
+                          label: 'Week Days',
+                          items: const [ "Sunday", "Tuesday", "Wednesday", "Thurday", "Friday", "Saturday"]
+                        ),
                       ),
-                      child: const Text('Save'),
+
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.1,
+                        decoration: BoxDecoration( 
+                            color: Color.fromARGB(226, 239, 239, 239),
+                          borderRadius: BorderRadius.circular(10),
+                        ) ,
+                        child: Row(
+                          children: [
+                            TextButton(
+                              onPressed: () async {
+                                final TimeOfDay? timeOfDay = await showTimePicker(
+                                    context: context,
+                                    initialTime: selectFromTime,
+                                    initialEntryMode: TimePickerEntryMode.dial
+                                );
+                                if(timeOfDay != null)
+                                {
+                                  setState(() {
+                                    selectFromTime = timeOfDay;
+                                  });
+                                }
+                              },
+                              child:  Text("${selectFromTime.hour.toString().padLeft(2,'0')}:${selectFromTime.minute.toString().padLeft(2,'0')}", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+
+                            ),
+
+                            const Text('to'),
+
+                            TextButton(
+                              onPressed: () async {
+                                final TimeOfDay? timeOfDay = await showTimePicker(
+                                    context: context,
+                                    initialTime: selectToTime,
+                                    initialEntryMode: TimePickerEntryMode.dial
+                                );
+                                if(timeOfDay != null)
+                                {
+                                  setState(() {
+                                    selectToTime = timeOfDay;
+                                  });
+                                }
+                              },
+                              child:  Text("${selectToTime.hour.toString().padLeft(2,'0')}:${selectToTime.minute.toString().padLeft(2,'0')}", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () { },
+                        child: const Icon(Icons.add),
+                      ),
+                    ],
+                  ),
+
+                  customSpaceBetweenColumns(20),
+
+                  Column(
+                    children: [
+                      Text("Add Restaurant Photos", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
+                      ElevatedButton(
+                        onPressed: () { },
+                        child: const Icon(Icons.add),
+                      ),
+                    ],
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0,50,0,0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width *0.6,
+                      child: ElevatedButton(
+                        onPressed: () {
+                            Navigator.pop(context);
+                        },
+                        child: const Text('Save'),
+                      ),
                     ),
                   ),
 
@@ -195,40 +231,6 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
 
 
 
-
-  Text texts(String text, double size)
-  {
-    return Text(text,
-      style: GoogleFonts.getFont(
-        'Nunito',
-        fontWeight: FontWeight.normal,
-        fontSize: size,
-        color: const Color(0xFF000000),),
-    );
-  }
-
-  TextFormField textForms(TextEditingController controller, text, String textNoValue)
-  {
-    return  TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-          labelText: '$text*',
-          labelStyle: const TextStyle(fontStyle: FontStyle.italic, color: Colors.black),
-          border: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.green),
-              borderRadius: BorderRadius.circular(10)),
-          focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.green),
-          )
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return textNoValue;
-        }
-        return null;
-      },
-    );
-  }
 }
 
 

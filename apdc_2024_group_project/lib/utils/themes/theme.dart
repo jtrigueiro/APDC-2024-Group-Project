@@ -18,7 +18,7 @@ class AppThemeStyle {
     primaryColor: Color.fromARGB(255, 182, 141, 64),
     scaffoldBackgroundColor: Color.fromARGB(255, 250, 248, 223),
     textTheme: TextThemeApp.LightTextTheme,
-    elevatedButtonTheme: ElButtonThemeApp.LightElButtonTheme,
+    elevatedButtonTheme: ElButtonThemeApp.lightElButtonTheme,
     inputDecorationTheme: InputTheme.lightInputTheme,
     appBarTheme: AppBarAppTheme.LightAppBarTheme,
     bottomNavigationBarTheme: AppNavBarTheme.lightAppNavBarTheme,

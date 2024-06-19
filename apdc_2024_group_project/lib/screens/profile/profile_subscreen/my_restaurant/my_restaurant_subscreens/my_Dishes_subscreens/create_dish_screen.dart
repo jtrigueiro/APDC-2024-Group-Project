@@ -29,13 +29,11 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.green[100],
-        title: texts('Dish Creator', 20),
+        title: const Text('Dishes Creator'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -68,12 +66,6 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
 
                             child:ElevatedButton(
                               onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-
-                                backgroundColor: Colors.green[100],
-                                foregroundColor: Colors.green[900],
-                                shape: CircleBorder(),
-                              ),
                               child: const Icon(Icons.add),
                             ),
                           ),
@@ -87,25 +79,15 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                           //Photos appears here
 
                           customSpaceBetweenColumns(50),
+
                           Center(
                             child: Column(
                               children: [
-
-                                SizedBox(
-                                  width: 100,
-                                  height: 50,
-                                  child: ElevatedButton(
+                                 ElevatedButton(
                                       onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.green[100],
-                                        foregroundColor: Colors.green[900],
-                                        shape: CircleBorder(),
-                                      ),
                                       child: const Icon(Icons.add),
                                     ),
-                                ),
-
-                                texts('Add Photos', 15),
+                                Text('Add Photos', style: Theme.of(context).textTheme.bodyMedium),
                               ],
                             ),
                           ),
@@ -115,32 +97,25 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                 ),
 
                 SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Container(
+                    alignment: Alignment.bottomRight,
+                    child: Row(
+                      children: [
+                        cancelButton(context),
 
-                SizedBox(height: 20),
-                Container(
-                  alignment: Alignment.bottomRight,
-                  child:
-                  Row(
-                    children: [
-                      cancelButton(context),
-
-                      SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            Navigator.pop(context);
-                          }
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              Navigator.pop(context);
+                            }
                           },
-                        style: ElevatedButton.styleFrom(
-
-                          backgroundColor: Colors.green[100],
-                          foregroundColor: Colors.green[900],
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                          child: const Text('Save'),
                         ),
-                        child: const Text('Save'),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 spaceBetweenColumns(),

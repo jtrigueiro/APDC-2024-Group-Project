@@ -19,6 +19,10 @@ class DatabaseService {
   final CollectionReference restaurantsCollection =
       FirebaseFirestore.instance.collection('restaurants');
 
+  // restaurants markers collection reference
+  final CollectionReference restaurantsMarkersCollection =
+      FirebaseFirestore.instance.collection('restaurants_markers');
+
   // ----------------- User -----------------
   // add or update user data
   Future addOrUpdateUserData(String uid, String name) async {
@@ -170,6 +174,36 @@ class DatabaseService {
     } catch (e) {
       print(e.toString());
       return null;
+    }
+  }
+
+  Future addRestaurantMarker(String uid, String name, String imageUrl, String locality) async {
+    try {
+    await restaurantsMarkersCollection.doc(uid).set({
+        'name': name,
+        'image': imageUrl,
+        'locality': locality,
+        'rating': 0,
+        'co2': 0,
+        'latitude': 0,
+        'longitude': 0,
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getRestaurantsbyLocality(String locality) async {
+    try {
+      final QuerySnapshot result = await restaurantsMarkersCollection
+          .where('locality', isGreaterThanOrEqualTo: locality)
+          .get();
+      return result.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
     }
   }
 }

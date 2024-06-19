@@ -1,8 +1,13 @@
-import 'package:adc_group_project/services/auth.dart';
+import 'dart:async';
+import 'dart:convert';
 import 'package:adc_group_project/services/database.dart';
+import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class NoRestaurantScreen extends StatefulWidget {
   //const NoRestaurantScreen({super.key});
@@ -18,12 +23,20 @@ class NoRestaurantScreen extends StatefulWidget {
 }
 
 class NoRestaurantScreenState extends State<NoRestaurantScreen> {
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
+  final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
+
+  late Marker marker;
+  
   late ScrollController scrollController;
   late TextEditingController nameController;
   late TextEditingController phoneController;
-  late TextEditingController locationController;
+  late TextEditingController addressController;
+  late GoogleMapController mapController;
+
+  String? _mapStyle;
   bool loading = false;
-  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -31,48 +44,97 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     scrollController = ScrollController();
     nameController = TextEditingController();
     phoneController = TextEditingController();
-    locationController = TextEditingController();
+    addressController = TextEditingController();
 
+    _loadMapStyle();
     super.initState();
   }
 
+  Future<void> _loadMapStyle() async {
+    _mapStyle = await rootBundle.loadString('assets/map_style.json');
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+    if (_mapStyle != null) {
+      controller.setMapStyle(_mapStyle);
+    }
+  }
+
+  void _handleTap(LatLng position) async {
+    final url = Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey');
+    final response = await http.get(url);
+    dynamic result;
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      if (json['status'] == 'OK') {
+        result = json['results'][0]['formatted_address'];
+      } else {
+        print('Error: ${json['status']}');
+        return null;
+      }
+    } else {
+      print('Failed to fetch address');
+      return null;
+    }
+
+    addressController.text = result;
+
+    setState(() {
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return loading
-        ? const LoadingScreen()
+    return loading ? const LoadingScreen()
         : Scaffold(
-            body: Scrollbar(
-              controller: scrollController,
+          body: Scrollbar(
+            controller: scrollController,
+            child: Center(
               child: SingleChildScrollView(
                 controller: scrollController,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     children: [
-                      Wrap(
-                        direction: Axis.vertical,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 10,
+                      Column(
                         children: [
-                          texts('Seems like you have no restaurant yet!', 20),
-                          texts('Add one now!', 20),
+                          Text('Seems like you have nos restaurant yet!', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+                          customSpaceBetweenColumns(30),
+                          Text('Add one now!', style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
                         ],
                       ),
+
                       Form(
                         key: _formKey,
                         child: Column(children: [
+
                           const SizedBox(height: 50),
-                          textForms(nameController, 'Restaurant Name',
-                              'Please enter a restaurant name'),
+                          textForms(nameController, 'Restaurant Name*', 'Please enter a restaurant name'),
                           const SizedBox(height: 10),
-                          textForms(phoneController, 'Phone number',
-                              'Please enter a phone number'),
+                          textForms(phoneController, 'Phone number*', 'Please enter a phone number'),
                           const SizedBox(height: 10),
-                          textForms(locationController, 'Location',
-                              'Please enter a location'),
+                          textForms(addressController, 'Adress*', 'Please enter an address'),
                           const SizedBox(height: 30),
-                        ]),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: 300,
+                            child: GoogleMap(
+                              onMapCreated: _onMapCreated,
+                              initialCameraPosition: CameraPosition(
+                                target: _center,
+                                zoom: 14.0,
+                              ),
+                              onTap: _handleTap,
+                            ),
+                          ),
+
+                        ]
+                        ),
                       ),
+
                       Container(
                         alignment: Alignment.bottomLeft,
                         child: ElevatedButton(
@@ -85,7 +147,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   .addOrUpdateRestaurantApplicationData(
                                       nameController.text,
                                       phoneController.text,
-                                      locationController.text);
+                                      addressController.text);
+
                               if (result == null) {
                                 setState(() {
                                   loading = false;
@@ -99,14 +162,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                               }
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            textStyle:
-                                const TextStyle(fontStyle: FontStyle.italic),
-                            backgroundColor: Colors.green[100],
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
                           child: const Text('Send'),
                         ),
                       ),
@@ -115,7 +170,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                 ),
               ),
             ),
-          );
+          ),
+        );
   }
 
   TextFormField textForms(
@@ -148,7 +204,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         'Nunito',
         fontWeight: FontWeight.normal,
         fontSize: size,
-        color: const Color(0xFF000000),
       ),
     );
   }

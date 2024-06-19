@@ -2,10 +2,10 @@ import 'dart:typed_data';
 import 'package:adc_group_project/screens/profile/profile_subscreen/achievement/achievement_page.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen_router.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/promo_codes/promo_codes.dart';
+import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/personal%20informations/personal_information.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support/help_and_support.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/review/reviews.dart';
@@ -23,6 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileService _profileService = ProfileService();
   Uint8List? _imageBytes;
   String? _userName;
+  final AuthService _auth = AuthService();
 
   @override
   void initState() {
@@ -89,34 +90,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
-
                     customSpaceBetweenColumns(40),
-
-                    profileItem(context,Icons.person, 'Personal Information', ontapPersInformation(context), ),
-
-                    profileItem(context,Icons.reviews, 'Reviews', ontapReviews(context), ),
-
-                    profileItem(context,Icons.card_giftcard, 'Promo codes', ontapPromo(context), ),
-
-                    profileItem(context,Icons.emoji_events, 'Achievements', ontapAchivements(context), ),
-
-                    profileItem(context,Icons.restaurant, 'My Restaurant', ontapMyRestaurant(context), ),
-
-                    profileItem(context,Icons.settings, 'Settings', ontapSettings(context), ),
-
-                    profileItem(context,Icons.help, 'Help and Support', ontapHelpSupport(context), ),
-
+                    profileItem(
+                      context,
+                      Icons.person,
+                      'Personal Information',
+                      ontapPersInformation(context),
+                    ),
+                    profileItem(
+                      context,
+                      Icons.reviews,
+                      'Reviews',
+                      ontapReviews(context),
+                    ),
+                    profileItem(
+                      context,
+                      Icons.card_giftcard,
+                      'Promo codes',
+                      ontapPromo(context),
+                    ),
+                    profileItem(
+                      context,
+                      Icons.emoji_events,
+                      'Achievements',
+                      ontapAchivements(context),
+                    ),
+                    profileItem(
+                      context,
+                      Icons.restaurant,
+                      'My Restaurant',
+                      ontapMyRestaurant(context),
+                    ),
+                    profileItem(
+                      context,
+                      Icons.settings,
+                      'Settings',
+                      ontapSettings(context),
+                    ),
+                    profileItem(
+                      context,
+                      Icons.help,
+                      'Help and Support',
+                      ontapHelpSupport(context),
+                    ),
                     ListTile(
-                      leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
-                      title: Text('Log Out',
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: Theme.of(context).colorScheme.error ),
+                      leading: Icon(Icons.logout,
+                          color: Theme.of(context).colorScheme.error),
+                      title: Text(
+                        'Log Out',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.error),
                       ),
                       onTap: () async {
-                        await FirebaseAuth.instance.signOut();
+                        await _auth.signOut();
                       },
                     ),
-
                   ],
                 ),
               ),
@@ -128,9 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-
-ProfileMenuItem profileItem (context, icon , texts, ontap)
-{
+ProfileMenuItem profileItem(context, icon, texts, ontap) {
   return ProfileMenuItem(
     icon: icon,
     text: texts,
@@ -138,7 +167,8 @@ ProfileMenuItem profileItem (context, icon , texts, ontap)
     onTap: ontap,
   );
 }
-Function ontapPersInformation(context){
+
+Function ontapPersInformation(context) {
   return () {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -148,8 +178,7 @@ Function ontapPersInformation(context){
   };
 }
 
-Function ontapReviews(context)
-{
+Function ontapReviews(context) {
   return () {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -159,8 +188,7 @@ Function ontapReviews(context)
   };
 }
 
-Function ontapPromo(context)
-{
+Function ontapPromo(context) {
   return () {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -170,8 +198,7 @@ Function ontapPromo(context)
   };
 }
 
-Function ontapAchivements(context)
-{
+Function ontapAchivements(context) {
   return () {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -181,8 +208,7 @@ Function ontapAchivements(context)
   };
 }
 
-Function ontapMyRestaurant(context)
-{
+Function ontapMyRestaurant(context) {
   return () {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -192,8 +218,7 @@ Function ontapMyRestaurant(context)
   };
 }
 
-Function ontapSettings(context)
-{
+Function ontapSettings(context) {
   return () {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -203,8 +228,7 @@ Function ontapSettings(context)
   };
 }
 
-Function ontapHelpSupport(context)
-{
+Function ontapHelpSupport(context) {
   return () {
     Navigator.of(context).push(
       MaterialPageRoute(

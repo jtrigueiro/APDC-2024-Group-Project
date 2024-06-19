@@ -61,14 +61,14 @@ class _SearchScreenState extends State<SearchScreen> {
             'name' : restaurant['name'],
             'address' : restaurant['address'],
             'rating' : restaurant['rating'],
-            'phone' : restaurant['phone'],
+            'co2' : restaurant['co2'],
           });
   }
 
-  void getRestaurants(String location) {
+  void getRestaurants(String locality) {
     restaurants.clear();
     final DatabaseService db = DatabaseService();
-    final data = db.getRestaurantsbyLocation(location);
+    final data = db.getRestaurantsbyLocality(locality);
 
     data.then((values) {
       for(var restaurant in values) {

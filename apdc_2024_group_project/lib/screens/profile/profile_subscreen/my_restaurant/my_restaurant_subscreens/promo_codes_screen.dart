@@ -26,15 +26,11 @@ class PromoCodesScreenState extends State<PromoCodesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.green[100],
-        title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [texts('PromoCodes', 20), Icon(Icons.card_giftcard)]),
+        title: const Text('My Restaurant'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -51,32 +47,31 @@ class PromoCodesScreenState extends State<PromoCodesScreen> {
               children: [
                 spaceBetweenColumns(),
                 Row(
+
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: 350,
+                        width: MediaQuery.of(context).size.width *0.7,
                         child: Form(
                           key: _formKey,
                           child: textForms(promoController, 'PromoCode',
                               'Please enter a code'),
                         ),
                       ),
+
                       spaceBetweenColumns(),
                       SizedBox(
-                        width: 100,
-                        height: 50,
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green[100],
-                            foregroundColor: Colors.green[900],
                             shape: CircleBorder(),
                           ),
                           child: const Icon(Icons.add),
                         ),
                       ),
                     ]),
-                texts('Add your promotions code here', 15),
+                spaceBetweenColumns(),
+                Text('Add your promotions code here', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
               ],
             ),
           ),

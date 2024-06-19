@@ -77,10 +77,8 @@ ElevatedButton cancelButton (BuildContext context) {
   },
   style: ElevatedButton.styleFrom(
 
-    backgroundColor: Colors.green[100],
-    foregroundColor: Colors.green[900],
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10)),
+    backgroundColor: Color.fromARGB(255, 184, 136, 141),
+    foregroundColor: Theme.of(context).colorScheme.onError,
   ),
   child: const Text('Cancel'),
   );
