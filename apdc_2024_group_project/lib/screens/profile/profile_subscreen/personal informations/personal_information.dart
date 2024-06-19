@@ -214,12 +214,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _updateUserData,
-                  child: Text(
-                    'Save',
-                    style: TextStyle(
-                        color: Colors.black), // Cor do texto do botão preto
-                  ),
                   style: ElButtonThemeApp.LightElButtonTheme.style,
+                  child: const Text(
+                    'Save',
+                  ),
                 ),
               ],
             ),

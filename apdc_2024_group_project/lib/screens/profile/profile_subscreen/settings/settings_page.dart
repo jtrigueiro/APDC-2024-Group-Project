@@ -3,7 +3,6 @@ import 'package:adc_group_project/screens/profile/profile_subscreen/settings/set
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -127,17 +126,14 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Settings',
-        ),
+        title: const Text('Settings'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: Colors.black), // Cor do ícone alterada para preto
+          icon: const Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
           _buildSectionTitle('Push Notifications'),
           _buildSwitchListTile(
@@ -170,6 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               );
             },
+            color: Theme.of(context).colorScheme.secondary,
           ),
           _buildListTile(
             'Privacy Policy',
@@ -180,11 +177,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               );
             },
+            color: Theme.of(context).colorScheme.secondary,
           ),
           _buildListTile(
             'Delete My Account',
             onTap: _confirmDeleteAccount,
-            color: Colors.red,
+            color: Colors.redAccent
           ),
         ],
       ),
@@ -204,26 +202,25 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSwitchListTile(
-      String title, bool value, Function(bool) onChanged) {
+  Widget _buildSwitchListTile( String title, bool value, Function(bool) onChanged) {
     return SwitchListTile(
-      title: Text(title),
+      title: Text(title,style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.normal, color: Theme.of(context).colorScheme.secondary) ),
       value: value,
       onChanged: onChanged,
-      activeColor: Colors.green[800], // Cor do switch ativo
+      activeColor: Theme.of(context).colorScheme.secondary, // Cor do switch ativo
     );
   }
 
   Widget _buildListTile(String title,
       {required Function() onTap, Color? color}) {
     return ListTile(
-      title: Text(title, style: TextStyle(color: color)),
+      title: Text(title, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color)),
       trailing: Icon(Icons.chevron_right, color: color),
       onTap: onTap,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(5.0),
       ),
-      tileColor: Colors.grey[200],
+      tileColor: Color.fromARGB(82, 230, 230, 230),
       contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
     );
   }
