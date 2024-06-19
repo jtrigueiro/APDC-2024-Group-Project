@@ -1,5 +1,5 @@
 import 'package:adc_group_project/screens/back_office/backoffice_home/helps_and_support_list.dart';
-import 'package:adc_group_project/screens/back_office/backoffice_home/promo_code_add.dart';
+import 'package:adc_group_project/screens/back_office/backoffice_home/promo_code_main_page.dart';
 import 'package:adc_group_project/screens/back_office/restaurants_applications_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -46,11 +46,11 @@ class BackOfficeHomeScreen extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
-                        AddPromoCodePage(), // Substitua por sua nova tela
+                        PromoCodesHomeScreen(), // Substitua por sua nova tela
                   ),
                 );
               },
-              child: Text('Add Promo Codes'),
+              child: Text('Promo Codes Management'),
             ),
           ],
         ),
