@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
+import 'package:adc_group_project/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -14,15 +14,21 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
   final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
-  List<Marker> markers = [];
-  DetailsResult? selectedPlace;
-  bool isAddingMarker = false;
+
+  final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
+
+  List<Map<String, String>> restaurants = [];
+  bool isCarouselInteracting = false;
+  bool showCarousel = true;
+
   TextEditingController locationController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   String? _mapStyle;
+
+  final IconData locationIcon = const IconData(0xf193, fontFamily: 'MaterialIcons');
+  final IconData searchIcon = const IconData(0xf013d, fontFamily: 'MaterialIcons');
 
   @override
   void initState() {
@@ -41,122 +47,45 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  Future<String?> _getAddressFromLatLng(LatLng position) async {
-    const String apiKey =
-        'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug'; // Replace with your actual API key
-    final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      if (json['status'] == 'OK') {
-        return json['results'][0]['formatted_address'];
-      } else {
-        print('Error: ${json['status']}');
-        return null;
+  void _handleTap(LatLng point) {
+      if(restaurants.isNotEmpty) {
+          showCarousel = !showCarousel;
       }
-    } else {
-      print('Failed to fetch address');
-      return null;
-    }
   }
 
-  Future<void> _handleTap(LatLng point) async {
-    if (!isAddingMarker) return;
-
-    setState(() {
-      isAddingMarker = false;
-    });
-
-    String? address = await _getAddressFromLatLng(point);
-
-    TextEditingController nameController = TextEditingController();
-    TextEditingController phoneController = TextEditingController();
-
-    String? result = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Restaurant'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(hintText: 'Name'),
-              ),
-              TextField(
-                controller: phoneController,
-                decoration: const InputDecoration(hintText: 'Phone'),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, null),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, 'save');
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (result == 'save') {
-      setState(() {
-        Marker newMarker = Marker(
-          markerId: MarkerId(point.toString()),
-          position: point,
-          infoWindow: InfoWindow(
-            title: nameController.text,
-            snippet:
-                'Address: $address<br>Rating: 0<br>Phone: ${phoneController.text}',
-          ),
-          onTap: () {
-            _showPlaceDetails(
-              nameController.text,
-              address ?? 'No Address',
-              '0',
-              phoneController.text,
-            );
-          },
-        );
-        markers.add(newMarker);
-        _showPlaceDetails(
-          nameController.text,
-          address ?? 'No Address',
-          '0',
-          phoneController.text,
-        );
-      });
-    }
+  bool inRadius(LatLng point, LatLng center, double radius) {
+    return Geolocator.distanceBetween(
+            point.latitude, point.longitude, center.latitude, center.longitude) <
+        radius;
   }
 
-  void _showPlaceDetails(
-      String name, String address, String rating, String phone) {
-    setState(() {
-      selectedPlace = DetailsResult(
-        name: name,
-        formattedAddress: address,
-        rating: double.tryParse(rating),
-        formattedPhoneNumber: phone,
-      );
+  void addRestaurant(Map<String, dynamic> restaurant) {
+    restaurants.add({
+            'image': restaurant['image'],
+            'name' : restaurant['name'],
+            'address' : restaurant['address'],
+            'rating' : restaurant['rating'],
+            'phone' : restaurant['phone'],
+          });
+  }
+
+  void getRestaurants(String location) {
+    restaurants.clear();
+    final DatabaseService db = DatabaseService();
+    final data = db.getRestaurantsbyLocation(location);
+
+    data.then((values) {
+      for(var restaurant in values) {
+        final LatLng position = LatLng(restaurant['latitude'], restaurant['longitude']);
+
+        if(inRadius(position, _center, 5000)) {
+          addRestaurant(restaurant);
+        }
+      }
     });
   }
 
   Future<void> _moveToLocation(String location) async {
-    const String apiKey =
-        'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug'; // Replace with your actual API key
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
     final response = await http.get(url);
@@ -169,6 +98,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
         final GoogleMapController controller = await _controller.future;
         controller.animateCamera(CameraUpdate.newLatLng(target));
+
+        getRestaurants(location.toString());
+
       } else {
         print('Error: ${json['status']}');
       }
@@ -178,45 +110,17 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _searchForRestaurants(String query) async {
-    List<Marker> matchingMarkers = markers
-        .where((marker) =>
-            marker.infoWindow.title
-                ?.toLowerCase()
-                .contains(query.toLowerCase()) ??
-            false)
-        .toList();
-
-    if (matchingMarkers.isNotEmpty) {
-      final GoogleMapController controller = await _controller.future;
-      await controller.animateCamera(
-          CameraUpdate.newLatLng(matchingMarkers.first.position));
-
-      setState(() {
-        selectedPlace = DetailsResult(
-          name: matchingMarkers.first.infoWindow.title,
-          formattedAddress: matchingMarkers.first.infoWindow.snippet
-              ?.split('\n')
-              .firstWhere((element) => element.startsWith('Address: '),
-                  orElse: () => 'Address: No Address')
-              .substring(9),
-          rating: double.tryParse(matchingMarkers.first.infoWindow.snippet
-                  ?.split('\n')
-                  .firstWhere((element) => element.startsWith('Rating: '),
-                      orElse: () => 'Rating: No Rating')
-                  .substring(8) ??
-              '0'),
-          formattedPhoneNumber: matchingMarkers.first.infoWindow.snippet
-              ?.split('\n')
-              .firstWhere((element) => element.startsWith('Phone: '),
-                  orElse: () => 'Phone: No Phone')
-              .substring(7),
-        );
-      });
-    } else {
-      setState(() {
-        selectedPlace = null;
-      });
-    }
+    final databaseService = DatabaseService();
+    databaseService.searchRestaurants(query).then((values) {
+      restaurants.clear();
+      for (var restaurant in values) {
+        final LatLng position = LatLng(restaurant['latitude'], restaurant['longitude']);
+  
+        if (inRadius(position, _center, 5000)) {
+          addRestaurant(restaurant);
+        }
+      }
+    });
   }
 
   Future<void> _centerOnUserLocation() async {
@@ -252,247 +156,121 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
-      ),
-
-      resizeToAvoidBottomInset: false,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        title: Row(
               children: [
-                Text(
-                  'Add Restaurant',
-                  style: GoogleFonts.getFont(
-                    'Nunito',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                    color: Color(0xFF34A853),
-                  ),
-                ),
-                Switch(
-                  value: isAddingMarker,
-                  onChanged: (value) {
-                    setState(() {
-                      isAddingMarker = value;
-                    });
-                  },
+                searchBox('Location', locationIcon, _moveToLocation, locationController).widget!,
+                const Spacer(),
+                FloatingActionButton(
+                  mini: true,
+                  onPressed: _centerOnUserLocation,
+                  child: const Icon(Icons.my_location),
                 ),
               ],
             ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xFFA8A6A7)),
-                      borderRadius: BorderRadius.circular(5),
-                      color: const Color(0xFFFFFFFF),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x40000000),
-                          offset: Offset(0, 2),
-                          blurRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(10, 0, 11, 0),
-                          child: SizedBox(
-                            width: 253.7,
-                            child: TextField(
-                              controller: locationController,
-                              decoration: const InputDecoration(
-                                hintText: 'Location',
-                                hintStyle: TextStyle(
-                                    color: Colors
-                                        .grey), // Set the color to a visible shade
-                                border: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                              ),
-                              style: GoogleFonts.getFont(
-                                'Nunito',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16,
-                              ),
-                              onSubmitted: (value) {
-                                _moveToLocation(value);
-                              },
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          child: GestureDetector(
-                            onTap: () {
-                              _moveToLocation(locationController.text);
-                            },
-                            child: SizedBox(
-                              width: 16.4,
-                              height: 20,
-                              child: SvgPicture.asset(
-                                'assets/vectors/iconmap_pin_1_x2.svg',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xFFA8A6A7)),
-                      borderRadius: BorderRadius.circular(5),
-                      color: const Color(0xFFFFFFFF),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x40000000),
-                          offset: Offset(0, 2),
-                          blurRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Container(
-                      //padding: const EdgeInsets.fromLTRB(16, 10, 17, 11),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(10, 0, 11, 0),
-                            child: SizedBox(
-                              width: 253,
-                              child: TextField(
-                                controller: searchController,
-                                decoration: const InputDecoration(
-                                  hintText: 'Search for Restaurants',
-                                  hintStyle: TextStyle(
-                                      color: Colors
-                                          .grey), // Set the color to a visible shade
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                ),
-                                style: GoogleFonts.getFont('Nunito',
-                                    fontWeight: FontWeight.w700, fontSize: 16),
-                                onSubmitted: (value) {
-                                  _searchForRestaurants(value);
-                                },
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            child: GestureDetector(
-                              onTap: () {
-                                _searchForRestaurants(searchController.text);
-                              },
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: SvgPicture.asset(
-                                  'assets/vectors/search_icon_1_x2.svg',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      ),
+
+      body: Center(
+        child: Column(
+          children: [
+            searchBox('Search for restaurants', searchIcon, _searchForRestaurants, searchController).widget!,
+            
             Expanded(
               child: Stack(
                 children: [
-                  GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    initialCameraPosition: CameraPosition(
-                      target: _center,
-                      zoom: 14.0,
+                    GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: CameraPosition(
+                        target: _center,
+                        zoom: 14.0,
+                      ),
+                      onTap: _handleTap,
                     ),
-                    onTap: _handleTap,
-                    markers: Set<Marker>.of(markers),
-                  ),
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: FloatingActionButton(
-                      onPressed: _centerOnUserLocation,
-                      child: const Icon(Icons.my_location),
-                    ),
+                  Container(
+                    child: restaurantMarkers(restaurants),
                   ),
                 ],
               ),
             ),
-            Center(
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(10.2, 20, 8.6, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(0, 0, 0.9, 24.5),
-                      child: Text(
-                        'Restaurant',
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: const Color(0xFF34A853),
-                        ),
-                      ),
-                    ),
-                    if (selectedPlace != null) ...[
-                      Text(
-                        selectedPlace!.name ?? "No Name",
-                        style: GoogleFonts.getFont(
-                          'Nunito',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: const Color(0xFF34A853),
-                        ),
-                      ),
-                      Text(
-                          "Address: ${selectedPlace!.formattedAddress ?? "No Address"}"),
-                      Text(
-                          "Rating: ${selectedPlace!.rating?.toString() ?? "No Rating"}"),
-                      Text(
-                          "Phone: ${selectedPlace!.formattedPhoneNumber ?? "No Phone"}"),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        ],)
       ),
     );
   }
+
 }
 
-class DetailsResult {
-  final String? name;
-  final String? formattedAddress;
-  final double? rating;
-  final String? formattedPhoneNumber;
+ListView restaurantMarkers(List<Map<String, String>> info) {
+  return ListView.builder(
+    scrollDirection: Axis.vertical,
+    itemCount: info.length,
+    itemBuilder: (context, index) {
+      return ListTile(
+        leading: Image.asset(info[index]['image']!),
+        title: Text(info[index]['name']!),
+        subtitle: Text(info[index]['address']!),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RestaurantScreen(
+                info: info[index],
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
 
-  DetailsResult(
-      {this.name,
-      this.formattedAddress,
-      this.rating,
-      this.formattedPhoneNumber});
+SearchBox searchBox(String label, IconData icon, Function function, TextEditingController controller) {
+  return SearchBox(
+    widget: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          margin: const EdgeInsets.all(8),
+          child: GestureDetector(
+            onTap: () {
+              function(controller.text);
+            },
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: Icon(icon, size: 20, color: const Color(0xFF000000))
+            ),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.fromLTRB(10, 0, 11, 0),
+          child: SizedBox(
+            width: 250,
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: label,
+                hintStyle: const TextStyle(
+                    color: Colors.grey),
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+              ),
+              onSubmitted: (value) {
+                function(value);
+              },
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+}
+
+class SearchBox {
+  final Widget? widget;
+
+  SearchBox({this.widget});
 }
