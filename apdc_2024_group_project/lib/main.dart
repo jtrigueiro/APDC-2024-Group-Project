@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           theme: AppThemeStyle.lightTheme,
           darkTheme: AppThemeStyle.darkTheme,
-          home: Wrapper(),
+          home: const Wrapper(),
           routes: {
-            '/home': (context) => Wrapper(),
+            '/home': (context) => const Wrapper(),
           }),
     );
   }

@@ -56,7 +56,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
           'Promo Codes',
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -71,8 +71,8 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
             children: [
               TextFormField(
                 controller: _promoCodeController,
-                decoration: InputDecoration(
-                  labelText: 'Enter PromoCode*',
+                decoration: InputDecoration().copyWith(
+                  labelText: 'Enter Promocode*',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -96,6 +96,8 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
                 icon: Icon(Icons.add, size: 24),
                 label: Text('Redeem Code', style: TextStyle(fontSize: 16)),
                 style: ElevatedButton.styleFrom(
+                  foregroundColor: Color.fromARGB(255, 215, 184, 126),
+                  backgroundColor: Color.fromARGB(255, 117, 85, 18),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class InputTheme {
   InputTheme._(); //to avoid creation instances
 
-  static final LightInputTheme =  InputDecorationTheme(
+  static final lightInputTheme =  InputDecorationTheme(
     labelStyle: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
     border: OutlineInputBorder(
         borderSide: const BorderSide(color: Color.fromARGB(255, 215, 184, 126)),
