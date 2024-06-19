@@ -12,7 +12,7 @@ class _SupportMessagesListScreenState extends State<SupportMessagesListScreen> {
 
   Future<void> _deleteMessage(String messageId) async {
     try {
-      await _firestore.collection('supportMessages').doc(messageId).delete();
+      await _firestore.collection('support_messages').doc(messageId).delete();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Mensagem excluída com sucesso!')),
       );

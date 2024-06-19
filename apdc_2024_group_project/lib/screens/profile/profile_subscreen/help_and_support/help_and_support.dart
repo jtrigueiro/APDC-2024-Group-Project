@@ -25,11 +25,11 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
 
         // Gerar um ID único para cada mensagem
         String messageId =
-            FirebaseFirestore.instance.collection('supportMessages').doc().id;
+            FirebaseFirestore.instance.collection('support_messages').doc().id;
 
         // Adicionar a mensagem ao Firestore com um novo ID único
         await FirebaseFirestore.instance
-            .collection('supportMessages')
+            .collection('support_messages')
             .doc(messageId)
             .set({
           'userId': userId, // Associar à ID do usuário
