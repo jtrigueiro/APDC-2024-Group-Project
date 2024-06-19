@@ -1,10 +1,9 @@
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_Dishes_subscreens/my_dishes_screen.dart';
-import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_Dishes_subscreens/my_restaurant_settings_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_restaurant_settings_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/promo_codes_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/restaurant_personalize_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:adc_group_project/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyRestaurantScreen extends StatefulWidget {
@@ -32,8 +31,12 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
         child: SingleChildScrollView(
           controller: scrollController,
           child: Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: ListView(shrinkWrap: true, children: [
+              Text('Restaurant name maybe?', style: Theme.of(context).textTheme.titleLarge),
+              Text('location maybe?', style: Theme.of(context).textTheme.bodyMedium),
+
+              customSpaceBetweenColumns(40),
               tiles('Personalize', Icons.warehouse, toPersonalizePage),
               tiles('My Dishes', Icons.food_bank, toMyDishesPage),
               tiles('Reviews', Icons.star, () {}),
@@ -48,8 +51,8 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
 
   ListTile tiles(String text, IconData icon, Function ontapFunction) {
     return ListTile(
-        title: texts(text, 20),
-        leading: Icon(icon),
+        title: Text(text, style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.secondary)),
+        leading: Icon(icon, color: Theme.of(context).colorScheme.secondary,),
         onTap: () {
           ontapFunction();
         });

@@ -1,5 +1,9 @@
+import 'package:day_picker/day_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:list_picker/list_picker.dart';
+
+import '../../../../../utils/constants.dart';
 
 class RestaurantPersonalizeScreen extends StatefulWidget {
   const RestaurantPersonalizeScreen({super.key});
@@ -34,22 +38,35 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
     super.initState();
   }
 
+  //selectdays in week
+ final List<DayInWeek> _days = [
+   DayInWeek('Sun', dayKey: 'Sun'),
+   DayInWeek('Mon', dayKey: 'Mon'),
+   DayInWeek('Tue', dayKey: 'Tue'),
+   DayInWeek('Wed', dayKey: 'Wed'),
+   DayInWeek('Thu', dayKey: 'Thu'),
+   DayInWeek('Sat', dayKey: 'Sat'),
+
+  ];
+
+  final _dayPick = ListPickerField(
+    label: 'Week Days',
+    items: const [ "Sun", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  );
+
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        backgroundColor: Color.fromARGB(255, 182, 141, 64),
         appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          title: texts('My Restaurant', 20),
+          title: const Text('My Restaurant'),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Color.fromARGB(255, 117, 85, 18)),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
         ),
-
         body: Scrollbar(
           controller: scrollController, 
           child: SingleChildScrollView(
@@ -66,15 +83,13 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                         children: [
 
                           SizedBox(height: 20),
-                          texts("Restaurant Name",10),
                           textForms(nameController, 'Restaurant Name', 'Please enter a restaurant name'),
 
                           const SizedBox(height: 10),
-                          texts("Phone Number",10),
+
                           textForms(phoneController, 'Phone number','Please enter a phone number'),
 
                           const SizedBox(height: 10),
-                          texts("Location",10),
                           textForms(locationController, 'Location','Please enter a location'),
 
                           const SizedBox(height: 10),
@@ -83,14 +98,42 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                     ),
                   ),
 
-                  texts("Open Days", 15),
+                ListPickerField(
+                    label: 'Week Days',
+                    items: const [ "Sunday", "Tuesday", "Wednesday", "Thurday", "Friday", "Saturday"]
+                ),
+
+                  SelectWeekDays(
+                      onSelect: (values) {}, 
+                      days: _days,
+                  ),
+
+
+                  ElevatedButton(
+                    onPressed: () async {
+                     String? fruit = await showPickerDialog(
+                        context: context,
+                        label: "Weekdays",
+                          items: const [ "Sunday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                      );
+
+                     ScaffoldMessenger.of(context).showSnackBar(
+                       SnackBar(
+                         content: Text(fruit ?? "No weekday selected"),
+                       ),
+                     );
+                     },
+                    child: const Text("Open Days"),
+                  ),
+
+                  Text("Open Days", style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
 
                   Row(
                     children: [
 
-                      texts("Sun", 12),
+                      Text("Sun", style: Theme.of(context).textTheme.displaySmall!.copyWith(color: const Color.fromARGB(255, 182, 141, 64))),
                       Checkbox(
-                          activeColor: Colors.green,
+                          activeColor: const Color.fromARGB(255, 182, 141, 64),
                           value: sunday,
                           onChanged: (bool? value) {
                             setState(() {
@@ -99,9 +142,9 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                           }
                       ),
 
-                      texts("Mon", 12),
+                      Text("Mon", style: Theme.of(context).textTheme.displaySmall!.copyWith(color: const Color.fromARGB(255, 182, 141, 64))),
                       Checkbox(
-                        activeColor: Colors.green,
+                          activeColor: const Color.fromARGB(255, 182, 141, 64),
                           value: monday,
                           onChanged: (bool? value) {
                             setState(() {
@@ -110,57 +153,13 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                           }
                       ),
 
-                      texts("Tue", 12),
+                      Text("Tue", style: Theme.of(context).textTheme.displaySmall!.copyWith(color: const Color.fromARGB(255, 182, 141, 64))),
                       Checkbox(
-                          activeColor: Colors.green,
+                          activeColor: const Color.fromARGB(255, 182, 141, 64),
                           value: tuesday,
                           onChanged: (bool? value) {
                             setState(() {
                               tuesday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Wed", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: wednesday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              wednesday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Thu", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: thursday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              thursday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Fri", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: friday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              friday = value!;
-                            });
-                          }
-                      ),
-
-                      texts("Sat", 12),
-                      Checkbox(
-                          activeColor: Colors.green,
-                          value: saturday,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              saturday = value!;
                             });
                           }
                       ),
@@ -174,13 +173,6 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
                       onPressed: () {
                           Navigator.pop(context);
                       },
-                      style: ElevatedButton.styleFrom(
-
-                        backgroundColor: Colors.green[100],
-                        foregroundColor: Colors.green[900],
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                      ),
                       child: const Text('Save'),
                     ),
                   ),
@@ -195,40 +187,6 @@ class RestaurantPersonalizeScreenState extends State<RestaurantPersonalizeScreen
 
 
 
-
-  Text texts(String text, double size)
-  {
-    return Text(text,
-      style: GoogleFonts.getFont(
-        'Nunito',
-        fontWeight: FontWeight.normal,
-        fontSize: size,
-        color: const Color(0xFF000000),),
-    );
-  }
-
-  TextFormField textForms(TextEditingController controller, text, String textNoValue)
-  {
-    return  TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-          labelText: '$text*',
-          labelStyle: const TextStyle(fontStyle: FontStyle.italic, color: Colors.black),
-          border: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.green),
-              borderRadius: BorderRadius.circular(10)),
-          focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.green),
-          )
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return textNoValue;
-        }
-        return null;
-      },
-    );
-  }
 }
 
 

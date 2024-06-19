@@ -24,13 +24,11 @@ class MyDishesScreenState extends State<MyDishesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.green[100],
-        title: texts('My Dishes', 20),
+        title: const Text('My Dishes'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -42,12 +40,11 @@ class MyDishesScreenState extends State<MyDishesScreen> {
           controller: scrollController,
           child: Column(
             children: [
-              customSpaceBetweenColumns(25),
-              texts('Add Dishes', 20),
+              //dishes ver se tem
 
               customSpaceBetweenColumns(25),
-              texts('Add Dishes',20),
-              //dishes se tem
+              Text('Add Dishes', style: Theme.of(context).textTheme.titleLarge),
+
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -57,29 +54,12 @@ class MyDishesScreenState extends State<MyDishesScreen> {
                       ),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[100],
-                    foregroundColor: Colors.green[900],
-                    shape: CircleBorder(),
-                  ),
                   child: const Icon(Icons.add),
                 ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Text texts(String text, double size) {
-    return Text(
-      text,
-      style: GoogleFonts.getFont(
-        'Nunito',
-        fontWeight: FontWeight.normal,
-        fontSize: size,
-        color: const Color(0xFF000000),
       ),
     );
   }
