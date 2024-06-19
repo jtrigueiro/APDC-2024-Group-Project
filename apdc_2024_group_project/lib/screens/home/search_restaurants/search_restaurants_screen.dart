@@ -20,8 +20,6 @@ class _SearchScreenState extends State<SearchScreen> {
   final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
 
   List<Map<String, String>> restaurants = [];
-  bool isCarouselInteracting = false;
-  bool showCarousel = true;
 
   TextEditingController locationController = TextEditingController();
   TextEditingController searchController = TextEditingController();
@@ -48,9 +46,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _handleTap(LatLng point) {
-      if(restaurants.isNotEmpty) {
-          showCarousel = !showCarousel;
-      }
+    print(point);
   }
 
   bool inRadius(LatLng point, LatLng center, double radius) {
@@ -180,13 +176,15 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
               child: Stack(
                 children: [
-                    GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      initialCameraPosition: CameraPosition(
-                        target: _center,
-                        zoom: 14.0,
+                    Positioned.fill(
+                      child: GoogleMap(
+                        onMapCreated: _onMapCreated,
+                        initialCameraPosition: CameraPosition(
+                          target: _center,
+                          zoom: 14.0,
+                        ),
+                        onTap: _handleTap,
                       ),
-                      onTap: _handleTap,
                     ),
                     restaurantMarkers(restaurants),
                 ],
