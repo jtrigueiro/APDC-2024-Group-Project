@@ -34,6 +34,43 @@ class DatabaseService {
     }
   }
 
+  // ----------------- Search Restaurants -----------------
+
+  Future<List<Map<String, dynamic>>> getAllRestaurants() async {
+    try {
+      final QuerySnapshot result = await restaurantsCollection.get();
+      return result.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getRestaurantsbyLocation(String location) async {
+    try {
+      final QuerySnapshot result = await restaurantsCollection
+          .where('location', isEqualTo: location)
+          .get();
+      return result.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
+    }
+  }
+
+
+  Future<List<Map<String, dynamic>>> searchRestaurants(String search) async {
+    try {
+      final QuerySnapshot result = await restaurantsCollection
+          .where('name', isGreaterThanOrEqualTo: search)
+          .get();
+      return result.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
+    }
+  }
+
   // ----------------- My Restaurant -----------------
   // add or update a restaurant application
   Future addOrUpdateRestaurantApplicationData(
