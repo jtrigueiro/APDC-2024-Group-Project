@@ -11,9 +11,9 @@ class TextThemeApp {
       fontWeight: FontWeight.bold,
       fontStyle: FontStyle.italic,
       fontSize: 40,
-      color: Color.fromARGB(255, 182, 141, 64),
+      color: const Color.fromARGB(255, 182, 141, 64),
       decoration: TextDecoration.underline,
-      decorationColor: Color.fromARGB(255, 182, 141, 64),
+      decorationColor: const Color.fromARGB(255, 182, 141, 64),
       decorationThickness: 2,
     ),
 
@@ -22,14 +22,14 @@ class TextThemeApp {
       'Nunito',
       fontWeight: FontWeight.w600,
       fontSize: 26,
-      color: Color.fromARGB(255, 117, 85, 18),
+      color: const Color.fromARGB(255, 117, 85, 18),
     ),
 
     titleMedium: GoogleFonts.getFont(
       'Nunito',
       fontWeight: FontWeight.w600,
       fontSize: 20,
-      color: Color.fromARGB(255, 182, 141, 64),
+      color: const Color.fromARGB(255, 182, 141, 64),
     ),
 
     //cards carrousel
@@ -37,7 +37,7 @@ class TextThemeApp {
       'Nunito',
       fontWeight: FontWeight.bold,
       fontSize: 15,
-      color: Color.fromARGB(255, 39, 65, 58),
+      color: const Color.fromARGB(255, 39, 65, 58),
     ),
 
     bodyMedium: GoogleFonts.getFont(
@@ -45,7 +45,7 @@ class TextThemeApp {
       fontWeight: FontWeight.bold,
       fontStyle: FontStyle.italic,
       fontSize: 15,
-      color: Color.fromARGB(255, 215, 184, 126),
+      color: const Color.fromARGB(255, 215, 184, 126),
     ),
 
     bodySmall: GoogleFonts.getFont(
@@ -53,19 +53,19 @@ class TextThemeApp {
       fontWeight: FontWeight.normal,
       fontStyle: FontStyle.italic,
       fontSize: 13,
-      color: Color.fromARGB(255, 208, 182, 136),
+      color: const Color.fromARGB(255, 208, 182, 136),
     ),
   );
 
-  static TextTheme DarkTextTheme = TextTheme(
+  static TextTheme darkTextTheme = TextTheme(
     headlineLarge: GoogleFonts.getFont(
       'Nunito',
       fontWeight: FontWeight.bold,
       fontStyle: FontStyle.italic,
       fontSize: 40,
-      color: Color.fromARGB(255, 182, 141, 64),
+      color: const Color.fromARGB(255, 182, 141, 64),
       decoration: TextDecoration.underline,
-      decorationColor: Color.fromARGB(255, 182, 141, 64),
+      decorationColor: const Color.fromARGB(255, 182, 141, 64),
       decorationThickness: 2,
     ),
 
@@ -74,21 +74,21 @@ class TextThemeApp {
       'Nunito',
       fontWeight: FontWeight.w600,
       fontSize:26,
-      color: Color.fromARGB(255, 182, 141, 64),
+      color: const Color.fromARGB(255, 182, 141, 64),
     ),
 
     titleMedium: GoogleFonts.getFont(
       'Nunito',
       fontWeight: FontWeight.w600,
       fontSize: 20,
-      color: Color.fromARGB(255, 182, 141, 64),
+      color: const Color.fromARGB(255, 182, 141, 64),
     ),
     //cards carrousel
     displaySmall: GoogleFonts.getFont(
       'Nunito',
       fontWeight: FontWeight.bold,
       fontSize: 15,
-      color: Color.fromARGB(255, 39, 65, 58),
+      color: const Color.fromARGB(255, 39, 65, 58),
     ),
 
     bodyMedium: GoogleFonts.getFont(
@@ -96,7 +96,7 @@ class TextThemeApp {
       fontWeight: FontWeight.bold,
       fontStyle: FontStyle.italic,
       fontSize: 15,
-      color: Color.fromARGB(255, 215, 184, 126),
+      color: const Color.fromARGB(255, 215, 184, 126),
     ),
 
     bodySmall: GoogleFonts.getFont(
@@ -104,7 +104,7 @@ class TextThemeApp {
       fontWeight: FontWeight.normal,
       fontStyle: FontStyle.italic,
       fontSize: 13,
-      color: Color.fromARGB(255, 208, 182, 136),
+      color: const Color.fromARGB(255, 208, 182, 136),
     ),
   );
 }

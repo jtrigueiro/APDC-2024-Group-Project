@@ -43,7 +43,7 @@ class _SupportMessagesListScreenState extends State<SupportMessagesListScreen> {
       ),
       body: FutureBuilder<QuerySnapshot>(
         future: _firestore
-            .collection('supportMessages')
+            .collection('support_messages')
             .orderBy('timestamp', descending: true)
             .get(),
         builder: (context, snapshot) {

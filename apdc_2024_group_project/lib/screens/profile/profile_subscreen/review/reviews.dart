@@ -31,18 +31,17 @@ class _ReviewsPage extends State<ReviewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Reviews',
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: Colors.black), // Cor do ícone alterada para preto
+          icon: const Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh,
-                color: Colors.black), // Cor do ícone alterada para preto
+            icon: const Icon(Icons.refresh,
+                color:Color.fromARGB(255, 117, 85, 18)),
             onPressed: _refreshReviews,
           ),
         ],

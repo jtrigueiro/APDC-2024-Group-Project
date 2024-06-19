@@ -56,7 +56,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
           'Promo Codes',
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -65,25 +65,24 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white,
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextField(
+              TextFormField(
                 controller: _promoCodeController,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  hintText: 'Enter your promo code',
+                decoration: InputDecoration().copyWith(
+                  labelText: 'Enter Promocode*',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: 16.0,
-                    horizontal: 20.0,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a promo code';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 16),
               Text(
@@ -97,8 +96,8 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
                 icon: Icon(Icons.add, size: 24),
                 label: Text('Redeem Code', style: TextStyle(fontSize: 16)),
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Color.fromARGB(255, 215, 184, 126),
+                  backgroundColor: Color.fromARGB(255, 117, 85, 18),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

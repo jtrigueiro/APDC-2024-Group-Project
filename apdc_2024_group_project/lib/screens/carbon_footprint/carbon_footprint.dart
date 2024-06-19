@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
-import '../../utils/constants.dart';
-
 class CarbonFootprintScreen extends StatefulWidget {
   CarbonFootprintScreen({super.key});
 

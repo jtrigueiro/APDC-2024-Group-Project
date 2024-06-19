@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class HelpAndSupportScreen extends StatefulWidget {
   const HelpAndSupportScreen({Key? key}) : super(key: key);
@@ -67,8 +66,7 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
           'Help and Support',
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: Colors.black), // Alterando a cor do ícone para preto
+            icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -92,30 +90,29 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                 child: Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.orange[200],
+                    color: Theme.of(context).colorScheme.tertiary,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.help, size: 40, color: Colors.white),
+                      Icon(Icons.help, size: 40, color: Theme.of(context).colorScheme.secondary),
                       SizedBox(width: 20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+
                           Text(
                             'Contact us',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white, // Mantendo a cor branca
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                color:Theme.of(context).colorScheme.secondary
+                            )
                           ),
                           Text(
                             'Send us an email',
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white), // Mantendo a cor branca
+                            style:  Theme.of(context).textTheme.displaySmall!.copyWith(
+                                color:Theme.of(context).colorScheme.secondary
+                            ),
                           ),
                         ],
                       ),
@@ -140,8 +137,6 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                   onPressed: _sendEmailAndAddToFirestore,
                   child: Text('Send'),
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.orange[200],
                     padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                     textStyle: TextStyle(fontSize: 18),
                   ),
