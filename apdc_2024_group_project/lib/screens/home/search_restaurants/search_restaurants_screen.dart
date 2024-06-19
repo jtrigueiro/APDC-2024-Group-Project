@@ -154,6 +154,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
@@ -162,7 +163,6 @@ class _SearchScreenState extends State<SearchScreen> {
         title: Row(
               children: [
                 searchBox('Location', locationIcon, _moveToLocation, locationController).widget!,
-                const Spacer(),
                 FloatingActionButton(
                   mini: true,
                   onPressed: _centerOnUserLocation,
@@ -188,9 +188,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       onTap: _handleTap,
                     ),
-                  Container(
-                    child: restaurantMarkers(restaurants),
-                  ),
+                    restaurantMarkers(restaurants),
                 ],
               ),
             ),
