@@ -50,19 +50,17 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   bool inRadius(LatLng point, LatLng center, double radius) {
-    return Geolocator.distanceBetween(
-            point.latitude, point.longitude, center.latitude, center.longitude) <
-        radius;
+    return Geolocator.distanceBetween(point.latitude, point.longitude, center.latitude, center.longitude) < radius;
   }
 
   void addRestaurant(Map<String, dynamic> restaurant) {
     restaurants.add({
-            'image': restaurant['image'],
-            'name' : restaurant['name'],
-            'address' : restaurant['address'],
-            'rating' : restaurant['rating'],
-            'co2' : restaurant['co2'],
-          });
+      'image': restaurant['image'],
+      'name': restaurant['name'],
+      'address': restaurant['address'],
+      'rating': restaurant['rating'],
+      'co2': restaurant['co2'],
+    });
   }
 
   void getRestaurants(String locality) {
@@ -71,10 +69,10 @@ class _SearchScreenState extends State<SearchScreen> {
     final data = db.getRestaurantsbyLocality(locality);
 
     data.then((values) {
-      for(var restaurant in values) {
+      for (var restaurant in values) {
         final LatLng position = LatLng(restaurant['latitude'], restaurant['longitude']);
 
-        if(inRadius(position, _center, 5000)) {
+        if (inRadius(position, _center, 5000)) {
           addRestaurant(restaurant);
         }
       }
@@ -82,8 +80,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _moveToLocation(String location) async {
-    final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
+    final url = Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -96,7 +93,6 @@ class _SearchScreenState extends State<SearchScreen> {
         controller.animateCamera(CameraUpdate.newLatLng(target));
 
         getRestaurants(location.toString());
-
       } else {
         print('Error: ${json['status']}');
       }
@@ -111,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> {
       restaurants.clear();
       for (var restaurant in values) {
         final LatLng position = LatLng(restaurant['latitude'], restaurant['longitude']);
-  
+
         if (inRadius(position, _center, 5000)) {
           addRestaurant(restaurant);
         }
@@ -140,11 +136,9 @@ class _SearchScreenState extends State<SearchScreen> {
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(
-        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+    controller.animateCamera(CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
   }
 
   @override
@@ -153,52 +147,54 @@ class _SearchScreenState extends State<SearchScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios, color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Row(
-              children: [
-                searchBox('Location', locationIcon, _moveToLocation, locationController).widget!,
-                FloatingActionButton(
-                  mini: true,
-                  onPressed: _centerOnUserLocation,
-                  child: const Icon(Icons.my_location),
-                ),
-              ],
+          children: [
+            Expanded(
+              child: searchBox('Location', locationIcon, _moveToLocation, locationController).widget!,
             ),
+            FloatingActionButton(
+              mini: true,
+              onPressed: _centerOnUserLocation,
+              child: const Icon(Icons.my_location),
+            ),
+          ],
+        ),
       ),
-
       body: Center(
         child: Column(
           children: [
             searchBox('Search for restaurants', searchIcon, _searchForRestaurants, searchController).widget!,
-            
             Expanded(
               child: Stack(
                 children: [
-                    Positioned.fill(
-                      child: GoogleMap(
-                        onMapCreated: _onMapCreated,
-                        initialCameraPosition: CameraPosition(
-                          target: _center,
-                          zoom: 14.0,
-                        ),
-                        onTap: _handleTap,
-                      ),
+                  GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: _center,
+                      zoom: 14.0,
                     ),
-                    restaurantMarkers(restaurants),
+                    onTap: _handleTap,
+                  ),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: restaurantMarkers(restaurants),
+                  ),
                 ],
               ),
             ),
-        ],)
+          ],
+        ),
       ),
     );
   }
-
 }
 
-ListView restaurantMarkers(List<Map<String, String>> info) {
+Widget restaurantMarkers(List<Map<String, String>> info) {
   return ListView.builder(
+    shrinkWrap: true,
     scrollDirection: Axis.vertical,
     itemCount: info.length,
     itemBuilder: (context, index) {
@@ -236,20 +232,18 @@ SearchBox searchBox(String label, IconData icon, Function function, TextEditingC
             child: SizedBox(
               width: 20,
               height: 20,
-              child: Icon(icon, size: 20, color: const Color(0xFF000000))
+              child: Icon(icon, size: 20, color: const Color(0xFF000000)),
             ),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.fromLTRB(10, 0, 11, 0),
-          child: SizedBox(
-            width: 250,
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(10, 0, 11, 0),
             child: TextField(
               controller: controller,
               decoration: InputDecoration(
                 hintText: label,
-                hintStyle: const TextStyle(
-                    color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
               ),
@@ -262,7 +256,6 @@ SearchBox searchBox(String label, IconData icon, Function function, TextEditingC
       ],
     ),
   );
-
 }
 
 class SearchBox {
