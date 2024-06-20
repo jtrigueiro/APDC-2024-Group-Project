@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PromoCodesPage extends StatefulWidget {
   PromoCodesPage({Key? key}) : super(key: key);
@@ -12,6 +12,7 @@ class PromoCodesPage extends StatefulWidget {
 class _PromoCodesPageState extends State<PromoCodesPage> {
   final TextEditingController _promoCodeController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _redeemPromoCode() async {
     String promoCode = _promoCodeController.text.trim();
@@ -32,9 +33,31 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
             promoCodeDoc.data() as Map<String, dynamic>;
         String reward = promoData['reward'];
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Promo code redeemed! Reward: $reward')),
-        );
+        // Obter o usuário atualmente autenticado
+        User? user = _auth.currentUser;
+
+        if (user != null) {
+          // Referência à coleção de promoções do usuário
+          DocumentReference userPromoDoc = _firestore
+              .collection('users')
+              .doc(user.uid)
+              .collection('user_promos')
+              .doc(promoCode);
+
+          // Adicionar a promoção à coleção de promoções do usuário
+          await userPromoDoc.set({
+            'reward': reward,
+            'redeemed_at': Timestamp.now(),
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Promo code redeemed! Reward: $reward')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('User not logged in')),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Invalid promotional code')),
@@ -56,7 +79,8 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
           'Promo Codes',
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+          icon: Icon(Icons.arrow_back_ios,
+              color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () {
             Navigator.of(context).pop();
           },
