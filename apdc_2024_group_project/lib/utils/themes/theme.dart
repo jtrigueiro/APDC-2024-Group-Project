@@ -20,7 +20,7 @@ class AppThemeStyle {
     textTheme: TextThemeApp.LightTextTheme,
     elevatedButtonTheme: ElButtonThemeApp.lightElButtonTheme,
     inputDecorationTheme: InputTheme.lightInputTheme,
-    appBarTheme: AppBarAppTheme.LightAppBarTheme,
+    appBarTheme: AppBarAppTheme.lightAppBarTheme,
     bottomNavigationBarTheme: AppNavBarTheme.lightAppNavBarTheme,
     cardTheme: AppCardTheme.lightCardTheme,
     colorScheme: ColorAppTheme.lightAppColorTheme

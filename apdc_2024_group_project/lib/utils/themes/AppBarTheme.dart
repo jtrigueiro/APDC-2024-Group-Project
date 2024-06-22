@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppBarAppTheme {
   AppBarAppTheme._(); //to avoid creation instances
 
-  static final LightAppBarTheme = AppBarTheme(
+  static final lightAppBarTheme = AppBarTheme(
     centerTitle: true,
     backgroundColor: Color.fromARGB(255, 182, 141, 64),
     foregroundColor: Color.fromARGB(255, 18, 38, 32),

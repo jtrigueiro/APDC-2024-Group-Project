@@ -20,6 +20,7 @@ TextFormField textForms(TextEditingController controller, text, String textNoVal
   return TextFormField(
     controller: controller,
     decoration: InputDecoration().copyWith(
+
         labelText: '$text',
     ),
     validator: (value) {

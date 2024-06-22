@@ -60,7 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               style: Theme.of(context).textTheme.headlineLarge,
                             ),
                             Text(
-                              'Eat while healping the world',
+                              'Eat while helping the world',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -68,7 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ],
                     ),
 
-                    SizedBox(height: 50),
+                    customSpaceBetweenColumns(50),
                     Text(
                       'Sign In',
                       style: Theme.of(context).textTheme.titleLarge,
