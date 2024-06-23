@@ -1,5 +1,5 @@
 import 'package:adc_group_project/screens/authenticate/sign_in_screen.dart';
-import 'package:adc_group_project/screens/navigation_bar.dart';
+import 'package:adc_group_project/screens/home_router.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
