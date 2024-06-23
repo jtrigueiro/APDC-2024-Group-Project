@@ -12,10 +12,8 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(MyApp());
 }
 
@@ -32,6 +30,7 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           theme: AppThemeStyle.lightTheme,
           darkTheme: AppThemeStyle.darkTheme,
+          debugShowCheckedModeBanner: false,
           home: const Wrapper(),
           routes: {
             '/home': (context) => const Wrapper(),
