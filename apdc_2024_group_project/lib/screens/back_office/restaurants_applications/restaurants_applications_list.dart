@@ -1,4 +1,4 @@
-import 'package:adc_group_project/screens/back_office/backoffice_home/restaurant_application_tile.dart';
+import 'package:adc_group_project/screens/back_office/restaurants_applications/restaurant_application_tile.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

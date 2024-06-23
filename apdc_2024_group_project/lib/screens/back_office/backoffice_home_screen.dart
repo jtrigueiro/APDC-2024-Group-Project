@@ -1,6 +1,6 @@
-import 'package:adc_group_project/screens/back_office/backoffice_home/helps_and_support_list.dart';
-import 'package:adc_group_project/screens/back_office/backoffice_home/promo_code_main_page.dart';
-import 'package:adc_group_project/screens/back_office/restaurants_applications_screen.dart';
+import 'package:adc_group_project/screens/back_office/helps_and_support_list.dart';
+import 'package:adc_group_project/screens/back_office/promo_codes/promo_code_main_page.dart';
+import 'package:adc_group_project/screens/back_office/restaurants_applications/restaurants_applications_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
 import 'package:flutter/material.dart';
 

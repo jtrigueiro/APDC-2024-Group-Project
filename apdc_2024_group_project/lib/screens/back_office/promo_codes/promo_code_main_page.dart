@@ -1,5 +1,5 @@
-import 'package:adc_group_project/screens/back_office/backoffice_home/promoCodesSubPages/active_promocodes_list.dart';
-import 'package:adc_group_project/screens/back_office/backoffice_home/promoCodesSubPages/promo_code_add.dart';
+import 'package:adc_group_project/screens/back_office/promo_codes/active_promocodes_list.dart';
+import 'package:adc_group_project/screens/back_office/promo_codes/promo_code_add.dart';
 import 'package:flutter/material.dart';
 
 class PromoCodesHomeScreen extends StatefulWidget {
