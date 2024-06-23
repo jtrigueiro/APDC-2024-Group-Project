@@ -1,6 +1,6 @@
 class Ingredient {
   String name;
-  int co2;
+  int co2, grams;
 
-  Ingredient({required this.name, required this.co2});
+  Ingredient({required this.name, required this.grams, required this.co2});
 }

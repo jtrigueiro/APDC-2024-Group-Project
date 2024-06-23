@@ -223,6 +223,7 @@ class DatabaseService {
       return snapshot.docs.map((doc) {
         return Ingredient(
           name: doc.get('name') ?? '',
+          grams: doc.get('grams') ?? 0,
           co2: doc.get('co2') ?? 0,
         );
       }).toList();
@@ -243,10 +244,11 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateIngredient(String name, int co2) async {
+  Future addOrUpdateIngredient(String name, int co2, int grams) async {
     try {
       await ingredientsCollection.doc(name).set({
         'name': name,
+        'grams': grams,
         'co2': co2,
       });
       return true;

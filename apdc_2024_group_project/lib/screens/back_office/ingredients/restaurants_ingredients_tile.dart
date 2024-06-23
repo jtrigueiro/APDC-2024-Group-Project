@@ -20,6 +20,7 @@ class RestaurantIngredientTile extends StatelessWidget {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text('Weight: ${ingredient.grams} grams'),
                     Text('CO2: ${ingredient.co2} grams'),
                   ],
                 ),

@@ -33,6 +33,7 @@ class RestaurantsIngredientsScreen extends StatelessWidget {
                   builder: (BuildContext context) {
                     String ingredientName = '';
                     String co2 = '';
+                    String grams = ''; // Add this line
 
                     return AlertDialog(
                       title: const Text('Add Ingredient'),
@@ -54,7 +55,22 @@ class RestaurantsIngredientsScreen extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 8.0),
                             child: TextField(
                               decoration: const InputDecoration(
-                                labelText: 'CO2 Grams',
+                                labelText: 'Ingredient weight in grams',
+                              ),
+                              onChanged: (value) {
+                                grams = value;
+                              },
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                labelText: 'CO2 weight in grams',
                               ),
                               onChanged: (value) {
                                 co2 = value;
@@ -77,10 +93,13 @@ class RestaurantsIngredientsScreen extends StatelessWidget {
                         TextButton(
                           child: const Text('Add'),
                           onPressed: () {
-                            if (ingredientName.isNotEmpty && co2.isNotEmpty) {
+                            if (ingredientName.isNotEmpty &&
+                                co2.isNotEmpty &&
+                                grams.isNotEmpty) {
                               DatabaseService().addOrUpdateIngredient(
                                 ingredientName,
                                 int.parse(co2),
+                                int.parse(grams),
                               );
                               Navigator.of(context).pop();
                             } else {
