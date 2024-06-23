@@ -17,8 +17,8 @@ class RestaurantApplicationTile extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.cancel_outlined),
-              onPressed: () {
-                DatabaseService()
+              onPressed: () async {
+                await DatabaseService()
                     .deleteRestaurantApplication(restaurantApplication.uid);
               },
             ),
@@ -37,13 +37,13 @@ class RestaurantApplicationTile extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.check_circle_outlined),
-              onPressed: () {
-                DatabaseService().addOrUpdateRestaurantData(
+              onPressed: () async {
+                await DatabaseService().addOrUpdateRestaurantData(
                     restaurantApplication.uid,
                     restaurantApplication.name,
                     restaurantApplication.phone,
                     restaurantApplication.location);
-                DatabaseService()
+                await DatabaseService()
                     .deleteRestaurantApplication(restaurantApplication.uid);
               },
             ),

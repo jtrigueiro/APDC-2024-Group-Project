@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:adc_group_project/services/models/ingredient.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,6 +25,9 @@ class DatabaseService {
   // restaurants markers collection reference
   final CollectionReference restaurantsMarkersCollection =
       FirebaseFirestore.instance.collection('restaurants_markers');
+
+  final CollectionReference ingredientsCollection =
+      FirebaseFirestore.instance.collection('ingredients');
 
   // ----------------- User -----------------
   // add or update user data
@@ -137,6 +143,23 @@ class DatabaseService {
     }
   }
 
+  // add a dish
+  Future addDishToRestaurant(
+      String name, String description, double price) async {
+    User? user = _auth.currentUser;
+    try {
+      await restaurantsCollection.doc(user!.uid).collection('dishes').add({
+        'name': name,
+        'description': description,
+        'price': price,
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   // ----------------- BackOffice -----------------
   // restaurant application from snapshot
   List<RestaurantApplication> _restaurantsApplicationsListFromSnapshot(
@@ -195,9 +218,58 @@ class DatabaseService {
     }
   }
 
-  Future addRestaurantMarker(String uid, String name, String imageUrl, String locality) async {
+  List<Ingredient> _ingredientsListFromSnapshot(QuerySnapshot snapshot) {
     try {
-    await restaurantsMarkersCollection.doc(uid).set({
+      return snapshot.docs.map((doc) {
+        return Ingredient(
+          name: doc.get('name') ?? '',
+          co2: doc.get('co2') ?? 0,
+        );
+      }).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
+    }
+  }
+
+  Stream<List<Ingredient>> get ingredients {
+    try {
+      return ingredientsCollection
+          .snapshots()
+          .map(_ingredientsListFromSnapshot);
+    } catch (e) {
+      print(e.toString());
+      return Stream.empty();
+    }
+  }
+
+  Future addOrUpdateIngredient(String name, int co2) async {
+    try {
+      await ingredientsCollection.doc(name).set({
+        'name': name,
+        'co2': co2,
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future deleteIngredient(String name) async {
+    try {
+      await ingredientsCollection.doc(name).delete();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future addRestaurantMarker(
+      String uid, String name, String imageUrl, String locality) async {
+    try {
+      await restaurantsMarkersCollection.doc(uid).set({
         'name': name,
         'image': imageUrl,
         'locality': locality,
@@ -213,12 +285,15 @@ class DatabaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getRestaurantsbyLocality(String locality) async {
+  Future<List<Map<String, dynamic>>> getRestaurantsbyLocality(
+      String locality) async {
     try {
       final QuerySnapshot result = await restaurantsMarkersCollection
           .where('locality', isGreaterThanOrEqualTo: locality)
           .get();
-      return result.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      return result.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
     } catch (e) {
       print(e.toString());
       return [];

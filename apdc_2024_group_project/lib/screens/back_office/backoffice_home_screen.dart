@@ -1,4 +1,5 @@
 import 'package:adc_group_project/screens/back_office/helps_and_support_list.dart';
+import 'package:adc_group_project/screens/back_office/ingredients/restaurants_ingredients_screen.dart';
 import 'package:adc_group_project/screens/back_office/promo_codes/promo_code_main_page.dart';
 import 'package:adc_group_project/screens/back_office/restaurants_applications/restaurants_applications_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
@@ -53,6 +54,19 @@ class BackOfficeHomeScreen extends StatelessWidget {
                 );
               },
               child: Text('Promo Codes Management'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navegação para a nova tela
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        RestaurantsIngredientsScreen(), // Substitua por sua nova tela
+                  ),
+                );
+              },
+              child: Text('Ingredients Management'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
