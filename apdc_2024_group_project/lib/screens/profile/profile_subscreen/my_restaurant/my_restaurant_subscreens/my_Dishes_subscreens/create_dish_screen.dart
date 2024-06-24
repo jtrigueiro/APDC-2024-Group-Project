@@ -166,6 +166,8 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                                   selectedIngredient!.co2) ~/
                                               selectedIngredient!.grams;
                                           selectedIngredient!.co2 = newco2;
+                                          selectedIngredient!.grams = int.parse(
+                                              ingredientWeightController.text);
                                           setState(() {
                                             selectedIngredients
                                                 .add(selectedIngredient!);
@@ -187,8 +189,15 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                     return ListTile(
                                       title:
                                           Text(selectedIngredients[index].name),
-                                      subtitle: Text(
-                                          'CO2: ${selectedIngredients[index].co2} grams'),
+                                      subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                'Weight: ${selectedIngredients[index].grams} grams'),
+                                            Text(
+                                                'CO2: ${selectedIngredients[index].co2} grams'),
+                                          ]),
                                       trailing: IconButton(
                                         onPressed: () {
                                           setState(() {
