@@ -64,7 +64,9 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+    }
     if (_mapStyle != null) {
       controller.setMapStyle(_mapStyle);
     }
@@ -73,29 +75,25 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   Future<void> _handleTap(LatLng position) async {
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey');
-    final response = await http.get(url);
-    dynamic result;
-
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      if (json['status'] == 'OK') {
-        result = json['results'][0]['formatted_address'];
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json['status'] == 'OK') {
+          final result = json['results'][0]['formatted_address'];
+          addressController.text = result;
+        } else {
+          print('Error: ${json['status']}');
+        }
       } else {
-        print('Error: ${json['status']}');
-        return;
+        print('Failed to fetch address: ${response.statusCode}');
       }
-    } else {
-      print('Failed to fetch address');
-      return;
+    } catch (e) {
+      print('Error fetching address: $e');
     }
-
-    addressController.text = result;
-
-    setState(() {});
   }
 
   Future<void> _pickFile(bool isElectricity) async {
-    print('File picker opened for ${isElectricity ? 'electricity' : 'gas'}');
     try {
       final result = await FilePicker.platform
           .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
@@ -104,20 +102,16 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           setState(() {
             if (isElectricity) {
               _electricityPdfBytes = result.files.single.bytes;
-              print('Electricity PDF selected');
             } else {
               _gasPdfBytes = result.files.single.bytes;
-              print('Gas PDF selected');
             }
           });
         } else {
           setState(() {
             if (isElectricity) {
               _electricityPdf = File(result.files.single.path!);
-              print('Electricity PDF selected: ${_electricityPdf!.path}');
             } else {
               _gasPdf = File(result.files.single.path!);
-              print('Gas PDF selected: ${_gasPdf!.path}');
             }
           });
         }
@@ -131,13 +125,11 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
 
   Future<String?> _uploadFile(Uint8List fileBytes, String fileName) async {
     try {
-      print('Uploading file: $fileName');
       final storageRef =
           FirebaseStorage.instance.ref().child('uploads/$fileName');
       final metadata = SettableMetadata(contentType: 'application/pdf');
       await storageRef.putData(fileBytes, metadata);
       final downloadUrl = await storageRef.getDownloadURL();
-      print('File uploaded: $downloadUrl');
       return downloadUrl;
     } catch (e) {
       print('Failed to upload file: $e');
@@ -152,26 +144,22 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       });
 
       try {
-        // Upload files
         String? electricityUrl;
         String? gasUrl;
 
         if (_electricityPdf != null || _electricityPdfBytes != null) {
-          print('Uploading electricity PDF...');
           electricityUrl = await _uploadFile(
               _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
               'electricity_${DateTime.now().millisecondsSinceEpoch}.pdf');
         }
 
         if (_gasPdf != null || _gasPdfBytes != null) {
-          print('Uploading gas PDF...');
           gasUrl = await _uploadFile(
               _gasPdfBytes ?? await _gasPdf!.readAsBytes(),
               'gas_${DateTime.now().millisecondsSinceEpoch}.pdf');
         }
 
         if (electricityUrl == null || gasUrl == null) {
-          print('Failed to upload one or both files');
           setState(() {
             loading = false;
           });
@@ -189,35 +177,32 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
 
         if (result == null) {
           print('Failed to submit application data');
-          setState(() {
-            loading = false;
-          });
         } else {
           print('Application data submitted successfully');
           widget.checkCurrentIndex();
-          setState(() {
-            loading = false;
-          });
-
-          // Navigate to confirmation screen and replace current route
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SubmissionConfirmationScreen(
-                onConfirm: () {
-                  // Add any additional actions after pressing OK
-                  Navigator.pop(context); // Pop confirmation screen
-                },
-              ),
-            ),
-          );
         }
       } catch (e) {
         print('Error submitting application data: $e');
+      } finally {
         setState(() {
           loading = false;
         });
       }
+    }
+  }
+
+  Future<void> _updateTileOverlays() async {
+    try {
+      if (_controller.isCompleted) {
+        final controller = await _controller.future;
+        if (controller != null) {
+          // Update overlays logic here
+        } else {
+          print('GoogleMapController is null');
+        }
+      }
+    } catch (e) {
+      print('Error updating tile overlays: $e');
     }
   }
 
@@ -336,43 +321,5 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
               ),
             ),
           );
-  }
-}
-
-class SubmissionConfirmationScreen extends StatelessWidget {
-  final VoidCallback onConfirm;
-
-  const SubmissionConfirmationScreen({Key? key, required this.onConfirm})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Application Submitted'),
-      ),
-      body: Center(
-        child: Card(
-          margin: EdgeInsets.all(20),
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Application submitted successfully!'),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    // Perform action on OK press
-                    onConfirm();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
