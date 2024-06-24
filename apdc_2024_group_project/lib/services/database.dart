@@ -162,6 +162,38 @@ class DatabaseService {
     }
   }
 
+  // get a list of Ingredients object
+  /*List<Ingredient> dishesListFromSnapshot(QuerySnapshot snapshot) {
+    try {
+      return snapshot.docs.map((doc) {
+        return Ingredient(
+          name: doc.get('name') ?? '',
+          grams: doc.get('grams') ?? 0,
+          co2: doc.get('co2') ?? 0,
+        );
+      }).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
+    }
+  }*/
+
+  Future<List<Ingredient>> getAllIngredients() async {
+    try {
+      final QuerySnapshot doc = await ingredientsCollection.get();
+      return doc.docs.map((doc) {
+        return Ingredient(
+          name: doc.get('name') ?? '',
+          grams: doc.get('grams') ?? 0,
+          co2: doc.get('co2') ?? 0,
+        );
+      }).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
+    }
+  }
+
   // ----------------- BackOffice -----------------
   // restaurant application from snapshot
   List<RestaurantApplication> _restaurantsApplicationsListFromSnapshot(
