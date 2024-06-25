@@ -217,6 +217,11 @@ class DatabaseService {
           name: doc.get('name') ?? '',
           phone: doc.get('phone') ?? '',
           location: doc.get('location') ?? '',
+          co2EmissionEstimate: doc.get('co2EmissionEstimate') ?? 0,
+          electricityPdfUrl: doc.get('electricityUrl') ?? '',
+          gasPdfUrl: doc.get('gasUrl') ?? '',
+          waterPdfUrl: doc.get('waterUrl') ?? '',
+          numberOfSeats: doc.get('numberOfSeats') ?? 0,
         );
       }).toList();
     } catch (e) {
