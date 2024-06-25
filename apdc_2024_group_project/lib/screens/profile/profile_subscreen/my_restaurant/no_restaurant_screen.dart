@@ -165,61 +165,66 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       });
 
       try {
-        // Upload files
-        String? electricityUrl;
-        String? gasUrl;
-        String? waterUrl;
+        // Verifica se todos os arquivos estão disponíveis
+        if ((_electricityPdf != null || _electricityPdfBytes != null) &&
+            (_gasPdf != null || _gasPdfBytes != null) &&
+            (_waterPdf != null || _waterPdfBytes != null)) {
+          // Upload files
+          String? electricityUrl;
+          String? gasUrl;
+          String? waterUrl;
 
-        if (_electricityPdf != null || _electricityPdfBytes != null) {
           print('Uploading electricity PDF...');
           electricityUrl = await _uploadFile(
               _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
               'electricity_${DateTime.now().millisecondsSinceEpoch}.pdf');
-        }
 
-        if (_gasPdf != null || _gasPdfBytes != null) {
           print('Uploading gas PDF...');
           gasUrl = await _uploadFile(
               _gasPdfBytes ?? await _gasPdf!.readAsBytes(),
               'gas_${DateTime.now().millisecondsSinceEpoch}.pdf');
-        }
 
-        if (_waterPdf != null || _waterPdfBytes != null) {
           print('Uploading water PDF...');
           waterUrl = await _uploadFile(
               _waterPdfBytes ?? await _waterPdf!.readAsBytes(),
               'water_${DateTime.now().millisecondsSinceEpoch}.pdf');
-        }
 
-        if (electricityUrl == null || gasUrl == null || waterUrl == null) {
-          print('Failed to upload one or more files');
-          setState(() {
-            loading = false;
-          });
-          return;
-        }
+          // Verifica se todos os uploads foram bem-sucedidos
+          if (electricityUrl == null || gasUrl == null || waterUrl == null) {
+            print('Failed to upload one or more files');
+            setState(() {
+              loading = false;
+            });
+            return;
+          }
 
-        // Example of using DatabaseService for Firebase operations
-        dynamic result =
-            await DatabaseService().addOrUpdateRestaurantApplicationData(
-          nameController.text,
-          phoneController.text,
-          addressController.text,
-          electricityUrl,
-          gasUrl,
-          _numberOfSeats!,
-          _co2EmissionEstimate!,
-          waterUrl,
-        );
+          // Exemplo de uso do DatabaseService para operações no Firebase
+          dynamic result =
+              await DatabaseService().addOrUpdateRestaurantApplicationData(
+            nameController.text,
+            phoneController.text,
+            addressController.text,
+            electricityUrl,
+            gasUrl,
+            _numberOfSeats!,
+            _co2EmissionEstimate!,
+            waterUrl,
+          );
 
-        if (result == null) {
-          print('Failed to submit application data');
-          setState(() {
-            loading = false;
-          });
+          if (result == null) {
+            print('Failed to submit application data');
+            setState(() {
+              loading = false;
+            });
+          } else {
+            print('Application data submitted successfully');
+            widget.checkCurrentIndex();
+            setState(() {
+              loading = false;
+            });
+          }
         } else {
-          print('Application data submitted successfully');
-          widget.checkCurrentIndex();
+          print('One or more files are missing');
           setState(() {
             loading = false;
           });
@@ -362,7 +367,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                 child: Text(
                                   _electricityPdf == null &&
                                           _electricityPdfBytes == null
-                                      ? 'Upload Last 3 Months of Electricity Bills'
+                                      ? 'Upload Last  Month of Electricity Bill'
                                       : 'Electricity PDF Selected',
                                 ),
                               ),
@@ -371,7 +376,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                 onPressed: () => _pickFile('gas'),
                                 child: Text(
                                   _gasPdf == null && _gasPdfBytes == null
-                                      ? 'Upload Last 3 Months of Gas Bills'
+                                      ? 'Upload Last Month of Gas Bill'
                                       : 'Gas PDF Selected',
                                 ),
                               ),
@@ -380,7 +385,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                 onPressed: () => _pickFile('water'),
                                 child: Text(
                                   _waterPdf == null && _waterPdfBytes == null
-                                      ? 'Upload Last 3 Months of Water Bills'
+                                      ? 'Upload Last  Month of Water Bill'
                                       : 'Water PDF Selected',
                                 ),
                               ),
