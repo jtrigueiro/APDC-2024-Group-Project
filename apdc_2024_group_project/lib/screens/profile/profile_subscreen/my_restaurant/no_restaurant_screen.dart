@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:adc_group_project/services/database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -15,6 +16,7 @@ import 'package:http/http.dart' as http;
 
 class NoRestaurantScreen extends StatefulWidget {
   final Function checkCurrentIndex;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   NoRestaurantScreen({
     Key? key,
@@ -142,8 +144,10 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
 
   Future<String?> _uploadFile(Uint8List fileBytes, String fileName) async {
     try {
+      User? user = widget._auth.currentUser;
+      String uid = user!.uid;
       final storageRef =
-          FirebaseStorage.instance.ref().child('uploads/$fileName');
+          FirebaseStorage.instance.ref().child('uploads/$uid/$fileName');
       final metadata = SettableMetadata(contentType: 'application/pdf');
       await storageRef.putData(fileBytes, metadata);
       final downloadUrl = await storageRef.getDownloadURL();
