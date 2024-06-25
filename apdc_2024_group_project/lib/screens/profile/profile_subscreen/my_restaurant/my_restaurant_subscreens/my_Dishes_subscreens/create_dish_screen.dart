@@ -1,8 +1,14 @@
-import 'package:adc_group_project/services/database.dart';
+import 'dart:io';
+import 'dart:math';
+
+import 'package:adc_group_project/services/firebase_storage.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/ingredient.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../../../utils/constants.dart';
 
 class CreateDishesScreen extends StatefulWidget {
@@ -17,13 +23,16 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
   late TextEditingController nameController;
   late TextEditingController descriptionController;
   late TextEditingController priceController;
-  late TextEditingController CO2Controller;
+  late TextEditingController co2Controller;
   late TextEditingController ingredientWeightController;
   Ingredient? selectedIngredient;
   final _formKey = GlobalKey<FormState>();
   late List<Ingredient> ingredients;
   bool loading = true;
   late List<Ingredient> selectedIngredients = [];
+  XFile? pickedImageFile;
+  late String errorMessage;
+  bool error = false;
 
   @override
   void initState() {
@@ -31,7 +40,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
     nameController = TextEditingController();
     descriptionController = TextEditingController();
     priceController = TextEditingController();
-    CO2Controller = TextEditingController();
+    co2Controller = TextEditingController();
     ingredientWeightController = TextEditingController();
     getIngredients();
 
@@ -52,13 +61,27 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
     }
   }
 
+  Future pickImage() async {
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          pickedImageFile = pickedFile;
+        });
+      }
+    } catch (e) {
+      print("Error selecting image: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return loading
         ? LoadingScreen()
         : Scaffold(
             appBar: AppBar(
-              title: const Text('Dishes Creator'),
+              title: const Text('Dish Creator'),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded,
                     color: Color.fromARGB(255, 117, 85, 18)),
@@ -82,43 +105,20 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 spaceBetweenColumns(),
-
-                                textForms(nameController, 'Dish Name',
+                                textForms(nameController, 'Name*',
                                     'Please enter a dish name'),
-
                                 spaceBetweenColumns(),
-
-                                textForms(
-                                    descriptionController,
-                                    'Dish description',
+                                textForms(descriptionController, 'Description*',
                                     'Please enter a description of the dish'),
-
                                 spaceBetweenColumns(),
-
-                                textForms(priceController, 'price',
+                                // TODO: make this field only accept doubles - jose
+                                textForms(priceController, 'Price (in euros)*',
                                     'Dishes must have a price!'),
-
                                 spaceBetweenColumns(),
-
-                                /*DropdownButtonFormField<Ingredient>(
-                                  value: selectedIngredient,
-                                  items:
-                                      ingredients.map((Ingredient ingredient) {
-                                    return DropdownMenuItem<Ingredient>(
-                                      value: ingredient,
-                                      child: Text(ingredient.name),
-                                    );
-                                  }).toList(),
-                                  onChanged: (Ingredient? newValue) {
-                                    setState(() {
-                                      selectedIngredient = newValue;
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Select Ingredient',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                ),*/
+                                const Text('Ingredients*:',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold)),
                                 Row(
                                   children: [
                                     Expanded(
@@ -160,6 +160,13 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                         if (selectedIngredient != null &&
                                             ingredientWeightController
                                                 .text.isNotEmpty) {
+                                          if (selectedIngredients
+                                              .contains(selectedIngredient)) {
+                                            setState(() {
+                                              selectedIngredients
+                                                  .remove(selectedIngredient);
+                                            });
+                                          } // rule of three(rule of thirds) to calculate the corresponding co2
                                           int newco2 = (int.parse(
                                                       ingredientWeightController
                                                           .text) *
@@ -179,9 +186,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                     ),
                                   ],
                                 ),
-
                                 spaceBetweenColumns(),
-
                                 ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: selectedIngredients.length,
@@ -210,20 +215,32 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                     );
                                   },
                                 ),
-
                                 spaceBetweenColumns(),
-                                //Photos appears here
-
-                                customSpaceBetweenColumns(50),
-
+                                const Divider(
+                                  height: 20,
+                                  thickness: 2,
+                                  indent: 20,
+                                  endIndent: 20,
+                                ),
+                                spaceBetweenColumns(),
                                 Center(
                                   child: Column(
                                     children: [
+                                      if (pickedImageFile != null)
+                                        Container(
+                                          child: Image.file(
+                                            File(pickedImageFile!.path),
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
                                       ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          pickImage();
+                                        },
                                         child: const Icon(Icons.add),
                                       ),
-                                      Text('Add Photos',
+                                      Text('Add Photo*',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium),
@@ -233,7 +250,13 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                               ]),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      if (error)
+                        Text(
+                          errorMessage,
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Container(
@@ -243,9 +266,53 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                               cancelButton(context),
                               SizedBox(width: 10),
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     Navigator.pop(context);
+                                  }
+                                  if (selectedIngredients.isEmpty &&
+                                      pickedImageFile == null) {
+                                    setState(() {
+                                      errorMessage =
+                                          'Please select at least one ingredient and choose an image!';
+                                      error = true;
+                                    });
+                                  } else if (selectedIngredients.isEmpty) {
+                                    setState(() {
+                                      errorMessage =
+                                          'Please select at least one ingredient!';
+                                      error = true;
+                                    });
+                                  } else if (pickedImageFile == null) {
+                                    setState(() {
+                                      errorMessage = 'Please select an image!';
+                                      error = true;
+                                    });
+                                  } else {
+                                    if (_formKey.currentState!.validate()) {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      //await StorageService().uploadDishImage(
+                                      //   nameController.text,
+                                      //   pickedImageFile!.path);
+                                      await DatabaseService().addOrUpdateDish(
+                                          nameController.text,
+                                          descriptionController.text,
+                                          double.parse(priceController.text),
+                                          selectedIngredients,
+                                          pickedImageFile!.path);
+                                      Navigator.pop(context);
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        errorMessage =
+                                            'Please fill in all the required fields!';
+                                        error = true;
+                                      });
+                                    }
                                   }
                                 },
                                 child: const Text('Save'),

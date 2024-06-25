@@ -1,7 +1,7 @@
 import 'package:adc_group_project/screens/back_office/restaurants_applications/restaurants_applications_list.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:flutter/material.dart';
-import 'package:adc_group_project/services/database.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:provider/provider.dart';
 
 class RestaurantsApplicationsScreen extends StatelessWidget {

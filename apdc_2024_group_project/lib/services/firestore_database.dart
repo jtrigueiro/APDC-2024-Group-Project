@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/models/ingredient.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+// firestore database service
 class DatabaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  //final String uid;
-  //DatabaseService({required this.uid});
+
   // Storage do Firebase
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
@@ -173,23 +174,6 @@ class DatabaseService {
     }
   }
 
-  // add a dish
-  Future addDishToRestaurant(
-      String name, String description, double price) async {
-    User? user = _auth.currentUser;
-    try {
-      await restaurantsCollection.doc(user!.uid).collection('dishes').add({
-        'name': name,
-        'description': description,
-        'price': price,
-      });
-      return true;
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
-
   Future<List<Ingredient>> getAllIngredients() async {
     try {
       final QuerySnapshot doc = await ingredientsCollection.get();
@@ -203,6 +187,37 @@ class DatabaseService {
     } catch (e) {
       print(e.toString());
       return [];
+    }
+  }
+
+  Future addOrUpdateDish(String name, String description, double price,
+      List ingredients, String filePath) async {
+    User? user = _auth.currentUser;
+    try {
+      CollectionReference<Map<String, dynamic>> path =
+          restaurantsCollection.doc(user!.uid).collection('dishes');
+
+      var result = await path.add({
+        'name': name,
+        'description': description,
+        'price': price,
+        'active': 'false',
+      });
+
+      ingredients.forEach((ingredient) async {
+        await path.doc(result.id).collection("ingredients").add({
+          'name': ingredient.name,
+          'grams': ingredient.grams,
+          'co2': ingredient.co2,
+        });
+      });
+
+      await StorageService().uploadDishImage(user.uid, result.id, filePath);
+
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
     }
   }
 

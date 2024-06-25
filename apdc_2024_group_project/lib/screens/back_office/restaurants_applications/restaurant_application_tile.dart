@@ -1,4 +1,4 @@
-import 'package:adc_group_project/services/database.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';

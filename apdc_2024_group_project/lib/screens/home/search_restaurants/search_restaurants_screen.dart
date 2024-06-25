@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
-import 'package:adc_group_project/services/database.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +14,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
   final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
 
   final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
@@ -25,8 +26,10 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController searchController = TextEditingController();
   String? _mapStyle;
 
-  final IconData locationIcon = const IconData(0xf193, fontFamily: 'MaterialIcons');
-  final IconData searchIcon = const IconData(0xf013d, fontFamily: 'MaterialIcons');
+  final IconData locationIcon =
+      const IconData(0xf193, fontFamily: 'MaterialIcons');
+  final IconData searchIcon =
+      const IconData(0xf013d, fontFamily: 'MaterialIcons');
 
   @override
   void initState() {
@@ -50,7 +53,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   bool inRadius(LatLng point, LatLng center, double radius) {
-    return Geolocator.distanceBetween(point.latitude, point.longitude, center.latitude, center.longitude) < radius;
+    return Geolocator.distanceBetween(point.latitude, point.longitude,
+            center.latitude, center.longitude) <
+        radius;
   }
 
   void addRestaurant(Map<String, dynamic> restaurant) {
@@ -70,7 +75,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
     data.then((values) {
       for (var restaurant in values) {
-        final LatLng position = LatLng(restaurant['latitude'], restaurant['longitude']);
+        final LatLng position =
+            LatLng(restaurant['latitude'], restaurant['longitude']);
 
         if (inRadius(position, _center, 5000)) {
           addRestaurant(restaurant);
@@ -80,7 +86,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _moveToLocation(String location) async {
-    final url = Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
+    final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -106,7 +113,8 @@ class _SearchScreenState extends State<SearchScreen> {
     databaseService.searchRestaurants(query).then((values) {
       restaurants.clear();
       for (var restaurant in values) {
-        final LatLng position = LatLng(restaurant['latitude'], restaurant['longitude']);
+        final LatLng position =
+            LatLng(restaurant['latitude'], restaurant['longitude']);
 
         if (inRadius(position, _center, 5000)) {
           addRestaurant(restaurant);
@@ -136,9 +144,11 @@ class _SearchScreenState extends State<SearchScreen> {
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+    controller.animateCamera(
+        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
   }
 
   @override
@@ -147,13 +157,16 @@ class _SearchScreenState extends State<SearchScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios,
+              color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Row(
           children: [
             Expanded(
-              child: searchBox('Location', locationIcon, _moveToLocation, locationController).widget!,
+              child: searchBox('Location', locationIcon, _moveToLocation,
+                      locationController)
+                  .widget!,
             ),
             FloatingActionButton(
               mini: true,
@@ -166,7 +179,9 @@ class _SearchScreenState extends State<SearchScreen> {
       body: Center(
         child: Column(
           children: [
-            searchBox('Search for restaurants', searchIcon, _searchForRestaurants, searchController).widget!,
+            searchBox('Search for restaurants', searchIcon,
+                    _searchForRestaurants, searchController)
+                .widget!,
             Expanded(
               child: Stack(
                 children: [
@@ -217,7 +232,8 @@ Widget restaurantMarkers(List<Map<String, String>> info) {
   );
 }
 
-SearchBox searchBox(String label, IconData icon, Function function, TextEditingController controller) {
+SearchBox searchBox(String label, IconData icon, Function function,
+    TextEditingController controller) {
   return SearchBox(
     widget: Row(
       mainAxisAlignment: MainAxisAlignment.start,

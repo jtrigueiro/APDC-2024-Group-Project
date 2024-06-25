@@ -4,7 +4,7 @@ import 'package:adc_group_project/screens/favorites/favorites_screen.dart';
 import 'package:adc_group_project/screens/home/home_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_screen.dart';
 import 'package:adc_group_project/screens/reservations/reservations_screen.dart';
-import 'package:adc_group_project/services/database.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 
