@@ -293,9 +293,6 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                       setState(() {
                                         loading = true;
                                       });
-                                      //await StorageService().uploadDishImage(
-                                      //   nameController.text,
-                                      //   pickedImageFile!.path);
                                       await DatabaseService().addOrUpdateDish(
                                           nameController.text,
                                           descriptionController.text,
