@@ -29,7 +29,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
-  final String apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
+  final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
 
   late Marker marker;
 
