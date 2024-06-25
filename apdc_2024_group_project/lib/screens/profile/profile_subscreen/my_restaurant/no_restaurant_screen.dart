@@ -54,6 +54,9 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   Uint8List? _waterPdfBytes;
   int? _numberOfSeats;
   double? _co2EmissionEstimate;
+  String? _electricityPdfError;
+  String? _gasPdfError;
+  String? _waterPdfError;
 
   @override
   void initState() {
@@ -159,72 +162,77 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   }
 
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
+    setState(() {
+      _electricityPdfError =
+          _electricityPdf == null && _electricityPdfBytes == null
+              ? 'Please upload the last month of electricity bill'
+              : null;
+      _gasPdfError = _gasPdf == null && _gasPdfBytes == null
+          ? 'Please upload the last month of gas bill'
+          : null;
+      _waterPdfError = _waterPdf == null && _waterPdfBytes == null
+          ? 'Please upload the last month of water bill'
+          : null;
+    });
+
+    if (_formKey.currentState!.validate() &&
+        _electricityPdfError == null &&
+        _gasPdfError == null &&
+        _waterPdfError == null) {
       setState(() {
         loading = true;
       });
 
       try {
-        // Verifica se todos os arquivos estão disponíveis
-        if ((_electricityPdf != null || _electricityPdfBytes != null) &&
-            (_gasPdf != null || _gasPdfBytes != null) &&
-            (_waterPdf != null || _waterPdfBytes != null)) {
-          // Upload files
-          String? electricityUrl;
-          String? gasUrl;
-          String? waterUrl;
+        // Upload files
+        String? electricityUrl;
+        String? gasUrl;
+        String? waterUrl;
 
-          print('Uploading electricity PDF...');
-          electricityUrl = await _uploadFile(
-              _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
-              'electricity_${DateTime.now().millisecondsSinceEpoch}.pdf');
+        print('Uploading electricity PDF...');
+        electricityUrl = await _uploadFile(
+            _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
+            'electricity_${DateTime.now().millisecondsSinceEpoch}.pdf');
 
-          print('Uploading gas PDF...');
-          gasUrl = await _uploadFile(
-              _gasPdfBytes ?? await _gasPdf!.readAsBytes(),
-              'gas_${DateTime.now().millisecondsSinceEpoch}.pdf');
+        print('Uploading gas PDF...');
+        gasUrl = await _uploadFile(_gasPdfBytes ?? await _gasPdf!.readAsBytes(),
+            'gas_${DateTime.now().millisecondsSinceEpoch}.pdf');
 
-          print('Uploading water PDF...');
-          waterUrl = await _uploadFile(
-              _waterPdfBytes ?? await _waterPdf!.readAsBytes(),
-              'water_${DateTime.now().millisecondsSinceEpoch}.pdf');
+        print('Uploading water PDF...');
+        waterUrl = await _uploadFile(
+            _waterPdfBytes ?? await _waterPdf!.readAsBytes(),
+            'water_${DateTime.now().millisecondsSinceEpoch}.pdf');
 
-          // Verifica se todos os uploads foram bem-sucedidos
-          if (electricityUrl == null || gasUrl == null || waterUrl == null) {
-            print('Failed to upload one or more files');
-            setState(() {
-              loading = false;
-            });
-            return;
-          }
+        // Verifica se todos os uploads foram bem-sucedidos
+        if (electricityUrl == null || gasUrl == null || waterUrl == null) {
+          print('Failed to upload one or more files');
+          setState(() {
+            loading = false;
+          });
+          return;
+        }
 
-          // Exemplo de uso do DatabaseService para operações no Firebase
-          dynamic result =
-              await DatabaseService().addOrUpdateRestaurantApplicationData(
-            nameController.text,
-            phoneController.text,
-            addressController.text,
-            electricityUrl,
-            gasUrl,
-            _numberOfSeats!,
-            _co2EmissionEstimate!,
-            waterUrl,
-          );
+        // Exemplo de uso do DatabaseService para operações no Firebase
+        dynamic result =
+            await DatabaseService().addOrUpdateRestaurantApplicationData(
+          nameController.text,
+          phoneController.text,
+          addressController.text,
+          electricityUrl,
+          gasUrl,
+          _numberOfSeats!,
+          _co2EmissionEstimate!,
+          waterUrl,
+        );
 
-          if (result == null) {
-            print('Failed to submit application data');
-            setState(() {
-              loading = false;
-            });
-          } else {
-            print('Application data submitted successfully');
-            widget.checkCurrentIndex();
-            setState(() {
-              loading = false;
-            });
-          }
+        if (result == null) {
+          print('Failed to submit application data');
+          setState(() {
+            loading = false;
+          });
         } else {
-          print('One or more files are missing');
+          print('Application data submitted successfully');
+          widget.checkCurrentIndex();
           setState(() {
             loading = false;
           });
@@ -367,28 +375,49 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                 child: Text(
                                   _electricityPdf == null &&
                                           _electricityPdfBytes == null
-                                      ? 'Upload Last  Month of Electricity Bill'
+                                      ? 'Upload Last  Month of Electricity Bill()'
                                       : 'Electricity PDF Selected',
                                 ),
                               ),
+                              _electricityPdfError != null
+                                  ? Text(
+                                      _electricityPdfError!,
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 12),
+                                    )
+                                  : Container(),
                               const SizedBox(height: 10),
                               ElevatedButton(
                                 onPressed: () => _pickFile('gas'),
                                 child: Text(
                                   _gasPdf == null && _gasPdfBytes == null
-                                      ? 'Upload Last Month of Gas Bill'
+                                      ? 'Upload Last Month of Gas Bill()'
                                       : 'Gas PDF Selected',
                                 ),
                               ),
+                              _gasPdfError != null
+                                  ? Text(
+                                      _gasPdfError!,
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 12),
+                                    )
+                                  : Container(),
                               const SizedBox(height: 10),
                               ElevatedButton(
                                 onPressed: () => _pickFile('water'),
                                 child: Text(
                                   _waterPdf == null && _waterPdfBytes == null
-                                      ? 'Upload Last  Month of Water Bill'
+                                      ? 'Upload Last  Month of Water Bill()'
                                       : 'Water PDF Selected',
                                 ),
                               ),
+                              _waterPdfError != null
+                                  ? Text(
+                                      _waterPdfError!,
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 12),
+                                    )
+                                  : Container(),
                               const SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: _submitForm,
