@@ -375,7 +375,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                 child: Text(
                                   _electricityPdf == null &&
                                           _electricityPdfBytes == null
-                                      ? 'Upload Last  Month of Electricity Bill()'
+                                      ? 'Upload Last  Month of Electricity Bill(*)'
                                       : 'Electricity PDF Selected',
                                 ),
                               ),
@@ -391,7 +391,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                 onPressed: () => _pickFile('gas'),
                                 child: Text(
                                   _gasPdf == null && _gasPdfBytes == null
-                                      ? 'Upload Last Month of Gas Bill()'
+                                      ? 'Upload Last Month of Gas Bill(*)'
                                       : 'Gas PDF Selected',
                                 ),
                               ),
@@ -407,7 +407,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                 onPressed: () => _pickFile('water'),
                                 child: Text(
                                   _waterPdf == null && _waterPdfBytes == null
-                                      ? 'Upload Last  Month of Water Bill()'
+                                      ? 'Upload Last  Month of Water Bill(*)'
                                       : 'Water PDF Selected',
                                 ),
                               ),
