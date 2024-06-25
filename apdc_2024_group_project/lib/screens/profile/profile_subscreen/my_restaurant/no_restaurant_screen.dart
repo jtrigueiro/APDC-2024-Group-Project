@@ -2,18 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:adc_group_project/services/database.dart';
-import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:adc_group_project/services/database.dart';
 
 class NoRestaurantScreen extends StatefulWidget {
   final Function checkCurrentIndex;
@@ -144,28 +142,33 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       });
 
       try {
+        // Upload files
         String? electricityUrl;
         String? gasUrl;
 
         if (_electricityPdf != null || _electricityPdfBytes != null) {
-          electricityUrl = await _uploadFile(
+          print('Uploading electricity PDF...');
+          electricityUrl = await DatabaseService().uploadFile(
               _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
               'electricity_${DateTime.now().millisecondsSinceEpoch}.pdf');
         }
 
         if (_gasPdf != null || _gasPdfBytes != null) {
-          gasUrl = await _uploadFile(
+          print('Uploading gas PDF...');
+          gasUrl = await DatabaseService().uploadFile(
               _gasPdfBytes ?? await _gasPdf!.readAsBytes(),
               'gas_${DateTime.now().millisecondsSinceEpoch}.pdf');
         }
 
         if (electricityUrl == null || gasUrl == null) {
+          print('Failed to upload one or both files');
           setState(() {
             loading = false;
           });
           return;
         }
 
+        // Example of using DatabaseService for Firebase operations
         dynamic result =
             await DatabaseService().addOrUpdateRestaurantApplicationData(
           nameController.text,
@@ -177,32 +180,22 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
 
         if (result == null) {
           print('Failed to submit application data');
+          setState(() {
+            loading = false;
+          });
         } else {
           print('Application data submitted successfully');
           widget.checkCurrentIndex();
+          setState(() {
+            loading = false;
+          });
         }
       } catch (e) {
         print('Error submitting application data: $e');
-      } finally {
         setState(() {
           loading = false;
         });
       }
-    }
-  }
-
-  Future<void> _updateTileOverlays() async {
-    try {
-      if (_controller.isCompleted) {
-        final controller = await _controller.future;
-        if (controller != null) {
-          // Update overlays logic here
-        } else {
-          print('GoogleMapController is null');
-        }
-      }
-    } catch (e) {
-      print('Error updating tile overlays: $e');
     }
   }
 

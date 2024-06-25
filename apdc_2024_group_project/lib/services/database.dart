@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:adc_group_project/services/models/ingredient.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class DatabaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   //final String uid;
   //DatabaseService({required this.uid});
+  // Storage do Firebase
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // users collection reference
   final CollectionReference usersCollection =
@@ -115,6 +119,20 @@ class DatabaseService {
       return true;
     } catch (e) {
       print(e.toString());
+      return null;
+    }
+  }
+
+  //upload files to firebase storage
+  Future<String?> uploadFile(Uint8List fileBytes, String fileName) async {
+    try {
+      final storageRef = _storage.ref().child('uploads/$fileName');
+      final metadata = SettableMetadata(contentType: 'application/pdf');
+      await storageRef.putData(fileBytes, metadata);
+      final downloadUrl = await storageRef.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print('Failed to upload file: $e');
       return null;
     }
   }
