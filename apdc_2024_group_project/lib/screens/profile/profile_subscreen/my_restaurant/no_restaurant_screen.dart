@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:adc_group_project/services/database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,10 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:adc_group_project/services/database.dart';
 
 class NoRestaurantScreen extends StatefulWidget {
   final Function checkCurrentIndex;
+
   NoRestaurantScreen({
     Key? key,
     required this.checkCurrentIndex,
@@ -28,7 +29,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
-  final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
+  final String apiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
 
   late Marker marker;
 
@@ -36,25 +37,39 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController addressController;
-  late GoogleMapController mapController;
+  TextEditingController _numberOfSeatsController = TextEditingController();
+  TextEditingController _co2EmissionEstimateController =
+      TextEditingController();
 
   String? _mapStyle;
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
   File? _electricityPdf;
   File? _gasPdf;
+  File? _waterPdf;
   Uint8List? _electricityPdfBytes;
   Uint8List? _gasPdfBytes;
+  Uint8List? _waterPdfBytes;
+  int? _numberOfSeats;
+  double? _co2EmissionEstimate;
 
   @override
   void initState() {
+    super.initState();
     scrollController = ScrollController();
     nameController = TextEditingController();
     phoneController = TextEditingController();
     addressController = TextEditingController();
-
+    _numberOfSeatsController = TextEditingController();
+    _co2EmissionEstimateController = TextEditingController();
     _loadMapStyle();
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _numberOfSeatsController.dispose();
+    _co2EmissionEstimateController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadMapStyle() async {
@@ -66,7 +81,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       _controller.complete(controller);
     }
     if (_mapStyle != null) {
-      controller.setMapStyle(_mapStyle);
+      controller.setMapStyle(_mapStyle!);
     }
   }
 
@@ -91,28 +106,32 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
-  Future<void> _pickFile(bool isElectricity) async {
+  Future<void> _pickFile(String fileType) async {
     try {
-      final result = await FilePicker.platform
-          .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
       if (result != null) {
-        if (kIsWeb) {
-          setState(() {
-            if (isElectricity) {
+        setState(() {
+          if (kIsWeb) {
+            if (fileType == 'electricity') {
               _electricityPdfBytes = result.files.single.bytes;
-            } else {
+            } else if (fileType == 'gas') {
               _gasPdfBytes = result.files.single.bytes;
+            } else if (fileType == 'water') {
+              _waterPdfBytes = result.files.single.bytes;
             }
-          });
-        } else {
-          setState(() {
-            if (isElectricity) {
+          } else {
+            if (fileType == 'electricity') {
               _electricityPdf = File(result.files.single.path!);
-            } else {
+            } else if (fileType == 'gas') {
               _gasPdf = File(result.files.single.path!);
+            } else if (fileType == 'water') {
+              _waterPdf = File(result.files.single.path!);
             }
-          });
-        }
+          }
+        });
       } else {
         print('File selection cancelled');
       }
@@ -145,23 +164,31 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         // Upload files
         String? electricityUrl;
         String? gasUrl;
+        String? waterUrl;
 
         if (_electricityPdf != null || _electricityPdfBytes != null) {
           print('Uploading electricity PDF...');
-          electricityUrl = await DatabaseService().uploadFile(
+          electricityUrl = await _uploadFile(
               _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
               'electricity_${DateTime.now().millisecondsSinceEpoch}.pdf');
         }
 
         if (_gasPdf != null || _gasPdfBytes != null) {
           print('Uploading gas PDF...');
-          gasUrl = await DatabaseService().uploadFile(
+          gasUrl = await _uploadFile(
               _gasPdfBytes ?? await _gasPdf!.readAsBytes(),
               'gas_${DateTime.now().millisecondsSinceEpoch}.pdf');
         }
 
-        if (electricityUrl == null || gasUrl == null) {
-          print('Failed to upload one or both files');
+        if (_waterPdf != null || _waterPdfBytes != null) {
+          print('Uploading water PDF...');
+          waterUrl = await _uploadFile(
+              _waterPdfBytes ?? await _waterPdf!.readAsBytes(),
+              'water_${DateTime.now().millisecondsSinceEpoch}.pdf');
+        }
+
+        if (electricityUrl == null || gasUrl == null || waterUrl == null) {
+          print('Failed to upload one or more files');
           setState(() {
             loading = false;
           });
@@ -176,6 +203,9 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           addressController.text,
           electricityUrl,
           gasUrl,
+          _numberOfSeats!,
+          _co2EmissionEstimate!,
+          waterUrl,
         );
 
         if (result == null) {
@@ -267,6 +297,48 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   return null;
                                 },
                               ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: _numberOfSeatsController,
+                                decoration: InputDecoration(
+                                  labelText: 'Number of Seats*',
+                                  border: OutlineInputBorder(),
+                                ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _numberOfSeats = int.tryParse(value);
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter the number of seats';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: _co2EmissionEstimateController,
+                                decoration: InputDecoration(
+                                  labelText: 'CO2 Emission Estimate (tons)*',
+                                  border: OutlineInputBorder(),
+                                ),
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _co2EmissionEstimate =
+                                        double.tryParse(value);
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter the CO2 emission estimate';
+                                  }
+                                  return null;
+                                },
+                              ),
                               const SizedBox(height: 30),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
@@ -282,7 +354,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                               ),
                               const SizedBox(height: 20),
                               ElevatedButton(
-                                onPressed: () => _pickFile(true),
+                                onPressed: () => _pickFile('electricity'),
                                 child: Text(
                                   _electricityPdf == null &&
                                           _electricityPdfBytes == null
@@ -292,11 +364,20 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                               ),
                               const SizedBox(height: 10),
                               ElevatedButton(
-                                onPressed: () => _pickFile(false),
+                                onPressed: () => _pickFile('gas'),
                                 child: Text(
                                   _gasPdf == null && _gasPdfBytes == null
                                       ? 'Upload Last 3 Months of Gas Bills'
                                       : 'Gas PDF Selected',
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              ElevatedButton(
+                                onPressed: () => _pickFile('water'),
+                                child: Text(
+                                  _waterPdf == null && _waterPdfBytes == null
+                                      ? 'Upload Last 3 Months of Water Bills'
+                                      : 'Water PDF Selected',
                                 ),
                               ),
                               const SizedBox(height: 20),
