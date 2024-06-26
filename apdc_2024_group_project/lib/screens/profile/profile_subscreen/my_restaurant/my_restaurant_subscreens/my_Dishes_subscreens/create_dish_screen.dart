@@ -311,12 +311,14 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                                 p.extension(
                                                     pickedImageFile!.name));
                                       } else {
-                                        await DatabaseService().addOrUpdateDish(
-                                            nameController.text,
-                                            descriptionController.text,
-                                            double.parse(priceController.text),
-                                            selectedIngredients,
-                                            pickedImageFile!.path);
+                                        await DatabaseService()
+                                            .addOrUpdateDishMobile(
+                                                nameController.text,
+                                                descriptionController.text,
+                                                double.parse(
+                                                    priceController.text),
+                                                selectedIngredients,
+                                                pickedImageFile!.path);
                                       }
                                       Navigator.pop(context);
                                       setState(() {

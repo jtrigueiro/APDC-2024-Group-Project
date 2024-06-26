@@ -190,7 +190,7 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateDish(String name, String description, double price,
+  Future addOrUpdateDishMobile(String name, String description, double price,
       List ingredients, String imagePath) async {
     User? user = _auth.currentUser;
     try {
