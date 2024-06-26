@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'dart:math';
 
-import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/ingredient.dart';
+import 'package:path/path.dart' as p;
 import 'package:adc_group_project/utils/loading_screen.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -227,13 +226,22 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                   child: Column(
                                     children: [
                                       if (pickedImageFile != null)
-                                        Container(
-                                          child: Image.file(
-                                            File(pickedImageFile!.path),
-                                            width: double.infinity,
-                                            fit: BoxFit.cover,
+                                        if (kIsWeb)
+                                          Container(
+                                            child: Image.network(
+                                              pickedImageFile!.path,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        else
+                                          Container(
+                                            child: Image.file(
+                                              File(pickedImageFile!.path),
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ),
                                       ElevatedButton(
                                         onPressed: () {
                                           pickImage();
@@ -267,9 +275,6 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                               SizedBox(width: 10),
                               ElevatedButton(
                                 onPressed: () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    Navigator.pop(context);
-                                  }
                                   if (selectedIngredients.isEmpty &&
                                       pickedImageFile == null) {
                                     setState(() {
@@ -293,12 +298,26 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                       setState(() {
                                         loading = true;
                                       });
-                                      await DatabaseService().addOrUpdateDish(
-                                          nameController.text,
-                                          descriptionController.text,
-                                          double.parse(priceController.text),
-                                          selectedIngredients,
-                                          pickedImageFile!.path);
+                                      if (kIsWeb) {
+                                        await DatabaseService()
+                                            .addOrUpdateDishWeb(
+                                                nameController.text,
+                                                descriptionController.text,
+                                                double.parse(
+                                                    priceController.text),
+                                                selectedIngredients,
+                                                await pickedImageFile!
+                                                    .readAsBytes(),
+                                                p.extension(
+                                                    pickedImageFile!.name));
+                                      } else {
+                                        await DatabaseService().addOrUpdateDish(
+                                            nameController.text,
+                                            descriptionController.text,
+                                            double.parse(priceController.text),
+                                            selectedIngredients,
+                                            pickedImageFile!.path);
+                                      }
                                       Navigator.pop(context);
                                       setState(() {
                                         loading = false;

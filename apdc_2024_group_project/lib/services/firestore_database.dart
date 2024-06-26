@@ -191,7 +191,7 @@ class DatabaseService {
   }
 
   Future addOrUpdateDish(String name, String description, double price,
-      List ingredients, String filePath) async {
+      List ingredients, String imagePath) async {
     User? user = _auth.currentUser;
     try {
       CollectionReference<Map<String, dynamic>> path =
@@ -212,7 +212,39 @@ class DatabaseService {
         });
       });
 
-      await StorageService().uploadDishImage(user.uid, result.id, filePath);
+      await StorageService().uploadDishImage(user.uid, result.id, imagePath);
+
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future addOrUpdateDishWeb(String name, String description, double price,
+      List ingredients, Uint8List imageBytes, String imageExtension) async {
+    User? user = _auth.currentUser;
+    try {
+      CollectionReference<Map<String, dynamic>> path =
+          restaurantsCollection.doc(user!.uid).collection('dishes');
+
+      var result = await path.add({
+        'name': name,
+        'description': description,
+        'price': price,
+        'active': 'false',
+      });
+
+      ingredients.forEach((ingredient) async {
+        await path.doc(result.id).collection("ingredients").add({
+          'name': ingredient.name,
+          'grams': ingredient.grams,
+          'co2': ingredient.co2,
+        });
+      });
+
+      await StorageService()
+          .uploadDishImageWeb(user.uid, result.id, imageBytes, imageExtension);
 
       return true;
     } catch (e) {
