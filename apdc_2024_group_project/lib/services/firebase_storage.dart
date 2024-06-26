@@ -8,7 +8,8 @@ class StorageService {
     return 'restaurants/$uid/dishes/$dishId';
   }
 
-  Future uploadDishImage(String uid, String dishId, String imagePath) async {
+  Future uploadDishImageMobile(
+      String uid, String dishId, String imagePath) async {
     final path = dishImagePath(uid, dishId);
     final ref = FirebaseStorage.instance.ref().child(path);
     ref.putFile(File(imagePath));

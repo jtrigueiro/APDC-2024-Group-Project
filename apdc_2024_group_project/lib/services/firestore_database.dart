@@ -212,7 +212,8 @@ class DatabaseService {
         });
       });
 
-      await StorageService().uploadDishImage(user.uid, result.id, imagePath);
+      await StorageService()
+          .uploadDishImageMobile(user.uid, result.id, imagePath);
 
       return true;
     } catch (e) {
