@@ -55,7 +55,16 @@ class _HomeRouterState extends State<HomeRouter> {
         : (isAdmin
             ? BackOfficeHomeScreen()
             : Scaffold(
-                body: screens[_currentIndex],
+                body: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                  child: screens[_currentIndex],
+                ),
                 bottomNavigationBar: BottomNavigationBar(
                   currentIndex: _currentIndex,
                   items: <BottomNavigationBarItem>[
