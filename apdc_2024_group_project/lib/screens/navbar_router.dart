@@ -7,6 +7,7 @@ import 'package:adc_group_project/screens/reservations/reservations_screen.dart'
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class HomeRouter extends StatefulWidget {
   const HomeRouter({super.key});
@@ -52,7 +53,7 @@ class _HomeRouterState extends State<HomeRouter> {
   Widget build(BuildContext context) {
     return loading
         ? LoadingScreen()
-        : (isAdmin
+        : isAdmin
             ? BackOfficeHomeScreen()
             : Scaffold(
                 body: AnimatedSwitcher(
@@ -64,7 +65,7 @@ class _HomeRouterState extends State<HomeRouter> {
                     );
                   },
                   child: screens[_currentIndex],
-                ),
+                ),  
                 bottomNavigationBar: BottomNavigationBar(
                   currentIndex: _currentIndex,
                   items: <BottomNavigationBarItem>[
@@ -110,6 +111,6 @@ class _HomeRouterState extends State<HomeRouter> {
                     });
                   },
                 ),
-              ));
+              );
   }
 }
