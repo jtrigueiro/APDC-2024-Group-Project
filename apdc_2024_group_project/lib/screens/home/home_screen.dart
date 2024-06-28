@@ -1,11 +1,20 @@
 import 'package:adc_group_project/screens/home/search_restaurants/search_restaurants_screen.dart';
+import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/screens/home/home_screen_objects/searchbar.dart';
 import 'package:adc_group_project/screens/home/home_screen_objects/top_carousel.dart';
 import 'package:adc_group_project/screens/home/home_screen_objects/middle_carousel.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
 
   final List<String> topCarouselImages = [
     'assets/images/italian.png',
@@ -33,11 +42,59 @@ class HomeScreen extends StatelessWidget {
         'location': 'Lisboa'
       },
     ];
+  
+  bool gettingLocation = true;
+  LatLng userLocation = const LatLng(0, 0); 
 
-  void _onSearchPressed(BuildContext context) {
+  @override
+  void initState() {
+    getLocation();
+    super.initState();
+  }
+
+  void getLocation() async {
+    LocationPermission permission;
+
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+          gettingLocation = false;
+        });
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() {
+          gettingLocation = false;
+        });
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          gettingLocation = false;
+        });
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      userLocation = LatLng(position.latitude, position.longitude);
+      gettingLocation = false;
+    });
+  }
+
+
+  void _onSearchPressed(BuildContext context, LatLng userLocation) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SearchScreen()),
+      MaterialPageRoute(builder: (context) => SearchScreen(userLocation: userLocation,)),
     );
   }
 
@@ -45,10 +102,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Column(
+        return gettingLocation ? const LoadingScreen() : Column(
           children: [
             const SizedBox(height: 20.0),
-            SearchButton(onPressed: () => _onSearchPressed(context)),
+            SearchButton(onPressed: () => _onSearchPressed(context, userLocation)),
             TopCarousel(images: topCarouselImages),
             Expanded(child: MiddleCarousel(items: middleCarouselItems)),
           ],
@@ -58,7 +115,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// isto é usado?
 extension StringCasingExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${substring(1)}";

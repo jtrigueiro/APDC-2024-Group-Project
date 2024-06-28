@@ -24,7 +24,7 @@ class RestaurantInfo extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(
-                          "${info['name']!} - ${info['location']}\n${info['price']!}\n${info['tag']!}",
+                          "${info['name']!} - ${info['address']}\n", //${info['price']!}\n${info['tag']!}",
                           style: const TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -32,15 +32,12 @@ class RestaurantInfo extends StatelessWidget {
                         ),
 
                         
-                        Column(
+                        const Column(
                           children: [
-                            Image.asset('assets/images/star_icon.png',
-                              width: 20,
-                              height: 20,
-                            ),
+                            const Icon(Icons.star, color: Colors.yellow, size: 20,),
 
                             Text(
-                              "${info['rating']!}",
+                              "rating", // "${info['rating']!}",
                               style: const TextStyle(
                                 fontSize: 15.0,
                                 fontWeight: FontWeight.normal,
@@ -53,7 +50,7 @@ class RestaurantInfo extends StatelessWidget {
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
-                    child: Image.asset(info['image']!,
+                    child: Image.asset('assets/images/restaurant1.png',
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height * 0.3,
                       fit: BoxFit.fitWidth,
@@ -63,13 +60,10 @@ class RestaurantInfo extends StatelessWidget {
 
                   Row(
                     children: [
-                      Image.asset('assets/images/image_2_icon.png',
-                        width: 20,
-                        height: 20,
-                      ),
+                      IconButton(onPressed: null, icon: const Icon(Icons.psychology_alt_outlined)),
 
                       Text(
-                        "${info['co2']!} CO2e*",
+                        "CO2", //"${info['co2']!} CO2e*",
                         style: const TextStyle(
                           fontSize: 15.0,
                           fontWeight: FontWeight.normal,
@@ -77,7 +71,7 @@ class RestaurantInfo extends StatelessWidget {
                       ),
 
                       IconButton(
-                        icon: Image.asset('assets/images/heart_empty_icon.png'),
+                        icon: const Icon(Icons.favorite_border),
                         iconSize: 50,
                         onPressed: () {
                           //add to favorites

@@ -3,9 +3,11 @@ class RestaurantApplication {
       name,
       phone,
       location,
+      address,
       electricityPdfUrl,
       gasPdfUrl,
-      waterPdfUrl;
+      waterPdfUrl,
+      coordinates;
   final double co2EmissionEstimate;
   final int numberOfSeats;
 
@@ -14,10 +16,12 @@ class RestaurantApplication {
     required this.name,
     required this.phone,
     required this.location,
+    required this.address,
     required this.co2EmissionEstimate,
     required this.electricityPdfUrl,
     required this.gasPdfUrl,
     required this.waterPdfUrl,
     required this.numberOfSeats,
+    required this.coordinates,
   });
 }

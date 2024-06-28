@@ -35,6 +35,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
 
   late Marker marker;
 
+  late String coordinates;
+  late String location;
   late ScrollController scrollController;
   late TextEditingController nameController;
   late TextEditingController phoneController;
@@ -100,7 +102,9 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         if (json['status'] == 'OK') {
           final result = json['results'][0]['formatted_address'];
           addressController.text = result;
-        } else {
+          location = json['results'][0]['address_components'][2]['long_name'];
+          coordinates = '${position.latitude},${position.longitude}';
+
           print('Error: ${json['status']}');
         }
       } else {
@@ -212,17 +216,23 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           return;
         }
 
+        if(location == null) {
+          print('null 217');
+        }
+
         // Exemplo de uso do DatabaseService para operações no Firebase
         dynamic result =
             await DatabaseService().addOrUpdateRestaurantApplicationData(
           nameController.text,
           phoneController.text,
           addressController.text,
+          location.toLowerCase(),
           electricityUrl,
           gasUrl,
           _numberOfSeats!,
           _co2EmissionEstimate!,
           waterUrl,
+          coordinates,
         );
 
         if (result == null) {

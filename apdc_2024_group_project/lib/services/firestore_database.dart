@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // firestore database service
 class DatabaseService {
@@ -79,7 +80,7 @@ class DatabaseService {
       String location) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
-          .where('location', isEqualTo: location)
+          .where('location', isGreaterThanOrEqualTo: location)
           .get();
       return result.docs
           .map((doc) => doc.data() as Map<String, dynamic>)
@@ -109,23 +110,27 @@ class DatabaseService {
   Future addOrUpdateRestaurantApplicationData(
       String name,
       String phone,
+      String address,
       String location,
       String electricityUrl,
       String gasUrl,
       int numberOfSeats,
       double co2EmissionEstimate,
-      String waterUrl) async {
+      String waterUrl,
+      String coords) async {
     User? user = _auth.currentUser;
     try {
       await restaurantsApplicationsCollection.doc(user!.uid).set({
         'name': name,
         'phone': phone,
+        'address': address,
         'location': location,
         'electricityUrl': electricityUrl,
         'gasUrl': gasUrl,
         'numberOfSeats': numberOfSeats,
         'co2EmissionEstimate': co2EmissionEstimate,
         'waterUrl': waterUrl,
+        'coordinates' : coords
       });
       return true;
     } catch (e) {
@@ -261,15 +266,17 @@ class DatabaseService {
     try {
       return snapshot.docs.map((doc) {
         return RestaurantApplication(
-          uid: doc.id ?? '',
+          uid: doc.id,
           name: doc.get('name') ?? '',
           phone: doc.get('phone') ?? '',
           location: doc.get('location') ?? '',
+          address: doc.get('address') ?? '',
           co2EmissionEstimate: doc.get('co2EmissionEstimate') ?? 0,
           electricityPdfUrl: doc.get('electricityUrl') ?? '',
           gasPdfUrl: doc.get('gasUrl') ?? '',
           waterPdfUrl: doc.get('waterUrl') ?? '',
           numberOfSeats: doc.get('numberOfSeats') ?? 0,
+          coordinates: doc.get('coordinates') ?? '',
         );
       }).toList();
     } catch (e) {
@@ -303,12 +310,14 @@ class DatabaseService {
 
   // add or update restaurant data
   Future addOrUpdateRestaurantData(
-      String uid, String name, String phone, String location) async {
+      String uid, String name, String phone, String address, String location, String coords) async {
     try {
       await restaurantsCollection.doc(uid).set({
         'name': name,
         'phone': phone,
+        'address': address,
         'location': location,
+        'coordinates': coords,
       });
       return true;
     } catch (e) {
@@ -388,9 +397,10 @@ class DatabaseService {
 
   Future<List<Map<String, dynamic>>> getRestaurantsbyLocality(
       String locality) async {
+
     try {
-      final QuerySnapshot result = await restaurantsMarkersCollection
-          .where('locality', isGreaterThanOrEqualTo: locality)
+      final QuerySnapshot result = await restaurantsCollection
+          .where("location", isEqualTo: locality)
           .get();
       return result.docs
           .map((doc) => doc.data() as Map<String, dynamic>)

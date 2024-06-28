@@ -61,7 +61,9 @@ class RestaurantApplicationTile extends StatelessWidget {
                   restaurantApplication.uid,
                   restaurantApplication.name,
                   restaurantApplication.phone,
+                  restaurantApplication.address,
                   restaurantApplication.location,
+                  restaurantApplication.coordinates,
                 );
                 await DatabaseService()
                     .deleteRestaurantApplication(restaurantApplication.uid);

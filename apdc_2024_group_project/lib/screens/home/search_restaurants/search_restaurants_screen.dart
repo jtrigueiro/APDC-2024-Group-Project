@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/services.dart';
@@ -9,32 +10,54 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SearchScreen extends StatefulWidget {
+  final LatLng userLocation;
+
+  const SearchScreen({ Key? key, required this.userLocation }): super(key: key);
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-  final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
-
   final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
 
   List<Map<String, String>> restaurants = [];
+  List<Marker> markers = [];
 
-  TextEditingController locationController = TextEditingController();
-  TextEditingController searchController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+
+  final IconData locationIcon = const IconData(0xf193, fontFamily: 'MaterialIcons');
+  final IconData searchIcon = const IconData(0xf013d, fontFamily: 'MaterialIcons');
+
+  late LatLng currentLocation;
+  String currentLocality = '';
+  bool done = false;
   String? _mapStyle;
-
-  final IconData locationIcon =
-      const IconData(0xf193, fontFamily: 'MaterialIcons');
-  final IconData searchIcon =
-      const IconData(0xf013d, fontFamily: 'MaterialIcons');
 
   @override
   void initState() {
-    super.initState();
+    currentLocation = widget.userLocation;
+    getLocality(currentLocation);
     _loadMapStyle();
+    getRestaurants(currentLocality);
+    super.initState();
+  }
+
+  void getLocality(LatLng coordinates) {
+    final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=$apiKey');
+    http.get(url).then((response) {
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json['status'] == 'OK') {
+          final locality = json['results'][0]['address_components'][2]['long_name'];
+          currentLocality = locality;
+          locationController.text = locality;
+        }
+      }
+    });
   }
 
   Future<void> _loadMapStyle() async {
@@ -48,6 +71,26 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
+  void getCenter(String center) async {
+        final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?address=$center&key=$apiKey');
+    final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json['status'] == 'OK') {
+          final result = json['results'][0]['geometry']['location'];
+          currentLocation = LatLng(result['lat'], result['lng']);
+        }
+        else {
+          currentLocation = const LatLng(38.660259532890706, -9.203190255573041);
+        }
+      }
+      else {
+        currentLocation = const LatLng(38.660259532890706, -9.203190255573041);
+      }
+  }
+
   void _handleTap(LatLng point) {
     print(point);
   }
@@ -58,31 +101,44 @@ class _SearchScreenState extends State<SearchScreen> {
         radius;
   }
 
-  void addRestaurant(Map<String, dynamic> restaurant) {
+  void handleRestaurant(Map<String, dynamic> restaurant, int index) {
+    List<String> coords = restaurant['coordinates'].split(',');
+
     restaurants.add({
-      'image': restaurant['image'],
       'name': restaurant['name'],
       'address': restaurant['address'],
-      'rating': restaurant['rating'],
-      'co2': restaurant['co2'],
+      'location': restaurant['location'],
+      'phone': restaurant['phone'],
+      'latitude': coords[0],
+      'longitude': coords[1],
     });
+
+    markers.add(
+      Marker(
+        markerId: MarkerId(index.toString()),
+        position: LatLng(double.parse(coords[0]), double.parse(coords[1])),
+        infoWindow: InfoWindow(
+          title: restaurant['name'],
+          snippet: restaurant['location'],
+        ),
+      ),
+    );
   }
 
-  void getRestaurants(String locality) {
-    restaurants.clear();
-    final DatabaseService db = DatabaseService();
-    final data = db.getRestaurantsbyLocality(locality);
+  void getRestaurants(String locality) async {
+      restaurants.clear();
+      markers.clear();
 
-    data.then((values) {
-      for (var restaurant in values) {
-        final LatLng position =
-            LatLng(restaurant['latitude'], restaurant['longitude']);
+      final DatabaseService db = DatabaseService();
+      final values = await db.getRestaurantsbyLocality(locality.toLowerCase());
 
-        if (inRadius(position, _center, 5000)) {
-          addRestaurant(restaurant);
-        }
+      for (int i = 0; i < values.length; i++) {
+        handleRestaurant(values[i], i);
       }
-    });
+
+      setState(() {
+        done = true;
+      });
   }
 
   Future<void> _moveToLocation(String location) async {
@@ -90,22 +146,28 @@ class _SearchScreenState extends State<SearchScreen> {
         'https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
     final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      if (json['status'] == 'OK') {
-        final location = json['results'][0]['geometry']['location'];
-        final LatLng target = LatLng(location['lat'], location['lng']);
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json['status'] == 'OK') {
+          final result = json['results'][0]['geometry']['location'];
+          final LatLng target = LatLng(result['lat'], result['lng']);
 
-        final GoogleMapController controller = await _controller.future;
-        controller.animateCamera(CameraUpdate.newLatLng(target));
+          //final GoogleMapController controller = await _controller.future;
+          //controller.animateCamera(CameraUpdate.newLatLng(target));
 
-        getRestaurants(location.toString());
+          setState(() {
+            currentLocation = target;
+            done = false;
+          });
+
+          getRestaurants(location.toLowerCase());
+        } else {
+          print('Error: ${json['status']}');
+        }
       } else {
-        print('Error: ${json['status']}');
+        print('Failed to fetch location');
       }
-    } else {
-      print('Failed to fetch location');
-    }
+      currentLocality = location;
   }
 
   Future<void> _searchForRestaurants(String query) async {
@@ -113,12 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
     databaseService.searchRestaurants(query).then((values) {
       restaurants.clear();
       for (var restaurant in values) {
-        final LatLng position =
-            LatLng(restaurant['latitude'], restaurant['longitude']);
-
-        if (inRadius(position, _center, 5000)) {
-          addRestaurant(restaurant);
-        }
+          handleRestaurant(restaurant, values.indexOf(restaurant));
       }
     });
   }
@@ -164,7 +221,7 @@ class _SearchScreenState extends State<SearchScreen> {
         title: Row(
           children: [
             Expanded(
-              child: searchBox('Location', locationIcon, _moveToLocation,
+              child: searchBox("Location", locationIcon, _moveToLocation,
                       locationController)
                   .widget!,
             ),
@@ -185,16 +242,17 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
               child: Stack(
                 children: [
-                  GoogleMap(
+                   done ? GoogleMap(
+                    markers: Set.of(markers),
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
-                      target: _center,
+                      target: currentLocation,
                       zoom: 14.0,
                     ),
                     onTap: _handleTap,
-                  ),
+                  ) : const LoadingScreen(),
                   Align(
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.bottomCenter,
                     child: restaurantMarkers(restaurants),
                   ),
                 ],
@@ -214,9 +272,8 @@ Widget restaurantMarkers(List<Map<String, String>> info) {
     itemCount: info.length,
     itemBuilder: (context, index) {
       return ListTile(
-        leading: Image.asset(info[index]['image']!),
         title: Text(info[index]['name']!),
-        subtitle: Text(info[index]['address']!),
+        subtitle: Text(info[index]['location']!),
         onTap: () {
           Navigator.push(
             context,
@@ -227,6 +284,8 @@ Widget restaurantMarkers(List<Map<String, String>> info) {
             ),
           );
         },
+        selectedColor: const Color(0xFFf2f2f2),
+        selected: true,
       );
     },
   );
