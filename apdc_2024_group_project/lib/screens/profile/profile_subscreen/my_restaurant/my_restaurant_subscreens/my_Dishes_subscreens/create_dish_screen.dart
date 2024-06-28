@@ -298,6 +298,10 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                       setState(() {
                                         loading = true;
                                       });
+                                      final dishCo2 = selectedIngredients.fold(
+                                          0,
+                                          (previousValue, element) =>
+                                              previousValue + element.co2);
                                       if (kIsWeb) {
                                         await DatabaseService()
                                             .addOrUpdateDishWeb(
@@ -305,6 +309,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                                 descriptionController.text,
                                                 double.parse(
                                                     priceController.text),
+                                                dishCo2,
                                                 selectedIngredients,
                                                 await pickedImageFile!
                                                     .readAsBytes(),
@@ -317,6 +322,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                                 descriptionController.text,
                                                 double.parse(
                                                     priceController.text),
+                                                dishCo2,
                                                 selectedIngredients,
                                                 pickedImageFile!.path);
                                       }

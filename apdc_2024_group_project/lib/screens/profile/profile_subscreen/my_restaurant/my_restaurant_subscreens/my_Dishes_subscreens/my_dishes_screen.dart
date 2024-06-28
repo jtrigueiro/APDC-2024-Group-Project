@@ -1,6 +1,7 @@
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import 'create_dish_screen.dart';
 
@@ -23,6 +24,8 @@ class MyDishesScreenState extends State<MyDishesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //final ingredients = Provider.of<List<Ingredient>?>(context) ?? [];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Dishes'),
@@ -57,6 +60,11 @@ class MyDishesScreenState extends State<MyDishesScreen> {
                   child: const Icon(Icons.add),
                 ),
               ),
+              /*  Row(ListView.builder(
+        itemCount: ingredients.length,
+        itemBuilder: (context, index) {
+          return RestaurantIngredientTile(ingredient: ingredients[index]);
+        });)*/
             ],
           ),
         ),

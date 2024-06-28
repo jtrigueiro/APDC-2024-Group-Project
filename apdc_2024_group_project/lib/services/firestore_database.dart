@@ -130,7 +130,7 @@ class DatabaseService {
         'numberOfSeats': numberOfSeats,
         'co2EmissionEstimate': co2EmissionEstimate,
         'waterUrl': waterUrl,
-        'coordinates' : coords
+        'coordinates': coords
       });
       return true;
     } catch (e) {
@@ -196,7 +196,7 @@ class DatabaseService {
   }
 
   Future addOrUpdateDishMobile(String name, String description, double price,
-      List ingredients, String imagePath) async {
+      int co2, List ingredients, String imagePath) async {
     User? user = _auth.currentUser;
     try {
       CollectionReference<Map<String, dynamic>> path =
@@ -206,6 +206,7 @@ class DatabaseService {
         'name': name,
         'description': description,
         'price': price,
+        'co2': co2,
         'active': 'false',
       });
 
@@ -227,8 +228,14 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateDishWeb(String name, String description, double price,
-      List ingredients, Uint8List imageBytes, String imageExtension) async {
+  Future addOrUpdateDishWeb(
+      String name,
+      String description,
+      double price,
+      int co2,
+      List ingredients,
+      Uint8List imageBytes,
+      String imageExtension) async {
     User? user = _auth.currentUser;
     try {
       CollectionReference<Map<String, dynamic>> path =
@@ -238,6 +245,7 @@ class DatabaseService {
         'name': name,
         'description': description,
         'price': price,
+        'co2': co2,
         'active': 'false',
       });
 
@@ -309,8 +317,8 @@ class DatabaseService {
   }
 
   // add or update restaurant data
-  Future addOrUpdateRestaurantData(
-      String uid, String name, String phone, String address, String location, String coords) async {
+  Future addOrUpdateRestaurantData(String uid, String name, String phone,
+      String address, String location, String coords) async {
     try {
       await restaurantsCollection.doc(uid).set({
         'name': name,
@@ -397,7 +405,6 @@ class DatabaseService {
 
   Future<List<Map<String, dynamic>>> getRestaurantsbyLocality(
       String locality) async {
-
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where("location", isEqualTo: locality)
