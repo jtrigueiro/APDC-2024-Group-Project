@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:adc_group_project/services/firebase_storage.dart';
+import 'package:adc_group_project/services/models/dish.dart';
 import 'package:adc_group_project/services/models/ingredient.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/material.dart';
 
 // firestore database service
 class DatabaseService {
@@ -32,8 +33,13 @@ class DatabaseService {
   final CollectionReference restaurantsMarkersCollection =
       FirebaseFirestore.instance.collection('restaurants_markers');
 
+  // ingredients collection reference
   final CollectionReference ingredientsCollection =
       FirebaseFirestore.instance.collection('ingredients');
+
+  // subcollections variables
+  static const String DISHES_SUBCOLLECTION = "dishes";
+  static const String INGREDIENTS_SUBCOLLECTION = "ingredients";
 
   // ----------------- User -----------------
   // add or update user data
@@ -200,18 +206,18 @@ class DatabaseService {
     User? user = _auth.currentUser;
     try {
       CollectionReference<Map<String, dynamic>> path =
-          restaurantsCollection.doc(user!.uid).collection('dishes');
+          restaurantsCollection.doc(user!.uid).collection(DISHES_SUBCOLLECTION);
 
       var result = await path.add({
         'name': name,
         'description': description,
         'price': price,
         'co2': co2,
-        'active': 'false',
+        'visible': false,
       });
 
       ingredients.forEach((ingredient) async {
-        await path.doc(result.id).collection("ingredients").add({
+        await path.doc(result.id).collection(INGREDIENTS_SUBCOLLECTION).add({
           'name': ingredient.name,
           'grams': ingredient.grams,
           'co2': ingredient.co2,
@@ -239,18 +245,18 @@ class DatabaseService {
     User? user = _auth.currentUser;
     try {
       CollectionReference<Map<String, dynamic>> path =
-          restaurantsCollection.doc(user!.uid).collection('dishes');
+          restaurantsCollection.doc(user!.uid).collection(DISHES_SUBCOLLECTION);
 
       var result = await path.add({
         'name': name,
         'description': description,
         'price': price,
         'co2': co2,
-        'active': 'false',
+        'visible': false,
       });
 
       ingredients.forEach((ingredient) async {
-        await path.doc(result.id).collection("ingredients").add({
+        await path.doc(result.id).collection(INGREDIENTS_SUBCOLLECTION).add({
           'name': ingredient.name,
           'grams': ingredient.grams,
           'co2': ingredient.co2,
@@ -261,6 +267,93 @@ class DatabaseService {
           .uploadDishImageWeb(user.uid, result.id, imageBytes, imageExtension);
 
       return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  List<Dish> _dishesListFromSnapshot(QuerySnapshot snapshot) {
+    try {
+      return snapshot.docs.map((doc) {
+        return Dish(
+          id: doc.id,
+          name: doc.get('name') ?? '',
+          description: doc.get('description') ?? '',
+          co2: doc.get('co2') ?? 0,
+          price: doc.get('price') ?? 0,
+          visible: doc.get('visible') ?? false,
+        );
+      }).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
+    }
+  }
+
+  Stream<List<Dish>> get dishes {
+    try {
+      User? user = _auth.currentUser;
+      return restaurantsCollection
+          .doc(user!.uid)
+          .collection(DISHES_SUBCOLLECTION)
+          .snapshots()
+          .map(_dishesListFromSnapshot);
+    } catch (e) {
+      print(e.toString());
+      return Stream.empty();
+    }
+  }
+
+  Future deleteDish(String dishId) async {
+    User? user = _auth.currentUser;
+    try {
+      await restaurantsCollection
+          .doc(user!.uid)
+          .collection(DISHES_SUBCOLLECTION)
+          .doc(dishId)
+          .collection(INGREDIENTS_SUBCOLLECTION)
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          ds.reference.delete();
+        }
+      });
+
+      await restaurantsCollection
+          .doc(user.uid)
+          .collection(DISHES_SUBCOLLECTION)
+          .doc(dishId)
+          .delete();
+
+      await StorageService().deleteDishImage(user.uid, dishId);
+
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future updateDishVisibility(String dishId, bool visibility) async {
+    User? user = _auth.currentUser;
+    try {
+      await restaurantsCollection
+          .doc(user!.uid)
+          .collection(DISHES_SUBCOLLECTION)
+          .doc(dishId)
+          .update({'visible': !visibility});
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future getDishImageUrl(String dishId) async {
+    User? user = _auth.currentUser;
+    try {
+      return await StorageService().getDishImageUrl(user!.uid, dishId);
     } catch (e) {
       print(e.toString());
       return null;

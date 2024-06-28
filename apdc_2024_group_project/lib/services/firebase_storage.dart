@@ -23,4 +23,16 @@ class StorageService {
     final metadata = SettableMetadata(contentType: 'image/$extensionName');
     ref.putData(imageBytes, metadata);
   }
+
+  Future deleteDishImage(String uid, String dishId) async {
+    final path = dishImagePath(uid, dishId);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    ref.delete();
+  }
+
+  Future<String> getDishImageUrl(String uid, String dishId) async {
+    final path = dishImagePath(uid, dishId);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    return ref.getDownloadURL();
+  }
 }
