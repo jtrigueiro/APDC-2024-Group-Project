@@ -11,20 +11,19 @@ class RestaurantScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentHeight = MediaQuery.of(context).size.height;
 
+    print(info.toString());
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-      ),
-      body: Column(
+      appBar: AppBar(),
+      body: Stack(
         children: [
           RestaurantInfo(info: info),
-          RestaurantMenu(info: info),
-          Padding(
-            padding: const EdgeInsets.all(0),
-            child: Container(
-              height: currentHeight * 0.05,
-              width: double.infinity,
-              color: const Color.fromRGBO(255, 255, 255, 0.23),
+          //RestaurantMenu(info: info),
+          Positioned(
+            height: currentHeight * 0.05,
+            width: MediaQuery.of(context).size.width,
+            bottom: currentHeight * 0.05,
+            child: Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromRGBO(52, 168, 83, 0.23),

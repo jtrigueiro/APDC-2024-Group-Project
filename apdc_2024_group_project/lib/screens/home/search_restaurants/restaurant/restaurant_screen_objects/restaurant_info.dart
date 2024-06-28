@@ -12,9 +12,7 @@ class RestaurantInfo extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-
-          Padding(padding: const EdgeInsets.all(0),
-            child: Container(
+          Container(
               color: const Color.fromRGBO(52, 168, 83, 0.23),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +49,7 @@ class RestaurantInfo extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
                     child: Image.asset('assets/images/restaurant1.png',
-                      width: double.infinity,
+                      width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.3,
                       fit: BoxFit.fitWidth,
                       
@@ -72,7 +70,7 @@ class RestaurantInfo extends StatelessWidget {
 
                       IconButton(
                         icon: const Icon(Icons.favorite_border),
-                        iconSize: 50,
+                        iconSize: 20,
                         onPressed: () {
                           //add to favorites
                         },
@@ -90,7 +88,6 @@ class RestaurantInfo extends StatelessWidget {
                 ],
               )
               ),
-          ),
         ],
       ),
     );

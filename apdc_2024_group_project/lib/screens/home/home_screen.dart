@@ -1,4 +1,5 @@
 import 'package:adc_group_project/screens/home/search_restaurants/search_restaurants_screen.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/screens/home/home_screen_objects/searchbar.dart';
@@ -44,12 +45,24 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   
   bool gettingLocation = true;
+  bool gettingRestaurants = true;
   LatLng userLocation = const LatLng(0, 0); 
+  List<Map<String, dynamic>> items = [];
 
   @override
   void initState() {
     getLocation();
+    getRestaurants('lisboa');
     super.initState();
+  }
+
+  void getRestaurants(String locality) async {
+    final DatabaseService db = DatabaseService();
+    items = await db.getRestaurantsbyLocality(locality.toLowerCase());
+
+    setState(() {
+      gettingRestaurants = false;
+    });
   }
 
   void getLocation() async {
@@ -102,12 +115,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return gettingLocation ? const LoadingScreen() : Column(
+        return (gettingLocation || gettingRestaurants) ? const LoadingScreen() : Column(
           children: [
             const SizedBox(height: 20.0),
             SearchButton(onPressed: () => _onSearchPressed(context, userLocation)),
             TopCarousel(images: topCarouselImages),
-            Expanded(child: MiddleCarousel(items: middleCarouselItems)),
+            Expanded(child: MiddleCarousel(items: items)),
           ],
         );
       },

@@ -9,7 +9,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/widgets.dart';
 
 class MiddleCarousel extends StatelessWidget {
-  final List<Map<String, String>> items;
+  final List<Map<String, dynamic>> items;
 
   const MiddleCarousel({required this.items, super.key});
 
@@ -18,19 +18,10 @@ class MiddleCarousel extends StatelessWidget {
     await Firebase.initializeApp();
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> getRestaurantInfo(String id) {
-    final db = FirebaseFirestore.instance.collection('restaurants');
-    final data = db.where('id', isEqualTo: id).get();
-    return data;
-  }
-
-  void itemClicked(context, Map<String, String> item) async {
-    var queryResult = await getRestaurantInfo(item['id']!);
-    var info = queryResult.docs.first.data();
-
+  void itemClicked(context, Map<String, dynamic> item) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RestaurantScreen(info: info)),
+      MaterialPageRoute(builder: (context) => RestaurantScreen(info: item)),
     );
   }
 
@@ -60,7 +51,7 @@ class MiddleCarousel extends StatelessWidget {
                 children: [
                   Expanded(
                       child: Image.asset(
-                          item['image']!,
+                          'assets/images/restaurant1.png',
                           fit: BoxFit.cover),
                   ),
 
