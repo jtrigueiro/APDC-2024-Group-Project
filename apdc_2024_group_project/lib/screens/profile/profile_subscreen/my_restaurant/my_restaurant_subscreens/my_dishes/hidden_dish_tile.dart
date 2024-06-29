@@ -81,7 +81,9 @@ class HiddenDishTile extends StatelessWidget {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            content: Image.network(value),
+                            content: Image.network(value,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Text('Error loading image!')),
                           );
                         },
                       );
