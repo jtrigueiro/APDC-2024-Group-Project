@@ -51,7 +51,7 @@ class DatabaseService {
       });
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       //TODO: need to handle an error on auth
       return null;
     }
@@ -63,7 +63,7 @@ class DatabaseService {
       final DocumentSnapshot doc = await usersCollection.doc(user!.uid).get();
       return doc.get('isAdmin') ?? false;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return false;
     }
   }
@@ -77,7 +77,7 @@ class DatabaseService {
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -92,7 +92,7 @@ class DatabaseService {
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -106,7 +106,7 @@ class DatabaseService {
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -140,7 +140,7 @@ class DatabaseService {
       });
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -154,7 +154,7 @@ class DatabaseService {
       final downloadUrl = await storageRef.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Failed to upload file: $e');
+      debugPrint('Failed to upload file: $e');
       return null;
     }
   }
@@ -167,7 +167,7 @@ class DatabaseService {
           await restaurantsApplicationsCollection.doc(user!.uid).get();
       return doc.exists;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -180,7 +180,7 @@ class DatabaseService {
           await restaurantsCollection.doc(user!.uid).get();
       return doc.exists;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -196,7 +196,7 @@ class DatabaseService {
         );
       }).toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -229,7 +229,7 @@ class DatabaseService {
 
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -268,7 +268,7 @@ class DatabaseService {
 
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -286,7 +286,7 @@ class DatabaseService {
         );
       }).toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -300,7 +300,7 @@ class DatabaseService {
           .snapshots()
           .map(_dishesListFromSnapshot);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return Stream.empty();
     }
   }
@@ -330,7 +330,7 @@ class DatabaseService {
 
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -345,7 +345,7 @@ class DatabaseService {
           .update({'visible': !visibility});
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -355,7 +355,7 @@ class DatabaseService {
     try {
       return await StorageService().getDishImageUrl(user!.uid, dishId);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -377,7 +377,7 @@ class DatabaseService {
         );
       }).toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -403,7 +403,7 @@ class DatabaseService {
         );
       }).toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -415,7 +415,7 @@ class DatabaseService {
           .snapshots()
           .map(_restaurantsApplicationsListFromSnapshot);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return Stream.empty();
     }
   }
@@ -426,7 +426,7 @@ class DatabaseService {
       await restaurantsApplicationsCollection.doc(uid).delete();
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -444,7 +444,7 @@ class DatabaseService {
       });
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -459,7 +459,7 @@ class DatabaseService {
         );
       }).toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
@@ -470,7 +470,7 @@ class DatabaseService {
           .snapshots()
           .map(_ingredientsListFromSnapshot);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return Stream.empty();
     }
   }
@@ -484,7 +484,7 @@ class DatabaseService {
       });
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -494,7 +494,7 @@ class DatabaseService {
       await ingredientsCollection.doc(name).delete();
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -513,7 +513,7 @@ class DatabaseService {
       });
       return true;
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -528,7 +528,7 @@ class DatabaseService {
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       return [];
     }
   }
