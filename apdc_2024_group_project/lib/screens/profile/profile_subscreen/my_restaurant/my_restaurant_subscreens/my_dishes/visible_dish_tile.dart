@@ -1,4 +1,3 @@
-import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/dish.dart';
 
@@ -28,13 +27,49 @@ class VisibleDishTile extends StatelessWidget {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(dish.description),
                     Text('Price: ${dish.price} €'),
                     Text('CO2: ${dish.co2} grams'),
                   ],
                 ),
               ),
             ),
+            IconButton(
+                icon: const Icon(Icons.food_bank_outlined),
+                onPressed: () async {
+                  await DatabaseService()
+                      .getDishListOfIngredients(dish.id)
+                      .then((value) {
+                    if (value != null) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Description: ${dish.description}',
+                                      textAlign: TextAlign.left),
+                                  ...value.map((e) => ListTile(
+                                        title: Text(e.name),
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Weight: ${e.grams} grams'),
+                                            Text('CO2: ${e.co2} grams'),
+                                          ],
+                                        ),
+                                      )),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  });
+                }),
             IconButton(
                 icon: const Icon(Icons.image_outlined),
                 onPressed: () async {

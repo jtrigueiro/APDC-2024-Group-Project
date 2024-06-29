@@ -360,6 +360,28 @@ class DatabaseService {
     }
   }
 
+  Future<List<Ingredient>> getDishListOfIngredients(String dishId) async {
+    User? user = _auth.currentUser;
+    try {
+      final QuerySnapshot doc = await restaurantsCollection
+          .doc(user!.uid)
+          .collection(DISHES_SUBCOLLECTION)
+          .doc(dishId)
+          .collection(INGREDIENTS_SUBCOLLECTION)
+          .get();
+      return doc.docs.map((doc) {
+        return Ingredient(
+          name: doc.get('name') ?? '',
+          grams: doc.get('grams') ?? 0,
+          co2: doc.get('co2') ?? 0,
+        );
+      }).toList();
+    } catch (e) {
+      print(e.toString());
+      return [];
+    }
+  }
+
   // ----------------- BackOffice -----------------
   // restaurant application from snapshot
   List<RestaurantApplication> _restaurantsApplicationsListFromSnapshot(
