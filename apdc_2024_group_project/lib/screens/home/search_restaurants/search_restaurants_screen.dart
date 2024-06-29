@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
@@ -28,6 +29,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController locationController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  final CarouselController carouselController = CarouselController();
 
   final IconData locationIcon = const IconData(0xf193, fontFamily: 'MaterialIcons');
   final IconData searchIcon = const IconData(0xf013d, fontFamily: 'MaterialIcons');
@@ -117,7 +119,10 @@ class _SearchScreenState extends State<SearchScreen> {
     LatLng pos = LatLng(double.parse(coords[0]), double.parse(coords[1]));
 
     markers.addLabelMarker(LabelMarker(
-    label: 'rating', //restaurant['rating'],
+    onTap: () {
+      carouselController.animateToPage(index);
+    },
+    label: '3.0', //restaurant['rating'],
     markerId: MarkerId(index.toString()),
     position: pos,),
     ).then((_) {
@@ -240,6 +245,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                    done ? GoogleMap(
                     markers: markers,
+                    scrollGesturesEnabled: false,
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
                       target: currentLocation,
@@ -249,7 +255,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ) : const LoadingScreen(),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: restaurantMarkers(restaurants),
+                    child: carouselSlider(carouselController, restaurants),   //restaurantMarkers(restaurants),
                   ),
                 ],
               ),
@@ -259,6 +265,52 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
+}
+
+CarouselSlider carouselSlider(CarouselController carouselController, List<Map<String, String>> info) {
+  return CarouselSlider(
+    carouselController: carouselController,
+    options: CarouselOptions(
+      height: 100,
+      viewportFraction: 0.8,
+      initialPage: 0,
+      enableInfiniteScroll: false,
+      enlargeCenterPage: true,
+      scrollDirection: Axis.horizontal,
+    ),
+    items: info.map((item) {
+      return Builder(
+        builder: (BuildContext context) {
+          return InkWell(
+            mouseCursor: WidgetStateMouseCursor.clickable,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RestaurantScreen(info: item),
+                ),
+              );
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 120, 92, 7),
+              ),
+              child: Column(
+                children: [
+                  Text(item['name']!),
+                  Text(item['address']!),
+                  Text(item['location']!),
+                  Text(item['phone']!),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }).toList(),
+  );
 }
 
 Widget restaurantMarkers(List<Map<String, String>> info) {
