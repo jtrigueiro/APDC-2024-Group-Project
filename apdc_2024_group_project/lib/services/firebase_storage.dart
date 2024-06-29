@@ -12,7 +12,7 @@ class StorageService {
       String uid, String dishId, String imagePath) async {
     final path = dishImagePath(uid, dishId);
     final ref = FirebaseStorage.instance.ref().child(path);
-    ref.putFile(File(imagePath));
+    await ref.putFile(File(imagePath));
   }
 
   Future uploadDishImageWeb(String uid, String dishId, Uint8List imageBytes,
@@ -21,18 +21,18 @@ class StorageService {
     final ref = FirebaseStorage.instance.ref().child(path);
     final extensionName = imageExtension.split('.').last;
     final metadata = SettableMetadata(contentType: 'image/$extensionName');
-    ref.putData(imageBytes, metadata);
+    await ref.putData(imageBytes, metadata);
   }
 
   Future deleteDishImage(String uid, String dishId) async {
     final path = dishImagePath(uid, dishId);
     final ref = FirebaseStorage.instance.ref().child(path);
-    ref.delete();
+    await ref.delete();
   }
 
   Future<String> getDishImageUrl(String uid, String dishId) async {
     final path = dishImagePath(uid, dishId);
     final ref = FirebaseStorage.instance.ref().child(path);
-    return ref.getDownloadURL();
+    return await ref.getDownloadURL();
   }
 }
