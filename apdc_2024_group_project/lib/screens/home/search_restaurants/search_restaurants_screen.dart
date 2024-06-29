@@ -4,6 +4,7 @@ import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:label_marker/label_marker.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +23,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
 
   List<Map<String, String>> restaurants = [];
-  List<Marker> markers = [];
+  Set<Marker> markers = {};
 
   final TextEditingController locationController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
@@ -113,17 +114,17 @@ class _SearchScreenState extends State<SearchScreen> {
       'longitude': coords[1],
     });
 
-    markers.add(
-      Marker(
-        markerId: MarkerId(index.toString()),
-        position: LatLng(double.parse(coords[0]), double.parse(coords[1])),
-        infoWindow: InfoWindow(
-          title: restaurant['name'],
-          snippet: restaurant['location'],
-        ),
-      ),
-    );
+    LatLng pos = LatLng(double.parse(coords[0]), double.parse(coords[1]));
+
+    markers.addLabelMarker(LabelMarker(
+    label: 'rating', //restaurant['rating'],
+    markerId: MarkerId(index.toString()),
+    position: pos,),
+    ).then((_) {
+     setState(() {});
+    });
   }
+
 
   void getRestaurants(String locality) async {
       restaurants.clear();
@@ -152,13 +153,8 @@ class _SearchScreenState extends State<SearchScreen> {
           final result = json['results'][0]['geometry']['location'];
           final LatLng target = LatLng(result['lat'], result['lng']);
 
-          //final GoogleMapController controller = await _controller.future;
-          //controller.animateCamera(CameraUpdate.newLatLng(target));
-
-          setState(() {
-            currentLocation = target;
-            done = false;
-          });
+          final GoogleMapController controller = await _controller.future;
+          controller.animateCamera(CameraUpdate.newLatLng(target));
 
           getRestaurants(location.toLowerCase());
         } else {
@@ -243,7 +239,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Stack(
                 children: [
                    done ? GoogleMap(
-                    markers: Set.of(markers),
+                    markers: markers,
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
                       target: currentLocation,
