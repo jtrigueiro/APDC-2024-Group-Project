@@ -282,7 +282,7 @@ CarouselSlider carouselSlider(CarouselController carouselController, List<Map<St
       return Builder(
         builder: (BuildContext context) {
           return InkWell(
-            mouseCursor: WidgetStateMouseCursor.clickable,
+            //mouseCursor: WidgetStateMouseCursor.clickable,
             onTap: () {
               Navigator.push(
                 context,
