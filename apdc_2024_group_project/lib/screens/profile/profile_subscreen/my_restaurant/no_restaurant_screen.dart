@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
@@ -102,13 +101,26 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         if (json['status'] == 'OK') {
           final result = json['results'][0]['formatted_address'];
           addressController.text = result;
-          location = json['results'][0]['address_components'][2]['long_name'];
+          location = json['results'][0]['address_components'][4]['long_name'];
           coordinates = '${position.latitude},${position.longitude}';
 
           print('Error: ${json['status']}');
         }
       } else {
         print('Failed to fetch address: ${response.statusCode}');
+
+        AlertDialog(
+          title: const Text('Error'),
+          content: const Text('No such address found. Please try again.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
       }
     } catch (e) {
       print('Error fetching address: $e');
@@ -214,10 +226,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
             loading = false;
           });
           return;
-        }
-
-        if(location == null) {
-          print('null 217');
         }
 
         // Exemplo de uso do DatabaseService para operações no Firebase

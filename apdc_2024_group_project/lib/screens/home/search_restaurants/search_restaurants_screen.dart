@@ -42,20 +42,35 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     currentLocation = widget.userLocation;
-    getLocality(currentLocation);
+    getCityByCoords(currentLocation);
     _loadMapStyle();
     getRestaurants(currentLocality);
     super.initState();
   }
 
-  void getLocality(LatLng coordinates) {
+  void getCityByCoords(LatLng coordinates) {
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=$apiKey');
     http.get(url).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         if (json['status'] == 'OK') {
-          final locality = json['results'][0]['address_components'][2]['long_name'];
+          final locality = json['results'][0]['address_components'][4]['long_name'];
+          currentLocality = locality;
+          locationController.text = locality;
+        }
+      }
+    });
+  }
+
+  void getCityByAddress(String address) {
+    final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey');
+    http.get(url).then((response) {
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json['status'] == 'OK') {
+          final locality = json['results'][0]['address_components'][4]['long_name'];
           currentLocality = locality;
           locationController.text = locality;
         }
@@ -119,10 +134,11 @@ class _SearchScreenState extends State<SearchScreen> {
     LatLng pos = LatLng(double.parse(coords[0]), double.parse(coords[1]));
 
     markers.addLabelMarker(LabelMarker(
+      textStyle: const TextStyle(color: Colors.white, fontSize: 12),
     onTap: () {
       carouselController.animateToPage(index);
     },
-    label: '3.0', //restaurant['rating'],
+    label: restaurant['name'].toString(), //restaurant['rating'],
     markerId: MarkerId(index.toString()),
     position: pos,),
     ).then((_) {
@@ -159,8 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
           final LatLng target = LatLng(result['lat'], result['lng']);
 
           final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(CameraUpdate.newLatLng(target));
-
+          controller.animateCamera(CameraUpdate.newLatLngZoom(target, 12.0));
           getRestaurants(location.toLowerCase());
         } else {
           print('Error: ${json['status']}');
@@ -175,6 +190,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final databaseService = DatabaseService();
     databaseService.searchRestaurants(query).then((values) {
       restaurants.clear();
+
       for (var restaurant in values) {
           handleRestaurant(restaurant, values.indexOf(restaurant));
       }
@@ -245,11 +261,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                    done ? GoogleMap(
                     markers: markers,
-                    scrollGesturesEnabled: false,
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
                       target: currentLocation,
-                      zoom: 14.0,
+                      zoom: 12.0,
                     ),
                     onTap: _handleTap,
                   ) : const LoadingScreen(),
@@ -268,48 +283,47 @@ class _SearchScreenState extends State<SearchScreen> {
 }
 
 CarouselSlider carouselSlider(CarouselController carouselController, List<Map<String, String>> info) {
-  return CarouselSlider(
-    carouselController: carouselController,
-    options: CarouselOptions(
-      height: 100,
-      viewportFraction: 0.8,
-      initialPage: 0,
-      enableInfiniteScroll: false,
-      enlargeCenterPage: true,
-      scrollDirection: Axis.horizontal,
-    ),
-    items: info.map((item) {
-      return Builder(
-        builder: (BuildContext context) {
-          return InkWell(
-            //mouseCursor: WidgetStateMouseCursor.clickable,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RestaurantScreen(info: item),
+    return CarouselSlider(
+      carouselController: carouselController,
+      options: CarouselOptions(
+        height: 100,
+        viewportFraction: 0.8,
+        initialPage: 0,
+        enableInfiniteScroll: false,
+        enlargeCenterPage: true,
+        scrollDirection: Axis.horizontal,
+      ),
+      items: info.map((item) {
+        return Builder(
+          builder: (BuildContext context) {
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RestaurantScreen(info: item),
+                  ),
+                );
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 120, 92, 7),
                 ),
-              );
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 120, 92, 7),
+                child: Column(
+                  children: [
+                    Text(item['name']!),
+                    Text(item['address']!),
+                    Text(item['location']!),
+                    Text(item['phone']!),
+                  ],
+                ),
               ),
-              child: Column(
-                children: [
-                  Text(item['name']!),
-                  Text(item['address']!),
-                  Text(item['location']!),
-                  Text(item['phone']!),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    }).toList(),
+            );
+          },
+        );
+      }).toList(),
   );
 }
 
