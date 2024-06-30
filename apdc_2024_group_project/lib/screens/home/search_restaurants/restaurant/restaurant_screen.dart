@@ -1,17 +1,16 @@
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen_objects/restaurant_info.dart';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen_objects/restaurant_menu.dart';
+import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantScreen extends StatelessWidget {
-  final Map<String, dynamic> info;
+  final Restaurant info;
 
   const RestaurantScreen({super.key, required this.info});
 
   @override
   Widget build(BuildContext context) {
     final currentHeight = MediaQuery.of(context).size.height;
-
-    print(info.toString());
 
     return Scaffold(
       appBar: AppBar(),
@@ -30,6 +29,7 @@ class RestaurantScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   //reservation_screen.dart
+                  print(info.toString());
                 },
                 child: const Text(" R E S E R V E"),
               ),

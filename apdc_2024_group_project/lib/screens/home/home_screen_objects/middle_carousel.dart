@@ -1,15 +1,12 @@
-import 'dart:ui';
-
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
+import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/widgets.dart';
 
 class MiddleCarousel extends StatelessWidget {
-  final List<Map<String, dynamic>> items;
+  final List<Restaurant> items;
 
   const MiddleCarousel({required this.items, super.key});
 
@@ -18,7 +15,7 @@ class MiddleCarousel extends StatelessWidget {
     await Firebase.initializeApp();
   }
 
-  void itemClicked(context, Map<String, dynamic> item) {
+  void itemClicked(context, Restaurant item) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => RestaurantScreen(info: item)),
@@ -27,13 +24,7 @@ class MiddleCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //double screenHeight = MediaQuery.of(context).size.height;
-
-    //double cardHeight = screenHeight * 0.2;
-    //TODO: check the card height and width
-
-    return  Container(
-      child: CarouselSlider(
+    return CarouselSlider(
         options: CarouselOptions(
           autoPlay: true,
           autoPlayInterval: const Duration(seconds: 8),
@@ -43,7 +34,7 @@ class MiddleCarousel extends StatelessWidget {
 
         items: items.map((item) {
           return  Card(
-            margin: EdgeInsets.all(5),
+            margin: const EdgeInsets.all(5),
             child: InkWell(
               onTap: () => itemClicked(context, item),
               child:  Column(
@@ -59,13 +50,13 @@ class MiddleCarousel extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        item['name']!,
+                        item.name,
                         style: Theme.of(context).textTheme.displaySmall,
                         maxLines: 1,
                       ),
 
                       Text(
-                        item['location']!,
+                        item.location,
                         style: Theme.of(context).textTheme.bodySmall,
                         maxLines: 1,
                         textAlign: TextAlign.center,
@@ -77,7 +68,6 @@ class MiddleCarousel extends StatelessWidget {
             ),
           );
         }).toList(),
-      ),
     );
   }
 }

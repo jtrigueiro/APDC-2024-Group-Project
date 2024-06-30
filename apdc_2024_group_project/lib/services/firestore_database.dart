@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/models/dish.dart';
 import 'package:adc_group_project/services/models/ingredient.dart';
+import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -82,14 +83,21 @@ class DatabaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getRestaurantsbyLocation(
+  Future<List<Restaurant>> getRestaurantsbyLocation(
       String location) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where('location', isGreaterThanOrEqualTo: location)
           .get();
       return result.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
+          .map((doc) => Restaurant(
+                id: doc.id,
+                name: doc.get('name') ?? '',
+                phone: doc.get('phone') ?? '',
+                address: doc.get('address') ?? '',
+                location: doc.get('location') ?? '',
+                coordinates: doc.get('coordinates') ?? '',
+              ))
           .toList();
     } catch (e) {
       debugPrint(e.toString());
@@ -97,13 +105,20 @@ class DatabaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> searchRestaurants(String search) async {
+  Future<List<Restaurant>> searchRestaurants(String search) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where('name', isGreaterThanOrEqualTo: search)
           .get();
       return result.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
+          .map((doc) => Restaurant(
+                id: doc.id,
+                name: doc.get('name') ?? '',
+                phone: doc.get('phone') ?? '',
+                address: doc.get('address') ?? '',
+                location: doc.get('location') ?? '',
+                coordinates: doc.get('coordinates') ?? '',
+              ))
           .toList();
     } catch (e) {
       debugPrint(e.toString());
@@ -518,14 +533,21 @@ class DatabaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getRestaurantsbyLocality(
+  Future<List<Restaurant>> getRestaurantsbyLocality(
       String locality) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where("location", isEqualTo: locality)
           .get();
       return result.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
+          .map((doc) => Restaurant(
+                id: doc.id,
+                name: doc.get('name') ?? '',
+                phone: doc.get('phone') ?? '',
+                address: doc.get('address') ?? '',
+                location: doc.get('location') ?? '',
+                coordinates: doc.get('coordinates') ?? '',
+              ))
           .toList();
     } catch (e) {
       debugPrint(e.toString());

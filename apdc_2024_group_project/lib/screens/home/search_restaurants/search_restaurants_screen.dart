@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
 
-  List<Map<String, String>> restaurants = [];
+  List<Restaurant> restaurants = [];
   Set<Marker> markers = {};
 
   final TextEditingController locationController = TextEditingController();
@@ -119,18 +120,10 @@ class _SearchScreenState extends State<SearchScreen> {
         radius;
   }
 
-  void handleRestaurant(Map<String, dynamic> restaurant, int index) {
-    List<String> coords = restaurant['coordinates'].split(',');
+  void handleRestaurant(Restaurant restaurant, int index) {
+    List<String> coords = restaurant.coordinates.split(',');
 
-    restaurants.add({
-      'name': restaurant['name'],
-      'address': restaurant['address'],
-      'location': restaurant['location'],
-      'phone': restaurant['phone'],
-      'latitude': coords[0],
-      'longitude': coords[1],
-    });
-
+    restaurants.add(restaurant);
     LatLng pos = LatLng(double.parse(coords[0]), double.parse(coords[1]));
 
     markers.addLabelMarker(LabelMarker(
@@ -138,7 +131,7 @@ class _SearchScreenState extends State<SearchScreen> {
     onTap: () {
       carouselController.animateToPage(index);
     },
-    label: restaurant['name'].toString(), //restaurant['rating'],
+    label: restaurant.name,
     markerId: MarkerId(index.toString()),
     position: pos,),
     ).then((_) {
@@ -282,7 +275,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 }
 
-CarouselSlider carouselSlider(CarouselController carouselController, List<Map<String, String>> info) {
+CarouselSlider carouselSlider(CarouselController carouselController, List<Restaurant> info) {
     return CarouselSlider(
       carouselController: carouselController,
       options: CarouselOptions(
@@ -313,10 +306,10 @@ CarouselSlider carouselSlider(CarouselController carouselController, List<Map<St
                 ),
                 child: Column(
                   children: [
-                    Text(item['name']!),
-                    Text(item['address']!),
-                    Text(item['location']!),
-                    Text(item['phone']!),
+                    Text(item.name),
+                    Text(item.address),
+                    Text(item.location),
+                    Text(item.phone),
                   ],
                 ),
               ),
@@ -327,15 +320,15 @@ CarouselSlider carouselSlider(CarouselController carouselController, List<Map<St
   );
 }
 
-Widget restaurantMarkers(List<Map<String, String>> info) {
+Widget restaurantMarkers(List<Restaurant> info) {
   return ListView.builder(
     shrinkWrap: true,
     scrollDirection: Axis.vertical,
     itemCount: info.length,
     itemBuilder: (context, index) {
       return ListTile(
-        title: Text(info[index]['name']!),
-        subtitle: Text(info[index]['location']!),
+        title: Text(info[index].name),
+        subtitle: Text(info[index].location),
         onTap: () {
           Navigator.push(
             context,

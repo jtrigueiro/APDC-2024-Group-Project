@@ -1,10 +1,11 @@
+import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantInfo extends StatelessWidget {
 
   const RestaurantInfo({required this.info, super.key});
 
-  final Map<String, dynamic> info;
+  final Restaurant info;
   
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class RestaurantInfo extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(
-                          "${info['name']!} - ${info['address']}\n", //${info['price']!}\n${info['tag']!}",
+                          "${info.name} - ${info.address}\n", //${info['price']!}\n${info['tag']!}",
                           style: const TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,

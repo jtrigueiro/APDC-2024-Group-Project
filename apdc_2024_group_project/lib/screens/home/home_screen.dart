@@ -1,5 +1,6 @@
 import 'package:adc_group_project/screens/home/search_restaurants/search_restaurants_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/screens/home/home_screen_objects/searchbar.dart';
@@ -47,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool gettingLocation = true;
   bool gettingRestaurants = true;
   LatLng userLocation = const LatLng(0, 0); 
-  List<Map<String, dynamic>> items = [];
+  List<Restaurant> items = [];
 
   @override
   void initState() {
