@@ -90,7 +90,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ]),
                       ),
                     ),
-
+                    /* //TODO: Implement this
                     TextButton(
                       onPressed: () => {},
                       style: ButtonStyle(
@@ -101,7 +101,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       child: const Text('Forgot Password?'),
                     ),
-
+                    */
                     //login button
                     ElevatedButton(
                       onPressed: () async {

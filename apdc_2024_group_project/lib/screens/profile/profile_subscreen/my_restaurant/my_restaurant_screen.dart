@@ -33,10 +33,10 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
           child: Container(
             padding: const EdgeInsets.all(20),
             child: ListView(shrinkWrap: true, children: [
-              Text('Restaurant name maybe?',
+              /*Text('Restaurant name maybe?',
                   style: Theme.of(context).textTheme.titleLarge),
               Text('location maybe?',
-                  style: Theme.of(context).textTheme.bodyMedium),
+                  style: Theme.of(context).textTheme.bodyMedium),*/
               customSpaceBetweenColumns(40),
               tiles('Personalize', Icons.warehouse, toPersonalizePage),
               tiles('My Dishes', Icons.food_bank, toMyDishesPage),

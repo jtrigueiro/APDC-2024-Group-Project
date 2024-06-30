@@ -91,12 +91,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     customSpaceBetweenColumns(40),
-                    profileItem(
+                    /*profileItem( // Useless
                       context,
                       Icons.person,
                       'Personal Information',
                       ontapPersInformation(context),
-                    ),
+                    ),*/
                     profileItem(
                       context,
                       Icons.reviews,
