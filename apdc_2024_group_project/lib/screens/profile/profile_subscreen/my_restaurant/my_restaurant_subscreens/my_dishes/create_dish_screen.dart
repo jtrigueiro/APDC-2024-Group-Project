@@ -24,6 +24,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
   late TextEditingController priceController;
   late TextEditingController co2Controller;
   late TextEditingController ingredientWeightController;
+  late TextEditingController ingredientNameController;
   Ingredient? selectedIngredient;
   final _formKey = GlobalKey<FormState>();
   late List<Ingredient> ingredients;
@@ -41,6 +42,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
     priceController = TextEditingController();
     co2Controller = TextEditingController();
     ingredientWeightController = TextEditingController();
+    ingredientNameController = TextEditingController();
     getIngredients();
 
     super.initState();
@@ -123,6 +125,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                     Expanded(
                                       child: DropdownMenu<Ingredient>(
                                         requestFocusOnTap: true,
+                                        controller: ingredientNameController,
                                         hintText: 'Select Ingredient',
                                         enableFilter: true,
                                         leadingIcon: const Icon(Icons.search),
@@ -178,6 +181,8 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                             selectedIngredients
                                                 .add(selectedIngredient!);
                                           });
+                                          ingredientWeightController.clear();
+                                          ingredientNameController.clear();
                                         }
                                       },
                                       icon:
