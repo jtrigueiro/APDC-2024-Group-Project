@@ -206,8 +206,8 @@ class DatabaseService {
       return doc.docs.map((doc) {
         return Ingredient(
           name: doc.get('name') ?? '',
-          grams: doc.get('grams') ?? 0,
-          co2: doc.get('co2') ?? 0,
+          grams: doc.get('grams').toInt() ?? 0,
+          co2: doc.get('co2').toInt() ?? 0,
         );
       }).toList();
     } catch (e) {
@@ -295,8 +295,8 @@ class DatabaseService {
           id: doc.id,
           name: doc.get('name') ?? '',
           description: doc.get('description') ?? '',
-          co2: doc.get('co2') ?? 0,
-          price: doc.get('price') ?? 0,
+          co2: doc.get('co2').toInt() ?? 0,
+          price: doc.get('price').toDouble() ?? 0,
           visible: doc.get('visible') ?? false,
         );
       }).toList();
@@ -387,8 +387,8 @@ class DatabaseService {
       return doc.docs.map((doc) {
         return Ingredient(
           name: doc.get('name') ?? '',
-          grams: doc.get('grams') ?? 0,
-          co2: doc.get('co2') ?? 0,
+          grams: doc.get('grams').toInt() ?? 0,
+          co2: doc.get('co2').toInt() ?? 0,
         );
       }).toList();
     } catch (e) {
@@ -409,11 +409,11 @@ class DatabaseService {
           phone: doc.get('phone') ?? '',
           location: doc.get('location') ?? '',
           address: doc.get('address') ?? '',
-          co2EmissionEstimate: doc.get('co2EmissionEstimate') ?? 0,
+          co2EmissionEstimate: doc.get('co2EmissionEstimate').toDouble() ?? 0,
           electricityPdfUrl: doc.get('electricityUrl') ?? '',
           gasPdfUrl: doc.get('gasUrl') ?? '',
           waterPdfUrl: doc.get('waterUrl') ?? '',
-          numberOfSeats: doc.get('numberOfSeats') ?? 0,
+          numberOfSeats: doc.get('numberOfSeats').toInt() ?? 0,
           coordinates: doc.get('coordinates') ?? '',
         );
       }).toList();
@@ -469,8 +469,8 @@ class DatabaseService {
       return snapshot.docs.map((doc) {
         return Ingredient(
           name: doc.get('name') ?? '',
-          grams: doc.get('grams') ?? 0,
-          co2: doc.get('co2') ?? 0,
+          grams: doc.get('grams').toInt() ?? 0,
+          co2: doc.get('co2').toInt() ?? 0,
         );
       }).toList();
     } catch (e) {
