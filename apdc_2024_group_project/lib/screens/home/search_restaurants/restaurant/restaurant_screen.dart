@@ -1,3 +1,4 @@
+import 'package:adc_group_project/screens/home/search_restaurants/restaurant/reserve_screen.dart';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen_objects/restaurant_info.dart';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen_objects/restaurant_menu.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
@@ -28,8 +29,7 @@ class RestaurantScreen extends StatelessWidget {
                   backgroundColor: const Color.fromRGBO(52, 168, 83, 0.23),
                 ),
                 onPressed: () {
-                  //reservation_screen.dart
-                  print(info.toString());
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ReserveScreen(restaurant: info)));
                 },
                 child: const Text(" R E S E R V E"),
               ),
