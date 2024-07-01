@@ -68,6 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final DatabaseService db = DatabaseService();
     items = await db.getRestaurantsbyLocation(local.toLowerCase());
 
+    if(items.isEmpty) {
+      items = await db.getRestaurantsbyLocation('lisboa');
+    }
+
     setState(() {
       gettingRestaurants = false;
     });
