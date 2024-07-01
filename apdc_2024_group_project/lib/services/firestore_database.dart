@@ -30,10 +30,6 @@ class DatabaseService {
   final CollectionReference restaurantsCollection =
       FirebaseFirestore.instance.collection('restaurants');
 
-  // restaurants markers collection reference
-  final CollectionReference restaurantsMarkersCollection =
-      FirebaseFirestore.instance.collection('restaurants_markers');
-
   // ingredients collection reference
   final CollectionReference ingredientsCollection =
       FirebaseFirestore.instance.collection('ingredients');
@@ -76,7 +72,7 @@ class DatabaseService {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where("location", isEqualTo: location)
-          .where('visible', isEqualTo: true)
+          //.where('visible', isEqualTo: true)
           .get();
       return result.docs
           .map((doc) => Restaurant(
@@ -100,7 +96,7 @@ class DatabaseService {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .orderBy('lowerCaseName')
-          .where('visible', isEqualTo: true)
+          //.where('visible', isEqualTo: true)
           .startAt({lowerSearch}).endAt({"$lowerSearch\uf8ff"})
           .get();
       return result.docs

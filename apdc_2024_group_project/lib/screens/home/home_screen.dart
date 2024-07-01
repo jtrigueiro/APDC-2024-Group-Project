@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:adc_group_project/screens/home/search_restaurants/search_restaurants_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
@@ -8,6 +10,7 @@ import 'package:adc_group_project/screens/home/home_screen_objects/top_carousel.
 import 'package:adc_group_project/screens/home/home_screen_objects/middle_carousel.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,48 +28,43 @@ class _HomeScreenState extends State<HomeScreen> {
     'assets/images/sushi.png',
   ];
 
-  // TODO - replace this with actual data
-  final List<Map<String, String>> middleCarouselItems = [
-      {
-        'image': 'assets/images/restaurant1.png',
-        'name': 'Restaurante Verde',
-        'location': 'Almada',
-        'menu': 'name: "Bife à Portuguesa", price: 10.0, description: "Bife com batatas fritas e ovo estrelado"',
-      },
-      {
-        'image': 'assets/images/restaurant2.png',
-        'name': 'Restaurante Vermelho',
-        'location': 'Algueirão Mem Martins'
-      },
-      {
-        'image': 'assets/images/restaurant3.png',
-        'name': 'Restaurante Azul',
-        'location': 'Lisboa'
-      },
-    ];
+  final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
   
   bool gettingLocation = true;
   bool gettingRestaurants = true;
-  LatLng userLocation = const LatLng(0, 0); 
+  LatLng userLocation = const LatLng(.736946, -9.142685); 
   List<Restaurant> items = [];
 
   @override
   void initState() {
-    getLocation();
-    getRestaurants('lisboa');
+    getLocation().then((value) {
+      getRestaurants(userLocation);
+    });
     super.initState();
   }
 
-  void getRestaurants(String locality) async {
-    final DatabaseService db = DatabaseService();
-    items = await db.getRestaurantsbyLocality(locality.toLowerCase());
+  void getRestaurants(LatLng coordinates) async {
+    final url = Uri.parse(
+          'https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=$apiKey');
+      http.get(url).then((response) async {
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json['status'] == 'OK') {
+          final size = json['results'][0]['address_components'].length;
+          final local = json['results'][0]['address_components'][size - 3]['long_name'];
 
-    setState(() {
-      gettingRestaurants = false;
+          final DatabaseService db = DatabaseService();
+          items = await db.getRestaurantsbyLocation(local.toLowerCase());
+
+          setState(() {
+            gettingRestaurants = false;
+          });
+        }
+      }
     });
   }
 
-  void getLocation() async {
+  Future<bool> getLocation() async {
     LocationPermission permission;
 
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -74,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
           gettingLocation = false;
         });
-      return;
+      return false;
     }
 
     permission = await Geolocator.checkPermission();
@@ -84,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           gettingLocation = false;
         });
-        return;
+        return false;
       }
     }
 
@@ -92,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           gettingLocation = false;
         });
-      return;
+      return false;
     }
 
     Position position = await Geolocator.getCurrentPosition(
@@ -102,6 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
       userLocation = LatLng(position.latitude, position.longitude);
       gettingLocation = false;
     });
+
+    return true;
   }
 
 
