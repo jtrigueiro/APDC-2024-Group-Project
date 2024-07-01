@@ -35,8 +35,12 @@ class _ReserveScreenState extends State<ReserveScreen> {
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
+      orientation: Orientation.portrait,
       context: context,
       initialTime: TimeOfDay.now(),
+      confirmText: 'Select',
+      cancelText: 'Cancel',
+
     );
     if (picked != null && picked != _selectedTime) {
       setState(() {

@@ -150,12 +150,12 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
 
-  void getRestaurants(String locality) async {
+  void getRestaurants(String location) async {
       restaurants.clear();
       markers.clear();
 
       final DatabaseService db = DatabaseService();
-      final values = await db.getRestaurantsbyLocality(locality.toLowerCase());
+      final values = await db.getRestaurantsbyLocation(location.toLowerCase());
 
       for (int i = 0; i < values.length; i++) {
         handleRestaurant(values[i], i);

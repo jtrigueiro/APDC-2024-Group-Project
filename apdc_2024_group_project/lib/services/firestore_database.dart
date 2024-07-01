@@ -70,24 +70,13 @@ class DatabaseService {
   }
 
   // ----------------- Search Restaurants -----------------
-
-  Future<List<Map<String, dynamic>>> getAllRestaurants() async {
-    try {
-      final QuerySnapshot result = await restaurantsCollection.get();
-      return result.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
-    } catch (e) {
-      debugPrint(e.toString());
-      return [];
-    }
-  }
-
-  Future<List<Restaurant>> getRestaurantsbyLocation(
+  
+   Future<List<Restaurant>> getRestaurantsbyLocation(
       String location) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
-          .where('location', isGreaterThanOrEqualTo: location)
+          .where("location", isEqualTo: location)
+          .where('visible', isEqualTo: true)
           .get();
       return result.docs
           .map((doc) => Restaurant(
@@ -111,6 +100,7 @@ class DatabaseService {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .orderBy('lowerCaseName')
+          .where('visible', isEqualTo: true)
           .startAt({lowerSearch}).endAt({"$lowerSearch\uf8ff"})
           .get();
       return result.docs
@@ -515,47 +505,6 @@ class DatabaseService {
     } catch (e) {
       debugPrint(e.toString());
       return null;
-    }
-  }
-
-  Future addRestaurantMarker(
-      String uid, String name, String imageUrl, String locality) async {
-    try {
-      await restaurantsMarkersCollection.doc(uid).set({
-        'name': name,
-        'image': imageUrl,
-        'locality': locality,
-        'rating': 0,
-        'co2': 0,
-        'latitude': 0,
-        'longitude': 0,
-      });
-      return true;
-    } catch (e) {
-      debugPrint(e.toString());
-      return null;
-    }
-  }
-
-  Future<List<Restaurant>> getRestaurantsbyLocality(
-      String locality) async {
-    try {
-      final QuerySnapshot result = await restaurantsCollection
-          .where("location", isEqualTo: locality)
-          .get();
-      return result.docs
-          .map((doc) => Restaurant(
-                id: doc.id,
-                name: doc.get('name') ?? '',
-                phone: doc.get('phone') ?? '',
-                address: doc.get('address') ?? '',
-                location: doc.get('location') ?? '',
-                coordinates: doc.get('coordinates') ?? '',
-              ))
-          .toList();
-    } catch (e) {
-      debugPrint(e.toString());
-      return [];
     }
   }
 }
