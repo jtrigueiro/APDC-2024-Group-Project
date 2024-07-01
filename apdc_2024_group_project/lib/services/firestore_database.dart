@@ -159,6 +159,31 @@ class DatabaseService {
     }
   }
 
+  // get restaurant data
+  Future getRestaurantData() async {
+    User? user = _auth.currentUser;
+    try {
+      final DocumentSnapshot doc =
+          await restaurantsCollection.doc(user!.uid).get();
+      return Restaurant(
+        id: doc.id,
+        name: doc.get('name') ?? '',
+        phone: doc.get('phone') ?? '',
+        address: doc.get('address') ?? '',
+        location: doc.get('location') ?? '',
+        coordinates: doc.get('coordinates') ?? '',
+        co2EmissionEstimate: doc.get('co2EmissionEstimate').toDouble() ?? 0,
+        seats: doc.get('seats').toInt() ?? 0,
+        visible: doc.get('visible') ?? false,
+        isOpen: doc.get('isOpen').map<bool>((e) => e as bool).toList(),
+        time: doc.get('time').map<String>((e) => e as String).toList(),
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   //upload files to firebase storage
   Future<String?> uploadFile(Uint8List fileBytes, String fileName) async {
     try {
