@@ -106,9 +106,12 @@ class DatabaseService {
   }
 
   Future<List<Restaurant>> searchRestaurants(String search) async {
+    String lowerSearch = search.toLowerCase();
+
     try {
       final QuerySnapshot result = await restaurantsCollection
-          .where('name', isGreaterThanOrEqualTo: search)
+          .orderBy('lowerCaseName')
+          .startAt({lowerSearch}).endAt({"$lowerSearch\uf8ff"})
           .get();
       return result.docs
           .map((doc) => Restaurant(
@@ -452,6 +455,7 @@ class DatabaseService {
     try {
       await restaurantsCollection.doc(uid).set({
         'name': name,
+        'lowerCaseName': name.toLowerCase(),
         'phone': phone,
         'address': address,
         'location': location,

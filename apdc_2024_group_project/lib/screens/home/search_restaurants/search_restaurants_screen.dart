@@ -4,6 +4,7 @@ import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
@@ -23,6 +24,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
+  final bool isWeb = kIsWeb;
 
   List<Restaurant> restaurants = [];
   Set<Marker> markers = {};
@@ -56,7 +58,8 @@ class _SearchScreenState extends State<SearchScreen> {
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
           if (json['status'] == 'OK') {
-            final locality = json['results'][0]['address_components'][4]['long_name'];
+            final size = json['results'][0]['address_components'].length;
+            final locality = json['results'][0]['address_components'][size - 3]['long_name'];
   
             setState(() {
               currentLocality = locality;
@@ -134,7 +137,7 @@ class _SearchScreenState extends State<SearchScreen> {
     LatLng pos = LatLng(double.parse(coords[0]), double.parse(coords[1]));
 
     markers.addLabelMarker(LabelMarker(
-      textStyle: const TextStyle(color: Colors.white, fontSize: 12),
+      textStyle: TextStyle(color: Colors.white, fontSize: isWeb ? 12 : 16),
     onTap: () {
       carouselController.animateToPage(index);
     },
@@ -156,6 +159,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
       for (int i = 0; i < values.length; i++) {
         handleRestaurant(values[i], i);
+      }
+
+      if(values.isNotEmpty) {
+        changeCamera(0);
       }
 
       setState(() {
