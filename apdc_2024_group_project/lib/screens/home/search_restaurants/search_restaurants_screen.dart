@@ -253,8 +253,7 @@ class _SearchScreenState extends State<SearchScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios,
-              color: Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios,),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Row(
@@ -315,43 +314,87 @@ class _SearchScreenState extends State<SearchScreen> {
           viewportFraction: 0.8,
           initialPage: 0,
           enableInfiniteScroll: false,
-          enlargeCenterPage: true,
           scrollDirection: Axis.horizontal,
           onScrolled: (index) => changeCamera(index!.toInt()),
         ),
         items: info.map((item) {
           return Builder(
             builder: (BuildContext context) {
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RestaurantScreen(info: item),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 120, 92, 7),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(item.name),
-                      Text(item.address),
-                      Text(item.location),
-                      Text(item.phone),
-                    ],
-                  ),
-                ),
-              );
+              return restaurantTile(context, item);
             },
           );
         }).toList(),
     );
   }
+}
+
+InkWell restaurantTile(BuildContext context, Restaurant restaurant) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RestaurantScreen(info: restaurant),
+        ),
+      );
+    },
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: Colors.white,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            margin: const EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              /*
+              image: DecorationImage(
+              image: NetworkImage(item.imageUrl),
+              fit: BoxFit.cover,
+              ),*/
+              image: const DecorationImage(
+                image: AssetImage('assets/images/restaurant_1.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox( height: 5,),
+                Text(
+                  restaurant.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                textLine('4.5', const Icon(Icons.star, color: Colors.amber, size: 16,)),
+                textLine('10.1 kg/yr CO2', const Icon(Icons.eco, size: 16, color: Colors.grey)),
+                textLine('1.2 km', const Icon(Icons.location_on, size: 16, color: Colors.grey)),
+              ],
+            ),
+        ],
+      ),
+    ),
+  );
+}
+
+Row textLine(String text, Icon icon) {
+  return Row(
+    children: [
+      icon,
+      const SizedBox(width: 5),
+      Text(text),
+    ],
+  );
 }
 
 Widget restaurantMarkers(List<Restaurant> info) {
