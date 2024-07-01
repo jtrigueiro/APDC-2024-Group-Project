@@ -38,12 +38,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     getLocation().then((value) {
-      getRestaurants(userLocation);
+      if(value) {
+        getLocal(userLocation);
+      }
+      else {
+        getRestaurants('lisboa');
+      }
     });
     super.initState();
   }
 
-  void getRestaurants(LatLng coordinates) async {
+  void getLocal(LatLng coordinates) async {
     final url = Uri.parse(
           'https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=$apiKey');
       http.get(url).then((response) async {
@@ -53,14 +58,18 @@ class _HomeScreenState extends State<HomeScreen> {
           final size = json['results'][0]['address_components'].length;
           final local = json['results'][0]['address_components'][size - 3]['long_name'];
 
-          final DatabaseService db = DatabaseService();
-          items = await db.getRestaurantsbyLocation(local.toLowerCase());
-
-          setState(() {
-            gettingRestaurants = false;
-          });
+          getRestaurants(local.toLowerCase());
         }
       }
+    });
+  }
+
+  void getRestaurants(String local) async {
+    final DatabaseService db = DatabaseService();
+    items = await db.getRestaurantsbyLocation(local.toLowerCase());
+
+    setState(() {
+      gettingRestaurants = false;
     });
   }
 
