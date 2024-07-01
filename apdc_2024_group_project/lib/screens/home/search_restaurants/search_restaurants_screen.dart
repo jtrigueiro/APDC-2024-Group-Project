@@ -4,6 +4,8 @@ import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
@@ -38,6 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
   late LatLng currentLocation;
   String currentLocality = '';
   bool done = false;
+  bool _isCarouselInteracting = false;
   String? _mapStyle;
 
   @override
@@ -168,7 +171,7 @@ class _SearchScreenState extends State<SearchScreen> {
           final LatLng target = LatLng(result['lat'], result['lng']);
 
           final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(CameraUpdate.newLatLngZoom(target, 12.0));
+          controller.animateCamera(CameraUpdate.newLatLngZoom(target, 13.0));
           getRestaurants(location.toLowerCase());
         } else {
           print('Error: ${json['status']}');
@@ -180,9 +183,11 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _searchForRestaurants(String query) async {
+    restaurants.clear();
+    markers.clear();
+
     final databaseService = DatabaseService();
     databaseService.searchRestaurants(query).then((values) {
-      restaurants.clear();
 
       for (var restaurant in values) {
           handleRestaurant(restaurant, values.indexOf(restaurant));
@@ -216,6 +221,25 @@ class _SearchScreenState extends State<SearchScreen> {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(
         CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+  }
+
+  void changeCamera(int index) async {
+    setState(() {
+      _isCarouselInteracting = true;
+    });
+
+    List<String> coords = restaurants[index].coordinates.split(',');
+
+    double lat = double.parse(coords[0]);
+    double lng = double.parse(coords[1]);
+
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
+
+    setState(() {
+      currentLocation = LatLng(lat, lng);
+      _isCarouselInteracting = false;
+    });
   }
 
   @override
@@ -252,12 +276,13 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
               child: Stack(
                 children: [
-                   done ? GoogleMap(
+                  done ? GoogleMap(
                     markers: markers,
+                    scrollGesturesEnabled: _isCarouselInteracting,
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
                       target: currentLocation,
-                      zoom: 12.0,
+                      zoom: 13.0,
                     ),
                     onTap: _handleTap,
                   ) : const LoadingScreen(),
@@ -273,51 +298,53 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
-}
 
-CarouselSlider carouselSlider(CarouselController carouselController, List<Restaurant> info) {
-    return CarouselSlider(
-      carouselController: carouselController,
-      options: CarouselOptions(
-        height: 100,
-        viewportFraction: 0.8,
-        initialPage: 0,
-        enableInfiniteScroll: false,
-        enlargeCenterPage: true,
-        scrollDirection: Axis.horizontal,
-      ),
-      items: info.map((item) {
-        return Builder(
-          builder: (BuildContext context) {
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RestaurantScreen(info: item),
+  CarouselSlider carouselSlider(CarouselController carouselController, List<Restaurant> info) {
+      return CarouselSlider(
+        carouselController: carouselController,
+        options: CarouselOptions(
+          
+          height: 100,
+          viewportFraction: 0.8,
+          initialPage: 0,
+          enableInfiniteScroll: false,
+          enlargeCenterPage: true,
+          scrollDirection: Axis.horizontal,
+          onPageChanged: (index, reason) => changeCamera(index),
+        ),
+        items: info.map((item) {
+          return Builder(
+            builder: (BuildContext context) {
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RestaurantScreen(info: item),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 120, 92, 7),
                   ),
-                );
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 120, 92, 7),
+                  child: Column(
+                    children: [
+                      Text(item.name),
+                      Text(item.address),
+                      Text(item.location),
+                      Text(item.phone),
+                    ],
+                  ),
                 ),
-                child: Column(
-                  children: [
-                    Text(item.name),
-                    Text(item.address),
-                    Text(item.location),
-                    Text(item.phone),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      }).toList(),
-  );
+              );
+            },
+          );
+        }).toList(),
+    );
+  }
 }
 
 Widget restaurantMarkers(List<Restaurant> info) {
