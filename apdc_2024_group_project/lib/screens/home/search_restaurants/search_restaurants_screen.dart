@@ -4,8 +4,6 @@ import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
@@ -45,27 +43,33 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void initState() {
-    currentLocation = widget.userLocation;
-    getCityByCoords(currentLocation);
-    _loadMapStyle();
-    getRestaurants(currentLocality);
     super.initState();
+    currentLocation = widget.userLocation;
+    getCityByCoords(currentLocation).then((value) { getRestaurants(currentLocality); });
+    _loadMapStyle();
   }
 
-  void getCityByCoords(LatLng coordinates) {
-    final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=$apiKey');
-    http.get(url).then((response) {
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        if (json['status'] == 'OK') {
-          final locality = json['results'][0]['address_components'][4]['long_name'];
-          currentLocality = locality;
-          locationController.text = locality;
+  Future<int> getCityByCoords(LatLng coordinates) async {
+      final url = Uri.parse(
+          'https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=$apiKey');
+      return http.get(url).then((response) {
+        if (response.statusCode == 200) {
+          final json = jsonDecode(response.body);
+          if (json['status'] == 'OK') {
+            final locality = json['results'][0]['address_components'][4]['long_name'];
+  
+            setState(() {
+              currentLocality = locality;
+              locationController.text = locality;
+            });
+            
+            return 1;
+          }
         }
-      }
-    });
-  }
+  
+        return 0;
+      });
+    }
 
   void getCityByAddress(String address) {
     final url = Uri.parse(
@@ -158,6 +162,8 @@ class _SearchScreenState extends State<SearchScreen> {
         done = true;
         paddingNeeded = values.isEmpty ? false : true;
       });
+
+      print(values.length);
   }
 
   Future<void> _moveToLocation(String location) async {
@@ -281,7 +287,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Stack(
                 children: [
                   done ? GoogleMap(
-                    padding: paddingNeeded ? const EdgeInsets.only(bottom: 100) : const EdgeInsets.all(0),
+                    padding: paddingNeeded ? const EdgeInsets.only(bottom: 100) : EdgeInsets.zero,
                     zoomControlsEnabled: false,
                     mapToolbarEnabled: false,
                     myLocationButtonEnabled: true,
@@ -295,7 +301,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ) : const LoadingScreen(),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: carouselSlider(carouselController, restaurants),   //restaurantMarkers(restaurants),
+                    child: paddingNeeded ? carouselSlider(carouselController, restaurants) : null,
                   ),
                 ],
               ),
