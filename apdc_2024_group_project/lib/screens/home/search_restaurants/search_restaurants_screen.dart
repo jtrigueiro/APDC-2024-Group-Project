@@ -163,7 +163,6 @@ class _SearchScreenState extends State<SearchScreen> {
         paddingNeeded = values.isEmpty ? false : true;
       });
 
-      print(values.length);
   }
 
   Future<void> _moveToLocation(String location) async {
