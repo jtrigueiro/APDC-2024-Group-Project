@@ -40,6 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
   late LatLng currentLocation;
   String currentLocality = '';
   bool done = false;
+  bool paddingNeeded = false;
   String? _mapStyle;
 
   @override
@@ -155,6 +156,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
       setState(() {
         done = true;
+        paddingNeeded = values.isEmpty ? false : true;
       });
   }
 
@@ -190,15 +192,15 @@ class _SearchScreenState extends State<SearchScreen> {
     markers.clear();
 
     final databaseService = DatabaseService();
-    databaseService.searchRestaurants(query).then((values) {
+    final values = await databaseService.searchRestaurants(query);
 
-      for (var restaurant in values) {
-          handleRestaurant(restaurant, values.indexOf(restaurant));
-      }
-    });
+    for (int i = 0; i < values.length; i++) {
+      handleRestaurant(values[i], i);
+    }
 
     setState(() {
       done = true;
+      paddingNeeded = values.isEmpty ? false : true;
     });
   }
 
@@ -279,7 +281,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Stack(
                 children: [
                   done ? GoogleMap(
-                    padding: const EdgeInsets.only(bottom: 100),
+                    padding: paddingNeeded ? const EdgeInsets.only(bottom: 100) : const EdgeInsets.all(0),
                     zoomControlsEnabled: false,
                     mapToolbarEnabled: false,
                     myLocationButtonEnabled: true,
