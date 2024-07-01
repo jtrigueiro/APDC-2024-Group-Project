@@ -9,7 +9,7 @@ class RestaurantApplication {
       waterPdfUrl,
       coordinates;
   final double co2EmissionEstimate;
-  final int numberOfSeats;
+  final int seats;
 
   RestaurantApplication({
     required this.uid,
@@ -21,7 +21,7 @@ class RestaurantApplication {
     required this.electricityPdfUrl,
     required this.gasPdfUrl,
     required this.waterPdfUrl,
-    required this.numberOfSeats,
+    required this.seats,
     required this.coordinates,
   });
 }

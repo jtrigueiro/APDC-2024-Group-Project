@@ -47,8 +47,7 @@ class RestaurantApplicationTile extends StatelessWidget {
                     Text(
                       'CO2 Emission Estimate: ${restaurantApplication.co2EmissionEstimate}',
                     ),
-                    Text(
-                        'numberOfSeats: ${restaurantApplication.numberOfSeats}'),
+                    Text('numberOfSeats: ${restaurantApplication.seats}'),
                   ],
                 ),
               ),
@@ -64,6 +63,8 @@ class RestaurantApplicationTile extends StatelessWidget {
                   restaurantApplication.address,
                   restaurantApplication.location,
                   restaurantApplication.coordinates,
+                  restaurantApplication.co2EmissionEstimate,
+                  restaurantApplication.seats,
                 );
                 await DatabaseService()
                     .deleteRestaurantApplication(restaurantApplication.uid);

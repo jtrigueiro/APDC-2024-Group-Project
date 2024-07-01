@@ -66,9 +66,8 @@ class DatabaseService {
   }
 
   // ----------------- Search Restaurants -----------------
-  
-   Future<List<Restaurant>> getRestaurantsbyLocation(
-      String location) async {
+
+  Future<List<Restaurant>> getRestaurantsbyLocation(String location) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where("location", isEqualTo: location)
@@ -82,6 +81,12 @@ class DatabaseService {
                 address: doc.get('address') ?? '',
                 location: doc.get('location') ?? '',
                 coordinates: doc.get('coordinates') ?? '',
+                co2EmissionEstimate:
+                    doc.get('co2EmissionEstimate').toDouble() ?? 0,
+                seats: doc.get('seats').toInt() ?? 0,
+                visible: doc.get('visible') ?? false,
+                isOpen: doc.get('isOpen').map<bool>((e) => e as bool).toList(),
+                time: doc.get('time').map<String>((e) => e as String).toList(),
               ))
           .toList();
     } catch (e) {
@@ -97,8 +102,7 @@ class DatabaseService {
       final QuerySnapshot result = await restaurantsCollection
           .orderBy('lowerCaseName')
           //.where('visible', isEqualTo: true)
-          .startAt({lowerSearch}).endAt({"$lowerSearch\uf8ff"})
-          .get();
+          .startAt({lowerSearch}).endAt({"$lowerSearch\uf8ff"}).get();
       return result.docs
           .map((doc) => Restaurant(
                 id: doc.id,
@@ -107,6 +111,12 @@ class DatabaseService {
                 address: doc.get('address') ?? '',
                 location: doc.get('location') ?? '',
                 coordinates: doc.get('coordinates') ?? '',
+                co2EmissionEstimate:
+                    doc.get('co2EmissionEstimate').toDouble() ?? 0,
+                seats: doc.get('seats').toInt() ?? 0,
+                visible: doc.get('visible') ?? false,
+                isOpen: doc.get('isOpen').map<bool>((e) => e as bool).toList(),
+                time: doc.get('time').map<String>((e) => e as String).toList(),
               ))
           .toList();
     } catch (e) {
@@ -124,7 +134,7 @@ class DatabaseService {
       String location,
       String electricityUrl,
       String gasUrl,
-      int numberOfSeats,
+      int seats,
       double co2EmissionEstimate,
       String waterUrl,
       String coords) async {
@@ -137,10 +147,10 @@ class DatabaseService {
         'location': location,
         'electricityUrl': electricityUrl,
         'gasUrl': gasUrl,
-        'numberOfSeats': numberOfSeats,
+        'seats': seats,
         'co2EmissionEstimate': co2EmissionEstimate,
         'waterUrl': waterUrl,
-        'coordinates': coords
+        'coordinates': coords,
       });
       return true;
     } catch (e) {
@@ -402,7 +412,7 @@ class DatabaseService {
           electricityPdfUrl: doc.get('electricityUrl') ?? '',
           gasPdfUrl: doc.get('gasUrl') ?? '',
           waterPdfUrl: doc.get('waterUrl') ?? '',
-          numberOfSeats: doc.get('numberOfSeats').toInt() ?? 0,
+          seats: doc.get('seats').toInt() ?? 0,
           coordinates: doc.get('coordinates') ?? '',
         );
       }).toList();
@@ -436,8 +446,15 @@ class DatabaseService {
   }
 
   // add or update restaurant data
-  Future addOrUpdateRestaurantData(String uid, String name, String phone,
-      String address, String location, String coords) async {
+  Future addOrUpdateRestaurantData(
+      String uid,
+      String name,
+      String phone,
+      String address,
+      String location,
+      String coords,
+      double co2EmissionEstimate,
+      int seats) async {
     try {
       await restaurantsCollection.doc(uid).set({
         'name': name,
@@ -446,6 +463,19 @@ class DatabaseService {
         'address': address,
         'location': location,
         'coordinates': coords,
+        'co2EmissionEstimate': co2EmissionEstimate,
+        'seats': seats,
+        'visible': false,
+        'isOpen': [false, false, false, false, false, false, false],
+        'time': [
+          "0:0-0:0",
+          "0:0-0:0",
+          "0:0-0:0",
+          "0:0-0:0",
+          "0:0-0:0",
+          "0:0-0:0",
+          "0:0-0:0",
+        ],
       });
       return true;
     } catch (e) {

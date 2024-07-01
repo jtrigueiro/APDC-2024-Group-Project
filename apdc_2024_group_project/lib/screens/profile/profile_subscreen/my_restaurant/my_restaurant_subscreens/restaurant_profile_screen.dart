@@ -78,7 +78,7 @@ class RestaurantPersonalizeScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Restaurant Info'),
+        title: const Text('My Restaurant Profile'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded,
               color: Color.fromARGB(255, 117, 85, 18)),

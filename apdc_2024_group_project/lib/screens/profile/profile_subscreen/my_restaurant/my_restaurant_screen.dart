@@ -1,7 +1,7 @@
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_dishes/my_dishes_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/my_restaurant_settings_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/promo_codes_screen.dart';
-import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/restaurant_personalize_screen.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_subscreens/restaurant_profile_screen.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,7 +38,7 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
               Text('location maybe?',
                   style: Theme.of(context).textTheme.bodyMedium),*/
               customSpaceBetweenColumns(40),
-              tiles('Personalize', Icons.warehouse, toPersonalizePage),
+              tiles('Profile', Icons.warehouse, toPersonalizePage),
               tiles('My Dishes', Icons.food_bank, toMyDishesPage),
               tiles('Reviews', Icons.star, () {}),
               tiles('PromoCodes', Icons.card_giftcard, toPromoCodesPage),
