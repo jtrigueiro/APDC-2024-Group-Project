@@ -17,6 +17,10 @@ class _ReserveScreenState extends State<ReserveScreen> {
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
+      switchToCalendarEntryModeIcon: const Icon(Icons.calendar_today_rounded),
+      switchToInputEntryModeIcon: const Icon(Icons.calendar_today_sharp),
+      confirmText: 'Select',
+      cancelText: 'Cancel',
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),

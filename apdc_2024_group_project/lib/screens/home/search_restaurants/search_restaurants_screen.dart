@@ -189,10 +189,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _searchForRestaurants(String query) async {
-    setState(() {
-      done = false;
-    });
-
     restaurants.clear();
     markers.clear();
 
