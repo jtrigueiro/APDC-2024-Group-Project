@@ -40,7 +40,6 @@ class _SearchScreenState extends State<SearchScreen> {
   late LatLng currentLocation;
   String currentLocality = '';
   bool done = false;
-  bool _isCarouselInteracting = false;
   String? _mapStyle;
 
   @override
@@ -183,6 +182,10 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _searchForRestaurants(String query) async {
+    setState(() {
+      done = false;
+    });
+
     restaurants.clear();
     markers.clear();
 
@@ -192,6 +195,10 @@ class _SearchScreenState extends State<SearchScreen> {
       for (var restaurant in values) {
           handleRestaurant(restaurant, values.indexOf(restaurant));
       }
+    });
+
+    setState(() {
+      done = true;
     });
   }
 
@@ -224,10 +231,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void changeCamera(int index) async {
-    setState(() {
-      _isCarouselInteracting = true;
-    });
-
     List<String> coords = restaurants[index].coordinates.split(',');
 
     double lat = double.parse(coords[0]);
@@ -238,7 +241,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
     setState(() {
       currentLocation = LatLng(lat, lng);
-      _isCarouselInteracting = false;
     });
   }
 
@@ -277,8 +279,11 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Stack(
                 children: [
                   done ? GoogleMap(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    zoomControlsEnabled: false,
+                    mapToolbarEnabled: false,
+                    myLocationButtonEnabled: true,
                     markers: markers,
-                    scrollGesturesEnabled: _isCarouselInteracting,
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
                       target: currentLocation,
@@ -303,14 +308,13 @@ class _SearchScreenState extends State<SearchScreen> {
       return CarouselSlider(
         carouselController: carouselController,
         options: CarouselOptions(
-          
           height: 100,
           viewportFraction: 0.8,
           initialPage: 0,
           enableInfiniteScroll: false,
           enlargeCenterPage: true,
           scrollDirection: Axis.horizontal,
-          onPageChanged: (index, reason) => changeCamera(index),
+          onScrolled: (index) => changeCamera(index!.toInt()),
         ),
         items: info.map((item) {
           return Builder(
