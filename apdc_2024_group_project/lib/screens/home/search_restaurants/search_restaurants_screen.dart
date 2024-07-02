@@ -126,9 +126,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void cameraMoved(CameraPosition position) {
     setState(() {
-      print('old font size: $_markerFont');
       _markerFont = calculateMarkerSize(position.zoom);
-      print('new font size: $_markerFont');
     });
   }
 
