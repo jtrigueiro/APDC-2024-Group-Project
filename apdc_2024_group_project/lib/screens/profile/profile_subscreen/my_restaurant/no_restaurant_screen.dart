@@ -102,7 +102,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           final result = json['results'][0]['formatted_address'];
           addressController.text = result;
           final size = json['results'][0]['address_components'].length;
-          location = json['results'][0]['address_components'][size - 4]['long_name'];
+          location =
+              json['results'][0]['address_components'][size - 4]['long_name'];
           print(location);
           coordinates = '${position.latitude},${position.longitude}';
 
@@ -167,8 +168,9 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     try {
       User? user = widget._auth.currentUser;
       String uid = user!.uid;
-      final storageRef =
-          FirebaseStorage.instance.ref().child('uploads/$uid/$fileName');
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('restaurants/$uid/ProofDocuments/$fileName');
       final metadata = SettableMetadata(contentType: 'application/pdf');
       await storageRef.putData(fileBytes, metadata);
       final downloadUrl = await storageRef.getDownloadURL();
@@ -210,16 +212,15 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         print('Uploading electricity PDF...');
         electricityUrl = await _uploadFile(
             _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
-            'electricity_${DateTime.now().millisecondsSinceEpoch}.pdf');
+            'electricity_.pdf');
 
         print('Uploading gas PDF...');
-        gasUrl = await _uploadFile(_gasPdfBytes ?? await _gasPdf!.readAsBytes(),
-            'gas_${DateTime.now().millisecondsSinceEpoch}.pdf');
+        gasUrl = await _uploadFile(
+            _gasPdfBytes ?? await _gasPdf!.readAsBytes(), 'gas_.pdf');
 
         print('Uploading water PDF...');
         waterUrl = await _uploadFile(
-            _waterPdfBytes ?? await _waterPdf!.readAsBytes(),
-            'water_${DateTime.now().millisecondsSinceEpoch}.pdf');
+            _waterPdfBytes ?? await _waterPdf!.readAsBytes(), 'water_.pdf');
 
         // Verifica se todos os uploads foram bem-sucedidos
         if (electricityUrl == null || gasUrl == null || waterUrl == null) {
