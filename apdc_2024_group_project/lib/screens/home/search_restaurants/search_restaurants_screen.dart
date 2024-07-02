@@ -4,7 +4,7 @@ import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
@@ -24,7 +24,6 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
-  final bool isWeb = kIsWeb;
 
   List<Restaurant> restaurants = [];
   Set<Marker> markers = {};
@@ -42,6 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
   bool done = false;
   bool paddingNeeded = false;
   String? _mapStyle;
+  double _markerFont = kIsWeb ? 12 : 80;
 
   @override
   void initState() {
@@ -124,6 +124,24 @@ class _SearchScreenState extends State<SearchScreen> {
     print(point);
   }
 
+  void cameraMoved(CameraPosition position) {
+    setState(() {
+      print('old font size: $_markerFont');
+      _markerFont = calculateMarkerSize(position.zoom);
+      print('new font size: $_markerFont');
+    });
+  }
+
+  double calculateMarkerSize(double zoom) {
+          if (zoom <= 10) {
+            return kIsWeb ? 12.0 : 80.0;
+          } else if (zoom <= 15) {
+            return kIsWeb ? 13.0 : 60.0;
+          } else {
+            return kIsWeb ? 14.0 : 40.0;
+          }
+        }
+
   bool inRadius(LatLng point, LatLng center, double radius) {
     return Geolocator.distanceBetween(point.latitude, point.longitude,
             center.latitude, center.longitude) <
@@ -137,7 +155,7 @@ class _SearchScreenState extends State<SearchScreen> {
     LatLng pos = LatLng(double.parse(coords[0]), double.parse(coords[1]));
 
     markers.addLabelMarker(LabelMarker(
-      textStyle: TextStyle(color: Colors.white, fontSize: isWeb ? 12 : 16),
+      textStyle: TextStyle(color: Colors.white, fontSize: _markerFont),
     onTap: () {
       carouselController.animateToPage(index);
     },
@@ -293,6 +311,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     mapToolbarEnabled: false,
                     myLocationButtonEnabled: true,
                     markers: markers,
+                    onCameraMove: cameraMoved,
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
                       target: currentLocation,
