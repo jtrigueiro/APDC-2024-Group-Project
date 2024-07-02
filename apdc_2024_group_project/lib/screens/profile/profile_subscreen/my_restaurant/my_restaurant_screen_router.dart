@@ -21,20 +21,6 @@ class _MyRestaurantScreenRouterState extends State<MyRestaurantScreenRouter> {
   late int _currentIndex;
   bool loading = true;
 
-  /*final screens = [
-    NoRestaurantScreen(),
-    RestaurantRequestScreen(),
-    MyRestaurantScreen(),
-  ];
-
-  @override
-  void initState() {
-    checkCurrentIndex();
-    scrollController = ScrollController();
-
-    super.initState();
-  }*/
-
   var screens = [];
 
   @override
