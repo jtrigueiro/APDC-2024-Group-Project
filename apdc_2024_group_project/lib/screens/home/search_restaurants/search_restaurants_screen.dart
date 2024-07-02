@@ -59,7 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
           final json = jsonDecode(response.body);
           if (json['status'] == 'OK') {
             final size = json['results'][0]['address_components'].length;
-            final locality = json['results'][0]['address_components'][size - 3]['long_name'];
+            final locality = json['results'][0]['address_components'][size - 4]['long_name'];
   
             setState(() {
               currentLocality = locality;

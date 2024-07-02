@@ -101,7 +101,9 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         if (json['status'] == 'OK') {
           final result = json['results'][0]['formatted_address'];
           addressController.text = result;
-          location = json['results'][0]['address_components'][4]['long_name'];
+          final size = json['results'][0]['address_components'].length;
+          location = json['results'][0]['address_components'][size - 4]['long_name'];
+          print(location);
           coordinates = '${position.latitude},${position.longitude}';
 
           print('Error: ${json['status']}');
