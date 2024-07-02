@@ -184,6 +184,62 @@ class DatabaseService {
     }
   }
 
+  // update restaurant data
+  Future updateRestaurantData(
+      String name, String phone, List<bool> isOpen, List<String> time) async {
+    User? user = _auth.currentUser;
+    try {
+      await restaurantsCollection.doc(user!.uid).update({
+        'name': name,
+        'lowerCaseName': name.toLowerCase(),
+        'phone': phone,
+        'isOpen': isOpen,
+        'time': time
+      });
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  // get restaurant image url
+  Future getRestaurantImageUrl() async {
+    User? user = _auth.currentUser;
+    try {
+      return await StorageService().getRestaurantImageUrl(user!.uid);
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  // upload restaurant image mobile
+  Future uploadRestaurantImageMobile(String imagePath) async {
+    User? user = _auth.currentUser;
+    try {
+      await StorageService().uploadRestaurantImageMobile(user!.uid, imagePath);
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  // upload restaurant image web
+  Future uploadRestaurantImageWeb(
+      Uint8List imageBytes, String imageExtension) async {
+    User? user = _auth.currentUser;
+    try {
+      await StorageService()
+          .uploadRestaurantImageWeb(user!.uid, imageBytes, imageExtension);
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   //upload files to firebase storage
   Future<String?> uploadFile(Uint8List fileBytes, String fileName) async {
     try {

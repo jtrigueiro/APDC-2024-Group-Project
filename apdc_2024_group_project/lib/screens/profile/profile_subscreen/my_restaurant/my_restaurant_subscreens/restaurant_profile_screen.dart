@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
-import 'package:day_picker/day_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:list_picker/list_picker.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../../../utils/constants.dart';
+import 'package:path/path.dart' as p;
 
 class RestaurantPersonalizeScreen extends StatefulWidget {
   const RestaurantPersonalizeScreen({super.key});
@@ -25,47 +27,62 @@ class RestaurantPersonalizeScreenState
 
   final _formKey = GlobalKey<FormState>();
   bool loading = true;
-  bool mondayIsOpen = true;
-  bool tuesdayIsOpen = true;
-  bool wednesdayIsOpen = true;
-  bool thursdayIsOpen = true;
-  bool fridayIsOpen = true;
-  bool saturdayIsOpen = true;
-  bool sundayIsOpen = true;
-  TimeOfDay mondayFromTime = TimeOfDay.fromDateTime(DateTime(0, 0, 0, 10, 10));
-  TimeOfDay mondayToTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay tuesdayFromTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay tuesdayToTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay wednesdayFromTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay wednesdayToTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay thursdayFromTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay thursdayToTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay fridayFromTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay fridayToTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay saturdayFromTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay saturdayToTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay sundayFromTime = TimeOfDay.fromDateTime(DateTime(0));
-  TimeOfDay sundayToTime = TimeOfDay.fromDateTime(DateTime(0));
+  late bool mondayIsOpen;
+  late bool tuesdayIsOpen;
+  late bool wednesdayIsOpen;
+  late bool thursdayIsOpen;
+  late bool fridayIsOpen;
+  late bool saturdayIsOpen;
+  late bool sundayIsOpen;
+  late TimeOfDay mondayFromTime;
+  late TimeOfDay mondayToTime;
+  late TimeOfDay tuesdayFromTime;
+  late TimeOfDay tuesdayToTime;
+  late TimeOfDay wednesdayFromTime;
+  late TimeOfDay wednesdayToTime;
+  late TimeOfDay thursdayFromTime;
+  late TimeOfDay thursdayToTime;
+  late TimeOfDay fridayFromTime;
+  late TimeOfDay fridayToTime;
+  late TimeOfDay saturdayFromTime;
+  late TimeOfDay saturdayToTime;
+  late TimeOfDay sundayFromTime;
+  late TimeOfDay sundayToTime;
+  late final dynamic data;
+  XFile? pickedImageFile;
+  late final dynamic currentImageUrl;
 
   @override
   void initState() {
     scrollController = ScrollController();
     nameController = TextEditingController();
     phoneController = TextEditingController();
-    locationController = TextEditingController();
     getData();
     super.initState();
   }
 
+  Future pickImage() async {
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          pickedImageFile = pickedFile;
+        });
+      }
+    } catch (e) {
+      print("Error selecting image: $e");
+    }
+  }
+
   getData() async {
-    final data = await DatabaseService().getRestaurantData();
+    data = await DatabaseService().getRestaurantData();
     if (data == null) {
       Navigator.pop(context);
       loading = false;
     } else {
       nameController.text = data.name;
       phoneController.text = data.phone;
-      locationController.text = data.location;
       mondayIsOpen = data.isOpen[0];
       tuesdayIsOpen = data.isOpen[1];
       wednesdayIsOpen = data.isOpen[2];
@@ -172,29 +189,12 @@ class RestaurantPersonalizeScreenState
           int.parse(sundaytoTime.split(":")[0]),
           int.parse(sundaytoTime.split(":")[1])));
 
+      currentImageUrl = await DatabaseService().getRestaurantImageUrl();
+
       setState(() {
         loading = false;
       });
     }
-  }
-
-  TextButton textTimeButton(TimeOfDay time) {
-    return TextButton(
-      onPressed: () async {
-        final TimeOfDay? timeOfDay = await showTimePicker(
-            context: context,
-            initialTime: time,
-            initialEntryMode: TimePickerEntryMode.dial);
-        if (timeOfDay != null) {
-          setState(() {
-            time = timeOfDay;
-          });
-        }
-      },
-      child: Text("${time.hour}:${time.minute}",
-          style:
-              Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15)),
-    );
   }
 
   @override
@@ -228,15 +228,9 @@ class RestaurantPersonalizeScreenState
                           textForms(nameController, 'Restaurant Name',
                               'Please enter a restaurant name'),
                           const SizedBox(height: 10),
-                          textForms(
-                              // TODO: phone number has to be an integer - jose
-                              phoneController,
-                              'Phone number',
+                          textForms(phoneController, 'Phone number',
                               'Please enter a phone number'),
                           const SizedBox(height: 10),
-                          /*textForms(locationController, 'Location',
-                        'Please enter a location'),
-                    const SizedBox(height: 10),*/
                         ]),
                       ),
                       spaceBetweenColumns(),
@@ -803,24 +797,103 @@ class RestaurantPersonalizeScreenState
                       customSpaceBetweenColumns(20),
                       Column(
                         children: [
-                          Text("Add Restaurant Photos",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(fontSize: 15)),
+                          pickedImageFile != null
+                              ? kIsWeb
+                                  ? Image.network(
+                                      pickedImageFile!.path,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.file(
+                                      File(pickedImageFile!.path),
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    )
+                              : currentImageUrl == null
+                                  ? Container()
+                                  : Builder(
+                                      builder: (context) {
+                                        return Image.network(
+                                          currentImageUrl,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  const Text(
+                                                      'Error loading image!'),
+                                        );
+                                      },
+                                    ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              pickImage();
+                            },
                             child: const Icon(Icons.add),
                           ),
+                          currentImageUrl == null
+                              ? Text("Add Restaurant Photo",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(fontSize: 15))
+                              : Text("Update Restaurant Photo",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(fontSize: 15)),
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.6,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                final List<bool> isOpen = [
+                                  sundayIsOpen,
+                                  mondayIsOpen,
+                                  tuesdayIsOpen,
+                                  wednesdayIsOpen,
+                                  thursdayIsOpen,
+                                  fridayIsOpen,
+                                  saturdayIsOpen
+                                ];
+                                final List<String> time = [
+                                  "${mondayFromTime.hour}:${mondayFromTime.minute}-${mondayToTime.hour}:${mondayToTime.minute}",
+                                  "${tuesdayFromTime.hour}:${tuesdayFromTime.minute}-${tuesdayToTime.hour}:${tuesdayToTime.minute}",
+                                  "${wednesdayFromTime.hour}:${wednesdayFromTime.minute}-${wednesdayToTime.hour}:${wednesdayToTime.minute}",
+                                  "${thursdayFromTime.hour}:${thursdayFromTime.minute}-${thursdayToTime.hour}:${thursdayToTime.minute}",
+                                  "${fridayFromTime.hour}:${fridayFromTime.minute}-${fridayToTime.hour}:${fridayToTime.minute}",
+                                  "${saturdayFromTime.hour}:${saturdayFromTime.minute}-${saturdayToTime.hour}:${saturdayToTime.minute}",
+                                  "${sundayFromTime.hour}:${sundayFromTime.minute}-${sundayToTime.hour}:${sundayToTime.minute}"
+                                ];
+                                // Check if the data has changed, to avoid unnecessary calls to the database
+                                if (data.name != nameController.text ||
+                                    data.phone != phoneController.text ||
+                                    listEquals(isOpen, data.isOpen) == false ||
+                                    listEquals(time, data.time) == false) {
+                                  final databaseStatus = await DatabaseService()
+                                      .updateRestaurantData(nameController.text,
+                                          phoneController.text, isOpen, time);
+                                  if (databaseStatus == null) {
+                                    return;
+                                  }
+                                }
+                                if (pickedImageFile != null) {
+                                  if (kIsWeb) {
+                                    await DatabaseService()
+                                        .uploadRestaurantImageWeb(
+                                            await pickedImageFile!
+                                                .readAsBytes(),
+                                            p.extension(pickedImageFile!.name));
+                                  } else {
+                                    await DatabaseService()
+                                        .uploadRestaurantImageMobile(
+                                            pickedImageFile!.path);
+                                  }
+                                }
+
+                                Navigator.pop(context);
+                              }
                             },
                             child: const Text('Save'),
                           ),
