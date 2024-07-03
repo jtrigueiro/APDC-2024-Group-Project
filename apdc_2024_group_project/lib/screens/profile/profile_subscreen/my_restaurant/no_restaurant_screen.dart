@@ -244,17 +244,17 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                           child: Column(
                             children: [
                               const SizedBox(height: 30),
-                              buildTextFormField("Restaurant name", nameController, TextInputType.text, null),
+                              buildTextFormField("Restaurant name", nameController, TextInputType.text, null, 70),
                               const SizedBox(height: 10),
-                              buildTextFormField("Phone number", phoneController, TextInputType.phone, _numeric),
+                              buildTextFormField("Phone number", phoneController, TextInputType.phone, _numeric, 15),
                               const SizedBox(height: 10),
                               buildDoubleTextForm("Street number", "Route", streetNumberController, routeController, TextInputType.text),
                               const SizedBox(height: 10),
                               buildDoubleTextForm("Postal Code", "Country", cpController, countryController, TextInputType.text),
                               const SizedBox(height: 10),
-                              buildTextFormField("Number of seats", _numberOfSeatsController, TextInputType.number, _numeric),
+                              buildTextFormField("Number of seats", _numberOfSeatsController, TextInputType.number, _numeric, 5),
                               const SizedBox(height: 10),
-                              buildTextFormField("GHGs emissions estimate", _co2EmissionEstimateController, const TextInputType.numberWithOptions(decimal: true), _decimal),
+                              buildTextFormField("GHGs emissions estimate", _co2EmissionEstimateController, const TextInputType.numberWithOptions(decimal: true), _decimal, 8),
                               const SizedBox(height: 20),
                               buildPdfButton("Electricity", _electricityPdf, _electricityPdfBytes, _electricityPdfError),
                               const SizedBox(height: 10),
@@ -283,19 +283,20 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     return Row(
       children: [
         Expanded(
-          child: buildTextFormField(label1, controller1, keyboardType, null)
+          child: buildTextFormField(label1, controller1, keyboardType, null, null)
         ),
         const SizedBox(width: 5),
         Expanded(
-          child: buildTextFormField(label2, controller2, keyboardType, null)
+          child: buildTextFormField(label2, controller2, keyboardType, null, null)
         ),
       ],
     );
   }
 
   TextFormField buildTextFormField(String label, TextEditingController controller,
-      TextInputType keyboardType, RegExp? regExp) {
+      TextInputType keyboardType, RegExp? regExp, int? maxLength) {
     return TextFormField(
+      maxLength: maxLength,
       controller: controller,
       decoration: InputDecoration(
         labelText: "$label(*)",
