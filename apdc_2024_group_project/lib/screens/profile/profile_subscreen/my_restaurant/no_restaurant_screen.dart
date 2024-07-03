@@ -93,6 +93,26 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _submitForm() async {
     setState(() {
       _electricityPdfError =
@@ -179,17 +199,19 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
-  Future<bool> validateAddress() {
+  Future<bool> validateAddress() async {
     String address =
         "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
 
     if (address.isEmpty) {
-      return Future.value(false);
+      _showErrorDialog("Address is required.");
+      return false;
     }
 
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey');
-    return http.get(url).then((response) {
+    try {
+      final response = await http.get(url);
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         if (json['status'] == 'OK') {
@@ -205,18 +227,17 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
 
           return true;
         } else {
-          print('Failed to fetch address: ${response.statusCode}');
-
+          _showErrorDialog("Failed to fetch address: ${json['status']}");
           return false;
         }
       } else {
-        print('Failed to fetch address: ${response.statusCode}');
+        _showErrorDialog("Failed to fetch address: ${response.statusCode}");
         return false;
       }
-    }).catchError((e) {
-      print('Error fetching address: $e');
+    } catch (e) {
+      _showErrorDialog("Error fetching address: $e");
       return false;
-    });
+    }
   }
 
   @override
