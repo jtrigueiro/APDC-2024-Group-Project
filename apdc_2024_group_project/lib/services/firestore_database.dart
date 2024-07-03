@@ -132,11 +132,8 @@ class DatabaseService {
       String phone,
       String address,
       String location,
-      String electricityUrl,
-      String gasUrl,
       int seats,
       double co2EmissionEstimate,
-      String waterUrl,
       String coords) async {
     User? user = _auth.currentUser;
     try {
@@ -145,11 +142,8 @@ class DatabaseService {
         'phone': phone,
         'address': address,
         'location': location,
-        'electricityUrl': electricityUrl,
-        'gasUrl': gasUrl,
         'seats': seats,
         'co2EmissionEstimate': co2EmissionEstimate,
-        'waterUrl': waterUrl,
         'coordinates': coords,
       });
       return true;
@@ -490,9 +484,6 @@ class DatabaseService {
           location: doc.get('location') ?? '',
           address: doc.get('address') ?? '',
           co2EmissionEstimate: doc.get('co2EmissionEstimate').toDouble() ?? 0,
-          electricityPdfUrl: doc.get('electricityUrl') ?? '',
-          gasPdfUrl: doc.get('gasUrl') ?? '',
-          waterPdfUrl: doc.get('waterUrl') ?? '',
           seats: doc.get('seats').toInt() ?? 0,
           coordinates: doc.get('coordinates') ?? '',
         );

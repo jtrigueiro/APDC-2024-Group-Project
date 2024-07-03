@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -164,23 +165,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
-  Future<String?> _uploadFile(Uint8List fileBytes, String fileName) async {
-    try {
-      User? user = widget._auth.currentUser;
-      String uid = user!.uid;
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('restaurants/$uid/ProofDocuments/$fileName');
-      final metadata = SettableMetadata(contentType: 'application/pdf');
-      await storageRef.putData(fileBytes, metadata);
-      final downloadUrl = await storageRef.getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      print('Failed to upload file: $e');
-      return null;
-    }
-  }
-
   Future<void> _submitForm() async {
     setState(() {
       _electricityPdfError =
@@ -210,17 +194,22 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         String? waterUrl;
 
         print('Uploading electricity PDF...');
-        electricityUrl = await _uploadFile(
+        electricityUrl = await StorageService().uploadFile(
             _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
-            'electricity_.pdf');
+            'electricity_.pdf',
+            widget._auth.currentUser!);
 
         print('Uploading gas PDF...');
-        gasUrl = await _uploadFile(
-            _gasPdfBytes ?? await _gasPdf!.readAsBytes(), 'gas_.pdf');
+        gasUrl = await StorageService().uploadFile(
+            _gasPdfBytes ?? await _gasPdf!.readAsBytes(),
+            'gas_.pdf',
+            widget._auth.currentUser!);
 
         print('Uploading water PDF...');
-        waterUrl = await _uploadFile(
-            _waterPdfBytes ?? await _waterPdf!.readAsBytes(), 'water_.pdf');
+        waterUrl = await StorageService().uploadFile(
+            _waterPdfBytes ?? await _waterPdf!.readAsBytes(),
+            'water_.pdf',
+            widget._auth.currentUser!);
 
         // Verifica se todos os uploads foram bem-sucedidos
         if (electricityUrl == null || gasUrl == null || waterUrl == null) {
@@ -238,11 +227,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           phoneController.text,
           addressController.text,
           location.toLowerCase(),
-          electricityUrl,
-          gasUrl,
           _numberOfSeats!,
           _co2EmissionEstimate!,
-          waterUrl,
           coordinates,
         );
 

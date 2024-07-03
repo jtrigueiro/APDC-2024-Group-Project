@@ -1,13 +1,5 @@
 class RestaurantApplication {
-  final String uid,
-      name,
-      phone,
-      location,
-      address,
-      electricityPdfUrl,
-      gasPdfUrl,
-      waterPdfUrl,
-      coordinates;
+  final String uid, name, phone, location, address, coordinates;
   final double co2EmissionEstimate;
   final int seats;
 
@@ -18,9 +10,6 @@ class RestaurantApplication {
     required this.location,
     required this.address,
     required this.co2EmissionEstimate,
-    required this.electricityPdfUrl,
-    required this.gasPdfUrl,
-    required this.waterPdfUrl,
     required this.seats,
     required this.coordinates,
   });

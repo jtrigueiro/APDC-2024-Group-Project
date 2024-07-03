@@ -1,3 +1,4 @@
+import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -73,21 +74,28 @@ class RestaurantApplicationTile extends StatelessWidget {
             // Botão para abrir PDF de eletricidade
             IconButton(
               icon: const Icon(Icons.picture_as_pdf),
-              onPressed: () {
-                _openPdfInBrowser(restaurantApplication.electricityPdfUrl);
+              onPressed: () async {
+                String electricityPdfUrl = await StorageService()
+                    .getProofDocumentUrl(
+                        restaurantApplication.uid, 'electricity_.pdf');
+                await _openPdfInBrowser(electricityPdfUrl);
               },
             ),
             // Botão para abrir PDF de gás
             IconButton(
               icon: const Icon(Icons.picture_as_pdf),
-              onPressed: () {
-                _openPdfInBrowser(restaurantApplication.gasPdfUrl);
+              onPressed: () async {
+                String gasPdfUrl = await StorageService()
+                    .getProofDocumentUrl(restaurantApplication.uid, 'gas_.pdf');
+                await _openPdfInBrowser(gasPdfUrl);
               },
             ),
             IconButton(
               icon: const Icon(Icons.picture_as_pdf),
-              onPressed: () {
-                _openPdfInBrowser(restaurantApplication.waterPdfUrl);
+              onPressed: () async {
+                String waterPdfUrl = await StorageService().getProofDocumentUrl(
+                    restaurantApplication.uid, 'water_.pdf');
+                await _openPdfInBrowser(waterPdfUrl);
               },
             ),
           ],

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 // firebase storage service
@@ -12,6 +13,10 @@ class StorageService {
 
   String restaurantImagePath(String uid) {
     return 'restaurants/$uid/profile/image';
+  }
+
+  String restaurantProofDocumentPath(String uid, String fileName) {
+    return 'restaurants/$uid/ProofDocuments/$fileName';
   }
 
   Future uploadDishImageMobile(
@@ -59,6 +64,22 @@ class StorageService {
 
   Future getRestaurantImageUrl(String uid) async {
     final path = restaurantImagePath(uid);
+    final ref = _storage.ref().child(path);
+    return await ref.getDownloadURL();
+  }
+
+  Future<String?> uploadFile(
+      Uint8List fileBytes, String fileName, User user) async {
+    String uid = user.uid;
+    final path = restaurantProofDocumentPath(uid, fileName);
+    final storageRef = _storage.ref().child(path);
+    final metadata = SettableMetadata(contentType: 'application/pdf');
+    await storageRef.putData(fileBytes, metadata);
+    return await storageRef.getDownloadURL();
+  }
+
+  Future<String> getProofDocumentUrl(String uid, String fileName) async {
+    final path = restaurantProofDocumentPath(uid, fileName);
     final ref = _storage.ref().child(path);
     return await ref.getDownloadURL();
   }
