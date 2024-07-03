@@ -296,7 +296,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   TextFormField buildTextFormField(String label, TextEditingController controller,
       TextInputType keyboardType, RegExp? regExp, int? maxLength) {
     return TextFormField(
-      maxLength: maxLength,
       controller: controller,
       decoration: InputDecoration(
         labelText: "$label(*)",
@@ -304,6 +303,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       ),
       keyboardType: keyboardType,
       inputFormatters: <TextInputFormatter>[
+        LengthLimitingTextInputFormatter(maxLength),
         FilteringTextInputFormatter.allow(regExp ?? RegExp(r'.*', dotAll: true)),
       ],
       validator: (value) => validateString(value, "$label is required."),
