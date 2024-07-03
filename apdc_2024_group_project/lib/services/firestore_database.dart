@@ -128,14 +128,8 @@ class DatabaseService {
 
   // ----------------- No Restaurant (Application) -----------------
   // add or update a restaurant application
-  Future addOrUpdateRestaurantApplicationData(
-      String name,
-      String phone,
-      String address,
-      String location,
-      int seats,
-      double co2EmissionEstimate,
-      String coords) async {
+  Future addOrUpdateRestaurantApplicationData(String name, String phone,
+      String address, String location, int seats, String coords) async {
     User? user = _auth.currentUser;
     try {
       await restaurantsApplicationsCollection.doc(user!.uid).set({
@@ -144,7 +138,6 @@ class DatabaseService {
         'address': address,
         'location': location,
         'seats': seats,
-        'co2EmissionEstimate': co2EmissionEstimate,
         'coordinates': coords,
       });
       return true;
@@ -528,7 +521,6 @@ class DatabaseService {
           phone: doc.get('phone') ?? '',
           location: doc.get('location') ?? '',
           address: doc.get('address') ?? '',
-          co2EmissionEstimate: doc.get('co2EmissionEstimate').toDouble() ?? 0,
           seats: doc.get('seats').toInt() ?? 0,
           coordinates: doc.get('coordinates') ?? '',
         );

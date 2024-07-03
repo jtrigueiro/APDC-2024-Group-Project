@@ -27,24 +27,24 @@ class NoRestaurantScreen extends StatefulWidget {
 
 class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   static const String apiKey = "AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug";
-  static const String noRestaurantText = "Seems like you have no restaurant yet!\nAdd one now!";
+  static const String noRestaurantText =
+      "Seems like you have no restaurant yet!\nAdd one now!";
 
-  final ScrollController scrollController = ScrollController(); 
+  final ScrollController scrollController = ScrollController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController streetNumberController = TextEditingController();
   final TextEditingController routeController = TextEditingController();
   final TextEditingController cpController = TextEditingController();
   final TextEditingController countryController = TextEditingController();
-  final TextEditingController _numberOfSeatsController = TextEditingController();
-  final TextEditingController _co2EmissionEstimateController = TextEditingController();
+  final TextEditingController _numberOfSeatsController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool loading = false;
 
   final RegExp _numeric = RegExp(r'\d');
-  final RegExp _decimal = RegExp(r'(^\d*\.?\d*)');
-  
+
   late String _address;
   late String _coordinates;
   late String _location;
@@ -155,7 +155,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           _address,
           _location,
           int.parse(_numberOfSeatsController.text),
-          double.parse(_co2EmissionEstimateController.text),
           _coordinates,
         );
 
@@ -181,7 +180,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   }
 
   Future<bool> validateAddress() {
-    String address = "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
+    String address =
+        "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
 
     if (address.isEmpty) {
       return Future.value(false);
@@ -196,8 +196,12 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           final size = json['results'][0]['address_components'].length;
 
           _address = json['results'][0]['formatted_address'];
-          _location = json['results'][0]['address_components'][size - 4]['long_name'].toString().toLowerCase();
-          _coordinates = '${json['results'][0]['geometry']['location']['lat']},${json['results'][0]['geometry']['location']['lng']}';
+          _location = json['results'][0]['address_components'][size - 4]
+                  ['long_name']
+              .toString()
+              .toLowerCase();
+          _coordinates =
+              '${json['results'][0]['geometry']['location']['lat']},${json['results'][0]['geometry']['location']['lng']}';
 
           return true;
         } else {
@@ -213,7 +217,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       print('Error fetching address: $e');
       return false;
     });
-
   }
 
   @override
@@ -244,23 +247,45 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                           child: Column(
                             children: [
                               const SizedBox(height: 30),
-                              buildTextFormField("Restaurant name", nameController, TextInputType.text, null, 70),
+                              buildTextFormField("Restaurant name",
+                                  nameController, TextInputType.text, null, 70),
                               const SizedBox(height: 10),
-                              buildTextFormField("Phone number", phoneController, TextInputType.phone, _numeric, 15),
+                              buildTextFormField(
+                                  "Phone number",
+                                  phoneController,
+                                  TextInputType.phone,
+                                  _numeric,
+                                  15),
                               const SizedBox(height: 10),
-                              buildDoubleTextForm("Street number", "Route", streetNumberController, routeController, TextInputType.text),
+                              buildDoubleTextForm(
+                                  "Street number",
+                                  "Route",
+                                  streetNumberController,
+                                  routeController,
+                                  TextInputType.text),
                               const SizedBox(height: 10),
-                              buildDoubleTextForm("Postal Code", "Country", cpController, countryController, TextInputType.text),
+                              buildDoubleTextForm(
+                                  "Postal Code",
+                                  "Country",
+                                  cpController,
+                                  countryController,
+                                  TextInputType.text),
                               const SizedBox(height: 10),
-                              buildTextFormField("Number of seats", _numberOfSeatsController, TextInputType.number, _numeric, 5),
-                              const SizedBox(height: 10),
-                              buildTextFormField("GHGs emissions estimate", _co2EmissionEstimateController, const TextInputType.numberWithOptions(decimal: true), _decimal, 8),
+                              buildTextFormField(
+                                  "Number of seats",
+                                  _numberOfSeatsController,
+                                  TextInputType.number,
+                                  _numeric,
+                                  5),
                               const SizedBox(height: 20),
-                              buildPdfButton("Electricity", _electricityPdf, _electricityPdfBytes, _electricityPdfError),
+                              buildPdfButton("Electricity", _electricityPdf,
+                                  _electricityPdfBytes, _electricityPdfError),
                               const SizedBox(height: 10),
-                              buildPdfButton("Gas", _gasPdf, _gasPdfBytes, _gasPdfError),
+                              buildPdfButton(
+                                  "Gas", _gasPdf, _gasPdfBytes, _gasPdfError),
                               const SizedBox(height: 10),
-                              buildPdfButton("Water", _waterPdf, _waterPdfBytes, _waterPdfError),
+                              buildPdfButton("Water", _waterPdf, _waterPdfBytes,
+                                  _waterPdfError),
                               const SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: _submitForm,
@@ -278,23 +303,31 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           );
   }
 
-  Row buildDoubleTextForm(String label1, String label2, TextEditingController controller1,
-      TextEditingController controller2, TextInputType keyboardType) {
+  Row buildDoubleTextForm(
+      String label1,
+      String label2,
+      TextEditingController controller1,
+      TextEditingController controller2,
+      TextInputType keyboardType) {
     return Row(
       children: [
         Expanded(
-          child: buildTextFormField(label1, controller1, keyboardType, null, null)
-        ),
+            child: buildTextFormField(
+                label1, controller1, keyboardType, null, null)),
         const SizedBox(width: 5),
         Expanded(
-          child: buildTextFormField(label2, controller2, keyboardType, null, null)
-        ),
+            child: buildTextFormField(
+                label2, controller2, keyboardType, null, null)),
       ],
     );
   }
 
-  TextFormField buildTextFormField(String label, TextEditingController controller,
-      TextInputType keyboardType, RegExp? regExp, int? maxLength) {
+  TextFormField buildTextFormField(
+      String label,
+      TextEditingController controller,
+      TextInputType keyboardType,
+      RegExp? regExp,
+      int? maxLength) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -304,7 +337,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       keyboardType: keyboardType,
       inputFormatters: <TextInputFormatter>[
         LengthLimitingTextInputFormatter(maxLength),
-        FilteringTextInputFormatter.allow(regExp ?? RegExp(r'.*', dotAll: true)),
+        FilteringTextInputFormatter.allow(
+            regExp ?? RegExp(r'.*', dotAll: true)),
       ],
       validator: (value) => validateString(value, "$label is required."),
     );
@@ -317,7 +351,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     return null;
   }
 
-  Column buildPdfButton(String label, File? file, Uint8List? bytes, String? error) {
+  Column buildPdfButton(
+      String label, File? file, Uint8List? bytes, String? error) {
     return Column(
       children: [
         ElevatedButton(
@@ -329,7 +364,10 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           ),
         ),
         error != null
-            ? Text(error,) : Container(),
+            ? Text(
+                error,
+              )
+            : Container(),
       ],
     );
   }

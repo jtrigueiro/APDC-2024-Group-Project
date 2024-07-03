@@ -12,13 +12,80 @@ class RestaurantApplicationTile extends StatelessWidget {
 
   final RestaurantApplication restaurantApplication;
 
-  // Método para abrir o PDF no navegador
   Future<void> _openPdfInBrowser(String? url) async {
     if (url != null && await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  Future<double> _calculateCo2EmissionEstimate(double electricityConsumption,
+      double waterConsumption, double gasConsumption, int seats) async {
+    double electricityCo2Emission = electricityConsumption * 0.233;
+    double waterCo2Emission = waterConsumption * 0.0003;
+    double gasCo2Emission = gasConsumption * 1.986;
+
+    double co2EmissionEstimate =
+        electricityCo2Emission + waterCo2Emission + gasCo2Emission;
+
+    co2EmissionEstimate = co2EmissionEstimate / seats;
+
+    print('CO2 Emission Estimate: $co2EmissionEstimate');
+    return co2EmissionEstimate;
+  }
+
+  Future<Map<String, double>?> _showInputDialog(BuildContext context) async {
+    TextEditingController electricityController = TextEditingController();
+    TextEditingController waterController = TextEditingController();
+    TextEditingController gasController = TextEditingController();
+
+    return showDialog<Map<String, double>>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter Consumption Values'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: electricityController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Electricity (kWh)'),
+              ),
+              TextField(
+                controller: waterController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Water (liters)'),
+              ),
+              TextField(
+                controller: gasController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Gas (m³)'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop({
+                  'electricity': double.parse(electricityController.text),
+                  'water': double.parse(waterController.text),
+                  'gas': double.parse(gasController.text),
+                });
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -32,7 +99,6 @@ class RestaurantApplicationTile extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.cancel_outlined),
               onPressed: () async {
-                // Implementação para excluir a aplicação do restaurante
                 await DatabaseService()
                     .deleteRestaurantApplication(restaurantApplication.uid);
               },
@@ -45,9 +111,6 @@ class RestaurantApplicationTile extends StatelessWidget {
                   children: [
                     Text('Phone: ${restaurantApplication.phone}'),
                     Text('Location: ${restaurantApplication.location}'),
-                    Text(
-                      'CO2 Emission Estimate: ${restaurantApplication.co2EmissionEstimate}',
-                    ),
                     Text('numberOfSeats: ${restaurantApplication.seats}'),
                   ],
                 ),
@@ -56,22 +119,40 @@ class RestaurantApplicationTile extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.check_circle_outlined),
               onPressed: () async {
-                // Implementação para adicionar ou atualizar dados do restaurante
-                await DatabaseService().addOrUpdateRestaurantData(
-                  restaurantApplication.uid,
-                  restaurantApplication.name,
-                  restaurantApplication.phone,
-                  restaurantApplication.address,
-                  restaurantApplication.location,
-                  restaurantApplication.coordinates,
-                  restaurantApplication.co2EmissionEstimate,
-                  restaurantApplication.seats,
-                );
-                await DatabaseService()
-                    .deleteRestaurantApplication(restaurantApplication.uid);
+                Map<String, double>? consumptionValues =
+                    await _showInputDialog(context);
+                if (consumptionValues != null) {
+                  double electricityConsumption =
+                      consumptionValues['electricity']!;
+                  double waterConsumption = consumptionValues['water']!;
+                  double gasConsumption = consumptionValues['gas']!;
+
+                  double co2EmissionEstimate =
+                      await _calculateCo2EmissionEstimate(
+                          electricityConsumption,
+                          waterConsumption,
+                          gasConsumption,
+                          restaurantApplication.seats);
+
+                  print('Electricity: $electricityConsumption kWh');
+                  print('Water: $waterConsumption liters');
+                  print('Gas: $gasConsumption m³');
+
+                  await DatabaseService().addOrUpdateRestaurantData(
+                    restaurantApplication.uid,
+                    restaurantApplication.name,
+                    restaurantApplication.phone,
+                    restaurantApplication.address,
+                    restaurantApplication.location,
+                    restaurantApplication.coordinates,
+                    co2EmissionEstimate, // Usar o valor calculado aqui
+                    restaurantApplication.seats,
+                  );
+                  await DatabaseService()
+                      .deleteRestaurantApplication(restaurantApplication.uid);
+                }
               },
             ),
-            // Botão para abrir PDF de eletricidade
             IconButton(
               icon: const Icon(Icons.picture_as_pdf),
               onPressed: () async {
@@ -81,7 +162,6 @@ class RestaurantApplicationTile extends StatelessWidget {
                 await _openPdfInBrowser(electricityPdfUrl);
               },
             ),
-            // Botão para abrir PDF de gás
             IconButton(
               icon: const Icon(Icons.picture_as_pdf),
               onPressed: () async {
