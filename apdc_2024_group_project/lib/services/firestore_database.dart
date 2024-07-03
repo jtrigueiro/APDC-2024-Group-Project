@@ -38,7 +38,7 @@ class DatabaseService {
   static const String DISHES_SUBCOLLECTION = "dishes";
   static const String INGREDIENTS_SUBCOLLECTION = "ingredients";
 
-  // ----------------- User -----------------
+  // ----------------- Sign Up -----------------
   // add or update user data
   Future addOrUpdateUserData(String uid, String name, bool isAdmin) async {
     try {
@@ -54,6 +54,7 @@ class DatabaseService {
     }
   }
 
+  // ----------------- Home Screen Router -----------------
   Future<bool> isAdmin() async {
     User? user = _auth.currentUser;
     try {
@@ -125,7 +126,7 @@ class DatabaseService {
     }
   }
 
-  // ----------------- My Restaurant -----------------
+  // ----------------- No Restaurant (Application) -----------------
   // add or update a restaurant application
   Future addOrUpdateRestaurantApplicationData(
       String name,
@@ -153,6 +154,21 @@ class DatabaseService {
     }
   }
 
+  //upload files to firebase storage
+  Future<String?> uploadFile(Uint8List fileBytes, String fileName) async {
+    try {
+      final storageRef = _storage.ref().child('uploads/$fileName');
+      final metadata = SettableMetadata(contentType: 'application/pdf');
+      await storageRef.putData(fileBytes, metadata);
+      final downloadUrl = await storageRef.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      debugPrint('Failed to upload file: $e');
+      return null;
+    }
+  }
+
+  // ----------------- My Restaurant Profile -----------------
   // get restaurant data
   Future getRestaurantData() async {
     User? user = _auth.currentUser;
@@ -234,20 +250,7 @@ class DatabaseService {
     }
   }
 
-  //upload files to firebase storage
-  Future<String?> uploadFile(Uint8List fileBytes, String fileName) async {
-    try {
-      final storageRef = _storage.ref().child('uploads/$fileName');
-      final metadata = SettableMetadata(contentType: 'application/pdf');
-      await storageRef.putData(fileBytes, metadata);
-      final downloadUrl = await storageRef.getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      debugPrint('Failed to upload file: $e');
-      return null;
-    }
-  }
-
+  // ----------------- My Restaurant Screen Router -----------------
   // has a restaurant application
   Future hasRestaurantApplication() async {
     User? user = _auth.currentUser;
@@ -274,6 +277,7 @@ class DatabaseService {
     }
   }
 
+  // ----------------- My Restaurant Dishes -----------------
   Future<List<Ingredient>> getAllIngredients() async {
     try {
       final QuerySnapshot doc = await ingredientsCollection.get();
