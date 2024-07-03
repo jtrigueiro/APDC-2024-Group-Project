@@ -10,7 +10,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class NoRestaurantScreen extends StatefulWidget {
@@ -18,117 +17,44 @@ class NoRestaurantScreen extends StatefulWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   NoRestaurantScreen({
-    Key? key,
+    super.key,
     required this.checkCurrentIndex,
-  }) : super(key: key);
+  });
 
   @override
   State<NoRestaurantScreen> createState() => NoRestaurantScreenState();
 }
 
 class NoRestaurantScreenState extends State<NoRestaurantScreen> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-  final LatLng _center = const LatLng(38.660259532890706, -9.203190255573041);
-  final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
+  static const String apiKey = "AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug";
+  static const String noRestaurantText = "Seems like you have no restaurant yet!\nAdd one now!";
 
-  late Marker marker;
-
-  late String coordinates;
-  late String location;
-  late ScrollController scrollController;
-  late TextEditingController nameController;
-  late TextEditingController phoneController;
-  late TextEditingController addressController;
-  TextEditingController _numberOfSeatsController = TextEditingController();
-  TextEditingController _co2EmissionEstimateController =
-      TextEditingController();
-
-  String? _mapStyle;
-  bool loading = false;
+  final ScrollController scrollController = ScrollController(); 
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController streetNumberController = TextEditingController();
+  final TextEditingController routeController = TextEditingController();
+  final TextEditingController cpController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+  final TextEditingController _numberOfSeatsController = TextEditingController();
+  final TextEditingController _co2EmissionEstimateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  bool loading = false;
+  
+  late String _address;
+  late String _coordinates;
+  late String _location;
+
   File? _electricityPdf;
   File? _gasPdf;
   File? _waterPdf;
   Uint8List? _electricityPdfBytes;
   Uint8List? _gasPdfBytes;
   Uint8List? _waterPdfBytes;
-  int? _numberOfSeats;
-  double? _co2EmissionEstimate;
   String? _electricityPdfError;
   String? _gasPdfError;
   String? _waterPdfError;
-
-  @override
-  void initState() {
-    super.initState();
-    scrollController = ScrollController();
-    nameController = TextEditingController();
-    phoneController = TextEditingController();
-    addressController = TextEditingController();
-    _numberOfSeatsController = TextEditingController();
-    _co2EmissionEstimateController = TextEditingController();
-    _loadMapStyle();
-  }
-
-  @override
-  void dispose() {
-    _numberOfSeatsController.dispose();
-    _co2EmissionEstimateController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadMapStyle() async {
-    _mapStyle = await rootBundle.loadString('assets/map_style.json');
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    if (!_controller.isCompleted) {
-      _controller.complete(controller);
-    }
-    if (_mapStyle != null) {
-      controller.setMapStyle(_mapStyle!);
-    }
-  }
-
-  Future<void> _handleTap(LatLng position) async {
-    final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey');
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        if (json['status'] == 'OK') {
-          final result = json['results'][0]['formatted_address'];
-          addressController.text = result;
-          final size = json['results'][0]['address_components'].length;
-          location =
-              json['results'][0]['address_components'][size - 4]['long_name'];
-          print(location);
-          coordinates = '${position.latitude},${position.longitude}';
-
-          print('Error: ${json['status']}');
-        }
-      } else {
-        print('Failed to fetch address: ${response.statusCode}');
-
-        AlertDialog(
-          title: const Text('Error'),
-          content: const Text('No such address found. Please try again.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      }
-    } catch (e) {
-      print('Error fetching address: $e');
-    }
-  }
 
   Future<void> _pickFile(String fileType) async {
     try {
@@ -181,7 +107,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     if (_formKey.currentState!.validate() &&
         _electricityPdfError == null &&
         _gasPdfError == null &&
-        _waterPdfError == null) {
+        _waterPdfError == null &&
+        await validateAddress()) {
       setState(() {
         loading = true;
       });
@@ -210,7 +137,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
             'water_.pdf',
             widget._auth.currentUser!);
 
-        // Verifica se todos os uploads foram bem-sucedidos
         if (electricityUrl == null || gasUrl == null || waterUrl == null) {
           print('Failed to upload one or more files');
           setState(() {
@@ -219,16 +145,15 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           return;
         }
 
-        // Exemplo de uso do DatabaseService para operações no Firebase
         dynamic result =
             await DatabaseService().addOrUpdateRestaurantApplicationData(
           nameController.text,
           phoneController.text,
-          addressController.text,
-          location.toLowerCase(),
-          _numberOfSeats!,
-          _co2EmissionEstimate!,
-          coordinates,
+          _address,
+          _location,
+          int.parse(_numberOfSeatsController.text),
+          double.parse(_co2EmissionEstimateController.text),
+          _coordinates,
         );
 
         if (result == null) {
@@ -252,6 +177,42 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
+  Future<bool> validateAddress() {
+    String address = "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
+
+    if (address.isEmpty) {
+      return Future.value(false);
+    }
+
+    final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey');
+    return http.get(url).then((response) {
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json['status'] == 'OK') {
+          final size = json['results'][0]['address_components'].length;
+
+          _address = json['results'][0]['formatted_address'];
+          _location = json['results'][0]['address_components'][size - 4]['long_name'].toString().toLowerCase();
+          _coordinates = '${json['results'][0]['geometry']['location']['lat']},${json['results'][0]['geometry']['location']['lng']}';
+
+          return true;
+        } else {
+          print('Failed to fetch address: ${response.statusCode}');
+
+          return false;
+        }
+      } else {
+        print('Failed to fetch address: ${response.statusCode}');
+        return false;
+      }
+    }).catchError((e) {
+      print('Error fetching address: $e');
+      return false;
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return loading
@@ -266,168 +227,41 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Column(
                       children: [
-                        Column(
-                          children: [
-                            Text('Seems like you have no restaurant yet!',
-                                textAlign: TextAlign.center),
-                            SizedBox(height: 10),
-                            Text('Add one now!', textAlign: TextAlign.center),
-                          ],
+                        const SizedBox(height: 20),
+                        const Text(
+                          noRestaurantText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Form(
                           key: _formKey,
                           child: Column(
                             children: [
                               const SizedBox(height: 30),
-                              TextFormField(
-                                controller: nameController,
-                                decoration: InputDecoration(
-                                  labelText: 'Restaurant Name*',
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter a restaurant name';
-                                  }
-                                  return null;
-                                },
-                              ),
+                              buildTextFormField("Restaurant name", nameController, TextInputType.text),
                               const SizedBox(height: 10),
-                              TextFormField(
-                                controller: phoneController,
-                                decoration: InputDecoration(
-                                  labelText: 'Phone number*',
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter a phone number';
-                                  }
-                                  return null;
-                                },
-                              ),
+                              buildTextFormField("Phone number", phoneController, TextInputType.phone),
                               const SizedBox(height: 10),
-                              TextFormField(
-                                controller: addressController,
-                                decoration: InputDecoration(
-                                  labelText: 'Address*',
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter an address';
-                                  }
-                                  return null;
-                                },
-                              ),
+                              buildDoubleTextForm("Street number", "Route", streetNumberController, routeController, TextInputType.text),
                               const SizedBox(height: 10),
-                              TextFormField(
-                                controller: _numberOfSeatsController,
-                                decoration: InputDecoration(
-                                  labelText: 'Number of Seats*',
-                                  border: OutlineInputBorder(),
-                                ),
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _numberOfSeats = int.tryParse(value);
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter the number of seats';
-                                  }
-                                  return null;
-                                },
-                              ),
+                              buildDoubleTextForm("Postal Code", "Country", cpController, countryController, TextInputType.text),
                               const SizedBox(height: 10),
-                              TextFormField(
-                                controller: _co2EmissionEstimateController,
-                                decoration: InputDecoration(
-                                  labelText: 'CO2 Emission Estimate (tons)*',
-                                  border: OutlineInputBorder(),
-                                ),
-                                keyboardType: TextInputType.numberWithOptions(
-                                    decimal: true),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _co2EmissionEstimate =
-                                        double.tryParse(value);
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter the CO2 emission estimate';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 30),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: 300,
-                                child: GoogleMap(
-                                  onMapCreated: _onMapCreated,
-                                  initialCameraPosition: CameraPosition(
-                                    target: _center,
-                                    zoom: 14.0,
-                                  ),
-                                  onTap: _handleTap,
-                                ),
-                              ),
+                              buildTextFormField("Number of seats", _numberOfSeatsController, TextInputType.number),
+                              const SizedBox(height: 10),
+                              buildTextFormField("GHGs emissions estimate", _co2EmissionEstimateController, const TextInputType.numberWithOptions(decimal: true)),
                               const SizedBox(height: 20),
-                              ElevatedButton(
-                                onPressed: () => _pickFile('electricity'),
-                                child: Text(
-                                  _electricityPdf == null &&
-                                          _electricityPdfBytes == null
-                                      ? 'Upload Last  Month of Electricity Bill(*)'
-                                      : 'Electricity PDF Selected',
-                                ),
-                              ),
-                              _electricityPdfError != null
-                                  ? Text(
-                                      _electricityPdfError!,
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 12),
-                                    )
-                                  : Container(),
+                              buildPdfButton("Electricity", _electricityPdf, _electricityPdfBytes, _electricityPdfError),
                               const SizedBox(height: 10),
-                              ElevatedButton(
-                                onPressed: () => _pickFile('gas'),
-                                child: Text(
-                                  _gasPdf == null && _gasPdfBytes == null
-                                      ? 'Upload Last Month of Gas Bill(*)'
-                                      : 'Gas PDF Selected',
-                                ),
-                              ),
-                              _gasPdfError != null
-                                  ? Text(
-                                      _gasPdfError!,
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 12),
-                                    )
-                                  : Container(),
+                              buildPdfButton("Gas", _gasPdf, _gasPdfBytes, _gasPdfError),
                               const SizedBox(height: 10),
-                              ElevatedButton(
-                                onPressed: () => _pickFile('water'),
-                                child: Text(
-                                  _waterPdf == null && _waterPdfBytes == null
-                                      ? 'Upload Last  Month of Water Bill(*)'
-                                      : 'Water PDF Selected',
-                                ),
-                              ),
-                              _waterPdfError != null
-                                  ? Text(
-                                      _waterPdfError!,
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 12),
-                                    )
-                                  : Container(),
+                              buildPdfButton("Water", _waterPdf, _waterPdfBytes, _waterPdfError),
                               const SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: _submitForm,
-                                child: const Text('Send'),
+                                child: const Text("Submit Application"),
                               ),
                             ],
                           ),
@@ -439,5 +273,57 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
               ),
             ),
           );
+  }
+
+  Row buildDoubleTextForm(String label1, String label2, TextEditingController controller1,
+      TextEditingController controller2, TextInputType keyboardType) {
+    return Row(
+      children: [
+        Expanded(
+          child: buildTextFormField(label1, controller1, keyboardType)
+        ),
+        const SizedBox(width: 5),
+        Expanded(
+          child: buildTextFormField(label2, controller2, keyboardType)
+        ),
+      ],
+    );
+  }
+
+  TextFormField buildTextFormField(String label, TextEditingController controller,
+      TextInputType keyboardType) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: "$label(*)",
+        border: const OutlineInputBorder(),
+      ),
+      keyboardType: keyboardType,
+      validator: (value) => validateString(value, "$label is required."),
+    );
+  }
+
+  String? validateString(String? value, String message) {
+    if (value == null || value.isEmpty) {
+      return message;
+    }
+    return null;
+  }
+
+  Column buildPdfButton(String label, File? file, Uint8List? bytes, String? error) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () => _pickFile(label.toLowerCase()),
+          child: Text(
+            file == null && bytes == null
+                ? "Upload Last Month's $label Bill(*)"
+                : "$label File Selected",
+          ),
+        ),
+        error != null
+            ? Text(error,) : Container(),
+      ],
+    );
   }
 }

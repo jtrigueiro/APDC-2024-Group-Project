@@ -132,13 +132,13 @@ class _SearchScreenState extends State<SearchScreen> {
 
   double calculateMarkerSize(double zoom) {
           if (zoom <= 10) {
-            return kIsWeb ? 12.0 : 80.0;
+            return kIsWeb ? 14.0 : 80.0;
           } else if (zoom <= 15) {
             return kIsWeb ? 13.0 : 60.0;
           } else {
-            return kIsWeb ? 14.0 : 40.0;
+            return kIsWeb ? 12.0 : 40.0;
           }
-        }
+  }
 
   bool inRadius(LatLng point, LatLng center, double radius) {
     return Geolocator.distanceBetween(point.latitude, point.longitude,
