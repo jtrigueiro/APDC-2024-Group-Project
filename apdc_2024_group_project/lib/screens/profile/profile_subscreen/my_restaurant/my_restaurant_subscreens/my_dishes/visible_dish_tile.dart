@@ -7,9 +7,11 @@ class VisibleDishTile extends StatelessWidget {
   const VisibleDishTile({
     super.key,
     required this.dish,
+    required this.hasOnlyOneVisibleDish,
   });
 
   final Dish dish;
+  final bool hasOnlyOneVisibleDish;
 
   @override
   Widget build(BuildContext context) {
@@ -22,35 +24,42 @@ class VisibleDishTile extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: () async {
-                if (await DatabaseService().hasOnlyOneVisibleDish() == true &&
-                    await DatabaseService().isRestaurantVisible() == true) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Warning'),
-                        content: const Text(
-                            'If you delete this dish, you wont have any visible dishes and your restaurant visiblity wil be turned off. Do you want to proceed?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              Navigator.pop(context);
-                              await DatabaseService().deleteDish(dish.id);
-                              await DatabaseService()
-                                  .updateRestaurantVisibility(false);
-                            },
-                            child: const Text('Proceed'),
-                          ),
-                        ],
+                if (hasOnlyOneVisibleDish) {
+                  final bool isRestaurantVisible =
+                      await DatabaseService().isRestaurantVisible();
+                  if (isRestaurantVisible != null) {
+                    if (isRestaurantVisible == true) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Warning'),
+                            content: const Text(
+                                'If you delete this dish, you wont have any visible dishes and your restaurant visiblity wil be turned off. Do you want to proceed?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  await DatabaseService().deleteDish(dish.id);
+                                  await DatabaseService()
+                                      .updateRestaurantVisibility(false);
+                                },
+                                child: const Text('Proceed'),
+                              ),
+                            ],
+                          );
+                        },
                       );
-                    },
-                  );
+                    } else {
+                      await DatabaseService().deleteDish(dish.id);
+                    }
+                  }
                 } else {
                   await DatabaseService().deleteDish(dish.id);
                 }
@@ -128,49 +137,47 @@ class VisibleDishTile extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.visibility_off),
               onPressed: () async {
-                final bool hasOnlyOneVisibleDish =
-                    await DatabaseService().hasOnlyOneVisibleDish();
-                final bool isRestaurantVisible =
-                    await DatabaseService().isRestaurantVisible();
-
-                if (hasOnlyOneVisibleDish != null &&
-                    isRestaurantVisible != null) {
-                  print("AQUI1");
-                  if (hasOnlyOneVisibleDish == true &&
-                      isRestaurantVisible == true) {
-                    print("AQUI2");
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Warning'),
-                          content: const Text(
-                              'If you make this dish invisible, you wont have any visible dishes and your restaurant visiblity wil be turned off. Do you want to proceed?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                Navigator.pop(context);
-                                await DatabaseService().updateDishVisibility(
-                                    dish.id, dish.visible);
-                                await DatabaseService()
-                                    .updateRestaurantVisibility(false);
-                              },
-                              child: const Text('Proceed'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  } else {
-                    await DatabaseService()
-                        .updateDishVisibility(dish.id, dish.visible);
+                if (hasOnlyOneVisibleDish) {
+                  final bool isRestaurantVisible =
+                      await DatabaseService().isRestaurantVisible();
+                  if (isRestaurantVisible != null) {
+                    if (isRestaurantVisible == true) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Warning'),
+                            content: const Text(
+                                'If you make this dish invisible, you wont have any visible dishes and your restaurant visiblity wil be turned off. Do you want to proceed?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  await DatabaseService().updateDishVisibility(
+                                      dish.id, dish.visible);
+                                  await DatabaseService()
+                                      .updateRestaurantVisibility(false);
+                                },
+                                child: const Text('Proceed'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      await DatabaseService()
+                          .updateDishVisibility(dish.id, dish.visible);
+                    }
                   }
+                } else {
+                  await DatabaseService()
+                      .updateDishVisibility(dish.id, dish.visible);
                 }
               },
             ),

@@ -18,7 +18,9 @@ class _VisibleDishesListState extends State<VisibleDishesList> {
     return ListView.builder(
         itemCount: hidenDishes.length,
         itemBuilder: (context, index) {
-          return VisibleDishTile(dish: hidenDishes[index]);
+          return VisibleDishTile(
+              dish: hidenDishes[index],
+              hasOnlyOneVisibleDish: hidenDishes.length == 1);
         });
   }
 }
