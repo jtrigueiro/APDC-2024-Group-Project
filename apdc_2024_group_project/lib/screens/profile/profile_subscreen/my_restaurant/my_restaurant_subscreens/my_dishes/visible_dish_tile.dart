@@ -4,9 +4,13 @@ import 'package:adc_group_project/services/models/dish.dart';
 import 'package:flutter/material.dart';
 
 class VisibleDishTile extends StatelessWidget {
-  const VisibleDishTile({super.key, required this.dish});
+  const VisibleDishTile({
+    super.key,
+    required this.dish,
+  });
 
   final Dish dish;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -18,7 +22,38 @@ class VisibleDishTile extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: () async {
-                await DatabaseService().deleteDish(dish.id);
+                if (await DatabaseService().hasOnlyOneVisibleDish() == true &&
+                    await DatabaseService().isRestaurantVisible() == true) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Warning'),
+                        content: const Text(
+                            'If you delete this dish, you wont have any visible dishes and your restaurant visiblity wil be turned off. Do you want to proceed?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              Navigator.pop(context);
+                              await DatabaseService().deleteDish(dish.id);
+                              await DatabaseService()
+                                  .updateRestaurantVisibility(false);
+                            },
+                            child: const Text('Proceed'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  await DatabaseService().deleteDish(dish.id);
+                }
               },
             ),
             Expanded(
@@ -93,8 +128,50 @@ class VisibleDishTile extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.visibility_off),
               onPressed: () async {
-                await DatabaseService()
-                    .updateDishVisibility(dish.id, dish.visible);
+                final bool hasOnlyOneVisibleDish =
+                    await DatabaseService().hasOnlyOneVisibleDish();
+                final bool isRestaurantVisible =
+                    await DatabaseService().isRestaurantVisible();
+
+                if (hasOnlyOneVisibleDish != null &&
+                    isRestaurantVisible != null) {
+                  print("AQUI1");
+                  if (hasOnlyOneVisibleDish == true &&
+                      isRestaurantVisible == true) {
+                    print("AQUI2");
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Warning'),
+                          content: const Text(
+                              'If you make this dish invisible, you wont have any visible dishes and your restaurant visiblity wil be turned off. Do you want to proceed?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                await DatabaseService().updateDishVisibility(
+                                    dish.id, dish.visible);
+                                await DatabaseService()
+                                    .updateRestaurantVisibility(false);
+                              },
+                              child: const Text('Proceed'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    await DatabaseService()
+                        .updateDishVisibility(dish.id, dish.visible);
+                  }
+                }
               },
             ),
           ],

@@ -475,6 +475,66 @@ class DatabaseService {
     }
   }
 
+  Future isRestaurantVisible() async {
+    User? user = _auth.currentUser;
+    try {
+      final DocumentSnapshot doc =
+          await restaurantsCollection.doc(user!.uid).get();
+      print("VISIBLE?" + doc.get('visible').toString());
+      return doc.get('visible') ?? false;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  Future hasOnlyOneVisibleDish() async {
+    User? user = _auth.currentUser;
+    try {
+      final QuerySnapshot doc = await restaurantsCollection
+          .doc(user!.uid)
+          .collection(DISHES_SUBCOLLECTION)
+          .where('visible', isEqualTo: true)
+          .get();
+      print("TEEEEEEEEEEEEEEEEEEESTE" +
+          doc.docs.length.toString() +
+          (doc.docs.length == 1).toString());
+      return doc.docs.length == 1;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  // ----------------- My Restaurant Settings -----------------
+  Future updateRestaurantVisibility(bool visibility) async {
+    User? user = _auth.currentUser;
+    try {
+      await restaurantsCollection
+          .doc(user!.uid)
+          .update({'visible': visibility});
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  Future hasVisibleDishes() async {
+    User? user = _auth.currentUser;
+    try {
+      final QuerySnapshot doc = await restaurantsCollection
+          .doc(user!.uid)
+          .collection(DISHES_SUBCOLLECTION)
+          .where('visible', isEqualTo: true)
+          .get();
+      return doc.docs.isNotEmpty;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   // ----------------- BackOffice -----------------
   // restaurant application from snapshot
   List<RestaurantApplication> _restaurantsApplicationsListFromSnapshot(
