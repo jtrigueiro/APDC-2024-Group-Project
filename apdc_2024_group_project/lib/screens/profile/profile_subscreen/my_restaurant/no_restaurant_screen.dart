@@ -41,6 +41,9 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   final _formKey = GlobalKey<FormState>();
 
   bool loading = false;
+
+  final RegExp _numeric = RegExp(r'\d');
+  final RegExp _decimal = RegExp(r'(^\d*\.?\d*)');
   
   late String _address;
   late String _coordinates;
@@ -241,17 +244,17 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                           child: Column(
                             children: [
                               const SizedBox(height: 30),
-                              buildTextFormField("Restaurant name", nameController, TextInputType.text),
+                              buildTextFormField("Restaurant name", nameController, TextInputType.text, null),
                               const SizedBox(height: 10),
-                              buildTextFormField("Phone number", phoneController, TextInputType.phone),
+                              buildTextFormField("Phone number", phoneController, TextInputType.phone, _numeric),
                               const SizedBox(height: 10),
                               buildDoubleTextForm("Street number", "Route", streetNumberController, routeController, TextInputType.text),
                               const SizedBox(height: 10),
                               buildDoubleTextForm("Postal Code", "Country", cpController, countryController, TextInputType.text),
                               const SizedBox(height: 10),
-                              buildTextFormField("Number of seats", _numberOfSeatsController, TextInputType.number),
+                              buildTextFormField("Number of seats", _numberOfSeatsController, TextInputType.number, _numeric),
                               const SizedBox(height: 10),
-                              buildTextFormField("GHGs emissions estimate", _co2EmissionEstimateController, const TextInputType.numberWithOptions(decimal: true)),
+                              buildTextFormField("GHGs emissions estimate", _co2EmissionEstimateController, const TextInputType.numberWithOptions(decimal: true), _decimal),
                               const SizedBox(height: 20),
                               buildPdfButton("Electricity", _electricityPdf, _electricityPdfBytes, _electricityPdfError),
                               const SizedBox(height: 10),
@@ -280,18 +283,18 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     return Row(
       children: [
         Expanded(
-          child: buildTextFormField(label1, controller1, keyboardType)
+          child: buildTextFormField(label1, controller1, keyboardType, null)
         ),
         const SizedBox(width: 5),
         Expanded(
-          child: buildTextFormField(label2, controller2, keyboardType)
+          child: buildTextFormField(label2, controller2, keyboardType, null)
         ),
       ],
     );
   }
 
   TextFormField buildTextFormField(String label, TextEditingController controller,
-      TextInputType keyboardType) {
+      TextInputType keyboardType, RegExp? regExp) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -299,6 +302,9 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         border: const OutlineInputBorder(),
       ),
       keyboardType: keyboardType,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(regExp ?? RegExp(r'.*', dotAll: true)),
+      ],
       validator: (value) => validateString(value, "$label is required."),
     );
   }
