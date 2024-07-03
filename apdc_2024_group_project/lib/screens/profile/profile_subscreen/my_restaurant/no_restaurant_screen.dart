@@ -6,7 +6,6 @@ import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
