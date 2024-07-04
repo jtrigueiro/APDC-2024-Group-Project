@@ -377,6 +377,19 @@ class DatabaseService {
     }
   }
 
+  Future<List<Dish>> getAllRestaurantDishes(String restaurantUid) async {
+    try {
+      final QuerySnapshot snapshot = await restaurantsCollection
+          .doc(restaurantUid)
+          .collection(DISHES_SUBCOLLECTION)
+          .get();
+      return _dishesListFromSnapshot(snapshot);
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
   Stream<List<Dish>> get dishes {
     try {
       User? user = _auth.currentUser;
@@ -442,6 +455,19 @@ class DatabaseService {
       return await StorageService().getDishImageUrl(user!.uid, dishId);
     } catch (e) {
       debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  Future getDishImageUrlUsers(String restaurantUid, String dishId) async {
+    try {
+      String imageUrl = await _storage
+          .ref()
+          .child('restaurants/$restaurantUid/dishes/$dishId')
+          .getDownloadURL();
+      return imageUrl;
+    } catch (e) {
+      debugPrint("Error getting dish image URL: $e");
       return null;
     }
   }
