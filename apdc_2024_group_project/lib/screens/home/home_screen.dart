@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
         getLocal(userLocation);
       }
       else {
-        getRestaurants('lisboa');
+        getRestaurants('amadora');
       }
     });
     super.initState();
@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     items = await db.getRestaurantsbyLocation(local.toLowerCase());
 
     if(items.isEmpty) {
-      items = await db.getRestaurantsbyLocation('lisboa');
+      items = await db.getRestaurantsbyLocation('amadora');
     }
 
     setState(() {
