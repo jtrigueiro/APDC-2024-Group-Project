@@ -382,6 +382,7 @@ class DatabaseService {
       final QuerySnapshot snapshot = await restaurantsCollection
           .doc(restaurantUid)
           .collection(DISHES_SUBCOLLECTION)
+          .where('visible', isEqualTo: true)
           .get();
       return _dishesListFromSnapshot(snapshot);
     } catch (e) {
