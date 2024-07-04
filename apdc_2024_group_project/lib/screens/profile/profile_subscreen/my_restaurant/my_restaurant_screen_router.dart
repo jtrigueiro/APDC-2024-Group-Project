@@ -1,8 +1,6 @@
-import 'package:adc_group_project/screens/profile/profile_subscreen/help_and_support/help_and_support.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/no_restaurant_screen.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/restaurant_requested_screen.dart';
-import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';

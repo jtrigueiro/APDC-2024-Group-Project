@@ -17,7 +17,31 @@ class HiddenDishTile extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: () async {
-                await DatabaseService().deleteDish(dish.id);
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      //title: const Text('Warning'),
+                      content: const Text(
+                          'Are you sure you want to delete this dish? This action cannot be undone.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            await DatabaseService().deleteDish(dish.id);
+                          },
+                          child: const Text('Proceed'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
             Expanded(
@@ -32,9 +56,8 @@ class HiddenDishTile extends StatelessWidget {
                 ),
               ),
             ),
-            // use    await DatabaseService().getDishListOfIngredients(dish.id)
             IconButton(
-                icon: const Icon(Icons.food_bank_outlined),
+                icon: const Icon(Icons.restaurant),
                 onPressed: () async {
                   await DatabaseService()
                       .getDishListOfIngredients(dish.id)
