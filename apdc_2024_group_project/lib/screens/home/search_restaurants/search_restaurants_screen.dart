@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:adc_group_project/services/geocoding.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -10,8 +11,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class SearchScreen extends StatefulWidget {
   final LatLng userLocation;
@@ -23,7 +22,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final String apiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
 
   List<Restaurant> restaurants = [];
   Set<Marker> markers = {};
@@ -52,42 +50,32 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<int> getCityByCoords(LatLng coordinates) async {
-      final url = Uri.parse(
-          'https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=$apiKey');
-      return http.get(url).then((response) {
-        if (response.statusCode == 200) {
-          final json = jsonDecode(response.body);
-          if (json['status'] == 'OK') {
-            final size = json['results'][0]['address_components'].length;
-            final locality = json['results'][0]['address_components'][size - 4]['long_name'];
+      return GeocodingService().reverseGeocode(coordinates.latitude, coordinates.longitude).then((value) {
+          if (value['status'] == 'OK') {
+              final int size = value['results'][0]['address_components'].length;
+              final city = value['results'][0]['address_components'][size - 4]['long_name'];
   
-            setState(() {
-              currentLocality = locality;
-              locationController.text = locality;
-            });
-            
-            return 1;
+              setState(() {
+                  currentLocality = city;
+                  locationController.text = city;
+              });
+  
+              return 1;
           }
-        }
-  
-        return 0;
+          return 0;
       });
-    }
+  }
 
   void getCityByAddress(String address) {
-    final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey');
-    http.get(url).then((response) {
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        if (json['status'] == 'OK') {
-          final locality = json['results'][0]['address_components'][4]['long_name'];
-          currentLocality = locality;
-          locationController.text = locality;
+    GeocodingService().geocode(address).then((value) {
+      if (value['status'] == 'OK') {
+          final int size = value['results'][0]['address_components'].length;
+          final city = value['results'][0]['address_components'][size - 4]['long_name'];
+          currentLocation = city;
+          locationController.text = city;
         }
-      }
-    });
-  }
+      });
+    }
 
   Future<void> _loadMapStyle() async {
     _mapStyle = await rootBundle.loadString('assets/map_style.json');
@@ -98,26 +86,6 @@ class _SearchScreenState extends State<SearchScreen> {
     if (_mapStyle != null) {
       controller.setMapStyle(_mapStyle);
     }
-  }
-
-  void getCenter(String center) async {
-        final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?address=$center&key=$apiKey');
-    final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        if (json['status'] == 'OK') {
-          final result = json['results'][0]['geometry']['location'];
-          currentLocation = LatLng(result['lat'], result['lng']);
-        }
-        else {
-          currentLocation = const LatLng(38.660259532890706, -9.203190255573041);
-        }
-      }
-      else {
-        currentLocation = const LatLng(38.660259532890706, -9.203190255573041);
-      }
   }
 
   void _handleTap(LatLng point) {
@@ -131,19 +99,13 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   double calculateMarkerSize(double zoom) {
-          if (zoom <= 10) {
-            return kIsWeb ? 14.0 : 80.0;
-          } else if (zoom <= 15) {
-            return kIsWeb ? 13.0 : 60.0;
-          } else {
-            return kIsWeb ? 12.0 : 40.0;
-          }
-  }
-
-  bool inRadius(LatLng point, LatLng center, double radius) {
-    return Geolocator.distanceBetween(point.latitude, point.longitude,
-            center.latitude, center.longitude) <
-        radius;
+    if (zoom <= 10) {
+      return kIsWeb ? 14.0 : 80.0;
+    } else if (zoom <= 15) {
+      return kIsWeb ? 13.0 : 60.0;
+    } else {
+      return kIsWeb ? 12.0 : 40.0;
+    }
   }
 
   void handleRestaurant(Restaurant restaurant, int index) {
@@ -189,26 +151,20 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _moveToLocation(String location) async {
-    final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?address=$location&key=$apiKey');
-    final response = await http.get(url);
+    GeocodingService().geocode(location).then((value) async {
+      if (value['status'] == 'OK') {
+        final LatLng target = LatLng(value['results'][0]['geometry']['location']['lat'],
+          value['results'][0]['geometry']['location']['lng']);
 
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        if (json['status'] == 'OK') {
-          final result = json['results'][0]['geometry']['location'];
-          final LatLng target = LatLng(result['lat'], result['lng']);
+        final GoogleMapController controller = await _controller.future;
+        controller.animateCamera(CameraUpdate.newLatLngZoom(target, 13.0));
+        getRestaurants(location.toLowerCase());
 
-          final GoogleMapController controller = await _controller.future;
-          controller.animateCamera(CameraUpdate.newLatLngZoom(target, 13.0));
-          getRestaurants(location.toLowerCase());
-        } else {
-          print('Error: ${json['status']}');
-        }
       } else {
-        print('Failed to fetch location');
+        print('Error: ${value['status']}');
       }
       currentLocality = location;
+    });
   }
 
   Future<void> _searchForRestaurants(String query) async {

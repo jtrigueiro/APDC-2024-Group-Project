@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-
+import 'package:adc_group_project/services/geocoding.dart';
 import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
@@ -10,7 +9,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 
 class NoRestaurantScreen extends StatefulWidget {
   final Function checkCurrentIndex;
@@ -26,9 +24,7 @@ class NoRestaurantScreen extends StatefulWidget {
 }
 
 class NoRestaurantScreenState extends State<NoRestaurantScreen> {
-  static const String apiKey = "AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug";
-  static const String noRestaurantText =
-      "Seems like you have no restaurant yet!\nAdd one now!";
+  static const String noRestaurantText = "Seems like you have no restaurant yet!\nAdd one now!";
 
   final ScrollController scrollController = ScrollController();
   final TextEditingController nameController = TextEditingController();
@@ -98,14 +94,14 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Error"),
+          title: const Text("Error"),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         );
@@ -199,45 +195,23 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
-  Future<bool> validateAddress() async {
-    String address =
-        "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
-
-    if (address.isEmpty) {
-      _showErrorDialog("Address is required.");
-      return false;
-    }
-
-    final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey');
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        if (json['status'] == 'OK') {
-          final size = json['results'][0]['address_components'].length;
-
-          _address = json['results'][0]['formatted_address'];
-          _location = json['results'][0]['address_components'][size - 4]
-                  ['long_name']
-              .toString()
-              .toLowerCase();
-          _coordinates =
-              '${json['results'][0]['geometry']['location']['lat']},${json['results'][0]['geometry']['location']['lng']}';
-
-          return true;
-        } else {
-          _showErrorDialog("Failed to fetch address: ${json['status']}");
-          return false;
-        }
+  Future<bool> validateAddress() {
+    String address = "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
+  
+    return GeocodingService().geocode(address).then((value) {
+      if (value['status'] == 'OK') {
+        final int size = value['results'][0]['address_components'].length;
+  
+        _address = value['results'][0]['formatted_address'];
+        _location = value['results'][0]['address_components'][size - 4]['long_name'].toString().toLowerCase();
+        _coordinates = '${value['results'][0]['geometry']['location']['lat']},${value['results'][0]['geometry']['location']['lng']}';
+        
+        return true;
       } else {
-        _showErrorDialog("Failed to fetch address: ${response.statusCode}");
+        _showErrorDialog("There were no results for the given address.\nPlease check the address and try again.\nIf the problem persists, please contact the support team.");
         return false;
       }
-    } catch (e) {
-      _showErrorDialog("Error fetching address: $e");
-      return false;
-    }
+    });
   }
 
   @override
@@ -297,7 +271,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   _numberOfSeatsController,
                                   TextInputType.number,
                                   _numeric,
-                                  5),
+                                  3),
                               const SizedBox(height: 20),
                               buildPdfButton("Electricity", _electricityPdf,
                                   _electricityPdfBytes, _electricityPdfError),
