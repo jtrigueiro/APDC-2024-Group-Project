@@ -39,7 +39,7 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
                   style: Theme.of(context).textTheme.bodyMedium),*/
               customSpaceBetweenColumns(40),
               tiles('Profile', Icons.warehouse, toPersonalizePage),
-              tiles('My Dishes', Icons.food_bank, toMyDishesPage),
+              tiles('My Dishes', Icons.restaurant, toMyDishesPage),
               tiles('Reviews', Icons.star, () {}),
               //tiles('PromoCodes', Icons.card_giftcard, toPromoCodesPage),
               tiles('Settings', Icons.settings, toMyRestaurantSettingsPage),

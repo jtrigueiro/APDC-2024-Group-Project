@@ -117,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     profileItem(
                       context,
-                      Icons.restaurant,
+                      Icons.food_bank,
                       'My Restaurant',
                       ontapMyRestaurant(context),
                     ),
