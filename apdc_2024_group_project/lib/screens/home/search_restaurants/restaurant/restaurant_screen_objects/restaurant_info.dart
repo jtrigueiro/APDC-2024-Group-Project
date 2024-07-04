@@ -29,10 +29,11 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
+            .collection('favoriteRestaurants')
+            .doc(widget.info.id)
             .get();
-        List<dynamic> favorites = userDoc['favoriteRestaurants'] ?? [];
         setState(() {
-          isFavorite = favorites.contains(widget.info.id);
+          isFavorite = userDoc.exists;
           isLoading = false;
         });
       } else {
@@ -54,19 +55,18 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        DocumentReference userRef =
-            FirebaseFirestore.instance.collection('users').doc(user.uid);
+        DocumentReference favoriteRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('favoriteRestaurants')
+            .doc(widget.info.id);
         if (isFavorite) {
-          await userRef.update({
-            'favoriteRestaurants': FieldValue.arrayRemove([widget.info.id])
-          });
+          await favoriteRef.delete();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Removed from favorites!')),
           );
         } else {
-          await userRef.update({
-            'favoriteRestaurants': FieldValue.arrayUnion([widget.info.id])
-          });
+          await favoriteRef.set(<String, dynamic>{});
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Added to favorites!')),
           );
