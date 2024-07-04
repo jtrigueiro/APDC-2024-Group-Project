@@ -195,10 +195,36 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
+  Future _showConfirmationDialog(String message) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Confirmation"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<bool> validateAddress() {
     String address = "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
   
-    return GeocodingService().geocode(address).then((value) {
+    return GeocodingService().geocode(address).then((value) async {
       if (value['status'] == 'OK') {
         final int size = value['results'][0]['address_components'].length;
   
@@ -206,7 +232,8 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         _location = value['results'][0]['address_components'][size - 4]['long_name'].toString().toLowerCase();
         _coordinates = '${value['results'][0]['geometry']['location']['lat']},${value['results'][0]['geometry']['location']['lng']}';
         
-        return true;
+        final confirmation = await _showConfirmationDialog("Is this the correct address?\n$_address");
+        return bool.parse(confirmation.toString());
       } else {
         _showErrorDialog("There were no results for the given address.\nPlease check the address and try again.\nIf the problem persists, please contact the support team.");
         return false;
