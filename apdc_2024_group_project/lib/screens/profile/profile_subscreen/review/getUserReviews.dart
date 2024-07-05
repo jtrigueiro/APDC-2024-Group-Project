@@ -36,3 +36,36 @@ Future<List<Map<String, dynamic>>> fetchAndCacheUserReviews(
     return [];
   }
 }
+
+Future<List<Map<String, dynamic>>> fetchUserReviewsWithPagination(
+    String userId, int limit, DocumentSnapshot? lastDocument) async {
+  try {
+    Query query = FirebaseFirestore.instance
+        .collection('reviews')
+        .where('userId', isEqualTo: userId)
+        .limit(limit);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    QuerySnapshot querySnapshot = await query.get();
+    List<Map<String, dynamic>> reviews = [];
+    for (var doc in querySnapshot.docs) {
+      var reviewData = doc.data() as Map<String, dynamic>;
+      reviewData['documentSnapshot'] = doc;
+      reviews.add(reviewData);
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<dynamic> cachedReviews =
+        json.decode(prefs.getString('cachedReviews_$userId') ?? '[]');
+    cachedReviews.addAll(reviews);
+    prefs.setString('cachedReviews_$userId', json.encode(cachedReviews));
+
+    return reviews;
+  } catch (e) {
+    print("Error fetching user reviews: $e");
+    return [];
+  }
+}
