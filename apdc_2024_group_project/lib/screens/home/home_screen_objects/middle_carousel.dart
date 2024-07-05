@@ -25,49 +25,51 @@ class MiddleCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CarouselSlider(
-        options: CarouselOptions(
-          autoPlay: true,
-          autoPlayInterval: const Duration(seconds: 8),
-          scrollDirection: Axis.vertical,
-          enableInfiniteScroll: true,
-        ),
-
-        items: items.map((item) {
-          return  Card(
-            margin: const EdgeInsets.all(5),
-            child: InkWell(
-              onTap: () => itemClicked(context, item),
-              child:  Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                      child: Image.asset(
-                          'assets/images/restaurant1.png',
-                          fit: BoxFit.cover),
+      options: CarouselOptions(
+        autoPlay: true,
+        autoPlayInterval: const Duration(seconds: 8),
+        scrollDirection: Axis.vertical,
+        enableInfiniteScroll: true,
+      ),
+      items: items.map((item) {
+        return Card(
+          margin: const EdgeInsets.all(5),
+          child: InkWell(
+            onTap: () => itemClicked(context, item),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                        8.0), // Adjust the border radius as needed
+                    child: Image.asset(
+                      'assets/images/restaurant1.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
-
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        item.name,
-                        style: Theme.of(context).textTheme.displaySmall,
-                        maxLines: 1,
-                      ),
-
-                      Text(
-                        item.location,
-                        style: Theme.of(context).textTheme.bodySmall,
-                        maxLines: 1,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      item.name,
+                      style: Theme.of(context).textTheme.displaySmall,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      item.location,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ],
             ),
-          );
-        }).toList(),
+          ),
+        );
+      }).toList(),
     );
   }
 }
