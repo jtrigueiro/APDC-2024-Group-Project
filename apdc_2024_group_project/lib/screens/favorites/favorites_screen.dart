@@ -38,28 +38,55 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  late Future<List<Restaurant>> favoriteRestaurants;
+  List<Restaurant> favoriteRestaurants = [];
+  bool isLoading = false;
+  bool hasMore = true;
+  DocumentSnapshot? lastDocument;
+  static const int pageSize = 10;
 
   @override
   void initState() {
     super.initState();
-    favoriteRestaurants = _getFavoriteRestaurants();
+    _getFavoriteRestaurants();
   }
 
-  Future<List<Restaurant>> _getFavoriteRestaurants() async {
+  Future<void> _getFavoriteRestaurants() async {
+    if (isLoading || !hasMore) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return [];
+      setState(() {
+        isLoading = false;
+        hasMore = false;
+      });
+      return;
     }
 
-    QuerySnapshot favoriteSnapshot = await FirebaseFirestore.instance
+    Query query = FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .collection('favoriteRestaurants')
-        .get();
+        .limit(pageSize);
 
-    List<Restaurant> favoriteRestaurants = [];
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument!);
+    }
 
+    QuerySnapshot favoriteSnapshot = await query.get();
+
+    if (favoriteSnapshot.docs.isEmpty) {
+      setState(() {
+        isLoading = false;
+        hasMore = false;
+      });
+      return;
+    }
+
+    List<Restaurant> newRestaurants = [];
     for (var doc in favoriteSnapshot.docs) {
       DocumentSnapshot restaurantDoc = await FirebaseFirestore.instance
           .collection('restaurants')
@@ -70,11 +97,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           .ref('/restaurants/${restaurantDoc.id}/profile/image')
           .getDownloadURL();
 
-      favoriteRestaurants
-          .add(Restaurant.fromFirestore(restaurantDoc, imageUrl));
+      newRestaurants.add(Restaurant.fromFirestore(restaurantDoc, imageUrl));
     }
 
-    return favoriteRestaurants;
+    setState(() {
+      favoriteRestaurants.addAll(newRestaurants);
+      lastDocument = favoriteSnapshot.docs.last;
+      isLoading = false;
+      hasMore = newRestaurants.length == pageSize;
+    });
   }
 
   Future<void> _removeFavorite(String restaurantId) async {
@@ -91,8 +122,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
     await userDoc.delete();
     setState(() {
-      favoriteRestaurants = _getFavoriteRestaurants();
+      favoriteRestaurants = [];
+      lastDocument = null;
+      hasMore = true;
     });
+    _getFavoriteRestaurants();
   }
 
   @override
@@ -101,59 +135,65 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       appBar: AppBar(
         title: Text('Favorite Restaurants'),
       ),
-      body: FutureBuilder<List<Restaurant>>(
-        future: favoriteRestaurants,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No favorite restaurants'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final restaurant = snapshot.data![index];
-                return Card(
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  child: ListTile(
-                    leading: Image.network(
-                      restaurant.imageUrl,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'assets/images/placeholder.png',
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                    title: Text(restaurant.name),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            'Average Footprint: ${restaurant.co2EmissionEstimate}'),
-                        Text('Address: ${restaurant.address}'),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.favorite),
-                      onPressed: () {
-                        _removeFavorite(restaurant.id);
-                      },
-                    ),
-                  ),
-                );
+      body: favoriteRestaurants.isEmpty && isLoading
+          ? Center(child: CircularProgressIndicator())
+          : NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (!isLoading &&
+                    hasMore &&
+                    scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent) {
+                  _getFavoriteRestaurants();
+                }
+                return false;
               },
-            );
-          }
-        },
-      ),
+              child: ListView.builder(
+                itemCount: favoriteRestaurants.length +
+                    (isLoading
+                        ? 1
+                        : 0), // Adicionar um item a mais para o indicador de carregamento
+                itemBuilder: (context, index) {
+                  if (index == favoriteRestaurants.length) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final restaurant = favoriteRestaurants[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    child: ListTile(
+                      leading: Image.network(
+                        restaurant.imageUrl,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/images/placeholder.png',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                      title: Text(restaurant.name),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              'Average Footprint: ${restaurant.co2EmissionEstimate}'),
+                          Text('Address: ${restaurant.address}'),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.favorite),
+                        onPressed: () {
+                          _removeFavorite(restaurant.id);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }
