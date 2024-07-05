@@ -1,34 +1,9 @@
+import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
+import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
-class Restaurant {
-  final String id;
-  final String name;
-  final String address;
-  final String imageUrl;
-  final String co2EmissionEstimate;
-
-  Restaurant({
-    required this.id,
-    required this.name,
-    required this.address,
-    required this.imageUrl,
-    required this.co2EmissionEstimate,
-  });
-
-  factory Restaurant.fromFirestore(DocumentSnapshot doc, String imageUrl) {
-    Map data = doc.data() as Map<String, dynamic>;
-    return Restaurant(
-      id: doc.id,
-      name: data['name'].toString(),
-      address: data['address'].toString(),
-      imageUrl: imageUrl,
-      co2EmissionEstimate: data['co2EmissionEstimate'].toString(),
-    );
-  }
-}
 
 class FavoritesScreen extends StatefulWidget {
   FavoritesScreen({super.key});
@@ -38,7 +13,7 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  List<Restaurant> favoriteRestaurants = [];
+  List<FavoriteRestaurant> favoriteRestaurants = [];
   bool isLoading = false;
   bool hasMore = true;
   DocumentSnapshot? lastDocument;
@@ -86,7 +61,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       return;
     }
 
-    List<Restaurant> newRestaurants = [];
+    List<FavoriteRestaurant> newRestaurants = [];
     for (var doc in favoriteSnapshot.docs) {
       DocumentSnapshot restaurantDoc = await FirebaseFirestore.instance
           .collection('restaurants')
@@ -97,7 +72,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           .ref('/restaurants/${restaurantDoc.id}/profile/image')
           .getDownloadURL();
 
-      newRestaurants.add(Restaurant.fromFirestore(restaurantDoc, imageUrl));
+      newRestaurants
+          .add(FavoriteRestaurant.fromFirestore(restaurantDoc, imageUrl));
     }
 
     setState(() {
@@ -189,11 +165,83 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           _removeFavorite(restaurant.id);
                         },
                       ),
+                      onTap: () {
+                        // Cria um novo objeto Restaurant com as propriedades necessárias
+                        var restaurantDetail = Restaurant(
+                          id: restaurant.id,
+                          name: restaurant.name,
+                          address: restaurant.address,
+                          phone: restaurant.phone,
+                          location: restaurant.location,
+                          coordinates: restaurant.coordinates,
+                          co2EmissionEstimate: restaurant.co2EmissionEstimate,
+                          seats: restaurant.seats,
+                          visible: restaurant.visible,
+                          isOpen: restaurant.isOpen,
+                          time: restaurant.time,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                RestaurantScreen(info: restaurantDetail),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
               ),
             ),
+    );
+  }
+}
+
+class FavoriteRestaurant {
+  final String id;
+  final String name;
+  final String address;
+  final String imageUrl;
+  final double co2EmissionEstimate;
+  final String phone;
+  final String location;
+  final String coordinates;
+  final int seats;
+  final bool visible;
+  final List<bool> isOpen;
+  final List<String> time;
+
+  FavoriteRestaurant({
+    required this.id,
+    required this.name,
+    required this.address,
+    required this.imageUrl,
+    required this.co2EmissionEstimate,
+    required this.phone,
+    required this.location,
+    required this.coordinates,
+    required this.seats,
+    required this.visible,
+    required this.isOpen,
+    required this.time,
+  });
+
+  factory FavoriteRestaurant.fromFirestore(
+      DocumentSnapshot doc, String imageUrl) {
+    Map data = doc.data() as Map<String, dynamic>;
+    return FavoriteRestaurant(
+      id: doc.id,
+      name: data['name'],
+      address: data['address'],
+      imageUrl: imageUrl,
+      co2EmissionEstimate: (data['co2EmissionEstimate'] as num).toDouble(),
+      phone: data['phone'],
+      location: data['location'],
+      coordinates: data['coordinates'],
+      seats: data['seats'],
+      visible: data['visible'],
+      isOpen: List<bool>.from(data['isOpen']),
+      time: List<String>.from(data['time']),
     );
   }
 }
