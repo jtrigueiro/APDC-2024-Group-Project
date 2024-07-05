@@ -24,7 +24,8 @@ class NoRestaurantScreen extends StatefulWidget {
 }
 
 class NoRestaurantScreenState extends State<NoRestaurantScreen> {
-  static const String noRestaurantText = "Seems like you have no restaurant yet!\nAdd one now!";
+  static const String noRestaurantText =
+      "Seems like you have no restaurant yet!\nAdd one now!";
 
   final ScrollController scrollController = ScrollController();
   final TextEditingController nameController = TextEditingController();
@@ -165,7 +166,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         }
 
         dynamic result =
-            await DatabaseService().addOrUpdateRestaurantApplicationData(
+            await DatabaseService().createOrOverwriteRestaurantApplicationData(
           nameController.text,
           phoneController.text,
           _address,
@@ -222,20 +223,27 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   }
 
   Future<bool> validateAddress() {
-    String address = "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
-  
+    String address =
+        "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
+
     return GeocodingService().geocode(address).then((value) async {
       if (value['status'] == 'OK') {
         final int size = value['results'][0]['address_components'].length;
-  
+
         _address = value['results'][0]['formatted_address'];
-        _location = value['results'][0]['address_components'][size - 4]['long_name'].toString().toLowerCase();
-        _coordinates = '${value['results'][0]['geometry']['location']['lat']},${value['results'][0]['geometry']['location']['lng']}';
-        
-        final confirmation = await _showConfirmationDialog("Is this the correct address?\n$_address");
+        _location = value['results'][0]['address_components'][size - 4]
+                ['long_name']
+            .toString()
+            .toLowerCase();
+        _coordinates =
+            '${value['results'][0]['geometry']['location']['lat']},${value['results'][0]['geometry']['location']['lng']}';
+
+        final confirmation = await _showConfirmationDialog(
+            "Is this the correct address?\n$_address");
         return bool.parse(confirmation.toString());
       } else {
-        _showErrorDialog("There were no results for the given address.\nPlease check the address and try again.\nIf the problem persists, please contact the support team.");
+        _showErrorDialog(
+            "There were no results for the given address.\nPlease check the address and try again.\nIf the problem persists, please contact the support team.");
         return false;
       }
     });

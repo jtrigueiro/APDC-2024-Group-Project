@@ -35,21 +35,24 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('ingredients');
 
   // subcollections variables
+  // ignore: constant_identifier_names
   static const String DISHES_SUBCOLLECTION = "dishes";
+  // ignore: constant_identifier_names
   static const String INGREDIENTS_SUBCOLLECTION = "ingredients";
 
   // ----------------- Sign Up -----------------
-  // add or update user data
-  Future addOrUpdateUserData(String uid, String name, bool isAdmin) async {
+  // create or overwrite user data
+  Future createOrOverwriteUserData(
+      String uid, String name, bool isAdmin) async {
     try {
       await usersCollection.doc(uid).set({
+        'userId': uid,
         'name': name,
         'isAdmin': isAdmin,
       });
       return true;
     } catch (e) {
       debugPrint(e.toString());
-      //TODO: need to handle an error on auth
       return null;
     }
   }
@@ -67,12 +70,12 @@ class DatabaseService {
   }
 
   // ----------------- Search Restaurants -----------------
-
+  // get visible restaurants by location
   Future<List<Restaurant>> getRestaurantsbyLocation(String location) async {
     try {
       final QuerySnapshot result = await restaurantsCollection
           .where("location", isEqualTo: location)
-          //.where('visible', isEqualTo: true)
+          .where('visible', isEqualTo: true)
           .get();
       return result.docs
           .map((doc) => Restaurant(
@@ -96,13 +99,14 @@ class DatabaseService {
     }
   }
 
+  // get visible restaurants by name
   Future<List<Restaurant>> searchRestaurants(String search) async {
     String lowerSearch = search.toLowerCase();
 
     try {
       final QuerySnapshot result = await restaurantsCollection
           .orderBy('lowerCaseName')
-          //.where('visible', isEqualTo: true)
+          .where('visible', isEqualTo: true)
           .startAt({lowerSearch}).endAt({"$lowerSearch\uf8ff"}).get();
       return result.docs
           .map((doc) => Restaurant(
@@ -127,12 +131,13 @@ class DatabaseService {
   }
 
   // ----------------- No Restaurant (Application) -----------------
-  // add or update a restaurant application
-  Future addOrUpdateRestaurantApplicationData(String name, String phone,
+  // create or overwrite a restaurant application
+  Future createOrOverwriteRestaurantApplicationData(String name, String phone,
       String address, String location, int seats, String coords) async {
     User? user = _auth.currentUser;
     try {
       await restaurantsApplicationsCollection.doc(user!.uid).set({
+        'restaurantId': user.uid,
         'name': name,
         'phone': phone,
         'address': address,
@@ -271,6 +276,7 @@ class DatabaseService {
   }
 
   // ----------------- My Restaurant Dishes -----------------
+  // get all ingredients
   Future<List<Ingredient>> getAllIngredients() async {
     try {
       final QuerySnapshot doc = await ingredientsCollection.get();
@@ -287,14 +293,17 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateDishMobile(String name, String description, double price,
+  // create dish mobile
+  Future createDishMobile(String name, String description, double price,
       int co2, List ingredients, String imagePath) async {
     User? user = _auth.currentUser;
     try {
       CollectionReference<Map<String, dynamic>> path =
           restaurantsCollection.doc(user!.uid).collection(DISHES_SUBCOLLECTION);
 
-      var result = await path.add({
+      final String dishId = path.doc().id;
+      await path.doc(dishId).set({
+        'dishId': dishId,
         'name': name,
         'description': description,
         'price': price,
@@ -303,15 +312,18 @@ class DatabaseService {
       });
 
       ingredients.forEach((ingredient) async {
-        await path.doc(result.id).collection(INGREDIENTS_SUBCOLLECTION).add({
+        await path
+            .doc(dishId)
+            .collection(INGREDIENTS_SUBCOLLECTION)
+            .doc(ingredient.name)
+            .set({
           'name': ingredient.name,
           'grams': ingredient.grams,
           'co2': ingredient.co2,
         });
       });
 
-      await StorageService()
-          .uploadDishImageMobile(user.uid, result.id, imagePath);
+      await StorageService().uploadDishImageMobile(user.uid, dishId, imagePath);
 
       return true;
     } catch (e) {
@@ -320,20 +332,17 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateDishWeb(
-      String name,
-      String description,
-      double price,
-      int co2,
-      List ingredients,
-      Uint8List imageBytes,
-      String imageExtension) async {
+  // create dish web
+  Future createDishWeb(String name, String description, double price, int co2,
+      List ingredients, Uint8List imageBytes, String imageExtension) async {
     User? user = _auth.currentUser;
     try {
       CollectionReference<Map<String, dynamic>> path =
           restaurantsCollection.doc(user!.uid).collection(DISHES_SUBCOLLECTION);
 
-      var result = await path.add({
+      final String dishId = path.doc().id;
+      await path.doc(dishId).set({
+        'dishId': dishId,
         'name': name,
         'description': description,
         'price': price,
@@ -342,7 +351,11 @@ class DatabaseService {
       });
 
       ingredients.forEach((ingredient) async {
-        await path.doc(result.id).collection(INGREDIENTS_SUBCOLLECTION).add({
+        await path
+            .doc(dishId)
+            .collection(INGREDIENTS_SUBCOLLECTION)
+            .doc(ingredient.name)
+            .set({
           'name': ingredient.name,
           'grams': ingredient.grams,
           'co2': ingredient.co2,
@@ -350,7 +363,7 @@ class DatabaseService {
       });
 
       await StorageService()
-          .uploadDishImageWeb(user.uid, result.id, imageBytes, imageExtension);
+          .uploadDishImageWeb(user.uid, dishId, imageBytes, imageExtension);
 
       return true;
     } catch (e) {
@@ -359,6 +372,7 @@ class DatabaseService {
     }
   }
 
+  // get dishes from snapshot
   List<Dish> _dishesListFromSnapshot(QuerySnapshot snapshot) {
     try {
       return snapshot.docs.map((doc) {
@@ -377,6 +391,7 @@ class DatabaseService {
     }
   }
 
+  // get all restaurant dishes
   Future<List<Dish>> getAllRestaurantDishes(String restaurantUid) async {
     try {
       final QuerySnapshot snapshot = await restaurantsCollection
@@ -391,6 +406,7 @@ class DatabaseService {
     }
   }
 
+  // get dishes stream
   Stream<List<Dish>> get dishes {
     try {
       User? user = _auth.currentUser;
@@ -401,10 +417,11 @@ class DatabaseService {
           .map(_dishesListFromSnapshot);
     } catch (e) {
       debugPrint(e.toString());
-      return Stream.empty();
+      return const Stream.empty();
     }
   }
 
+  // delete dish
   Future deleteDish(String dishId) async {
     User? user = _auth.currentUser;
     try {
@@ -435,6 +452,7 @@ class DatabaseService {
     }
   }
 
+  // update dish visibility
   Future updateDishVisibility(String dishId, bool visibility) async {
     User? user = _auth.currentUser;
     try {
@@ -450,6 +468,7 @@ class DatabaseService {
     }
   }
 
+  // get dish image url
   Future getDishImageUrl(String dishId) async {
     User? user = _auth.currentUser;
     try {
@@ -460,6 +479,7 @@ class DatabaseService {
     }
   }
 
+  // get dish image url
   Future getDishImageUrlUsers(String restaurantUid, String dishId) async {
     try {
       String imageUrl = await _storage
@@ -473,6 +493,7 @@ class DatabaseService {
     }
   }
 
+  // get dish list of ingredients
   Future<List<Ingredient>> getDishListOfIngredients(String dishId) async {
     User? user = _auth.currentUser;
     try {
@@ -495,6 +516,7 @@ class DatabaseService {
     }
   }
 
+  // is restaurant visible
   Future isRestaurantVisible() async {
     User? user = _auth.currentUser;
     try {
@@ -508,6 +530,7 @@ class DatabaseService {
   }
 
   // ----------------- My Restaurant Settings -----------------
+  // update restaurant visibility
   Future updateRestaurantVisibility(bool visibility) async {
     User? user = _auth.currentUser;
     try {
@@ -521,6 +544,7 @@ class DatabaseService {
     }
   }
 
+  // restaurant has visible dishes
   Future hasVisibleDishes() async {
     User? user = _auth.currentUser;
     try {
@@ -566,7 +590,7 @@ class DatabaseService {
           .map(_restaurantsApplicationsListFromSnapshot);
     } catch (e) {
       debugPrint(e.toString());
-      return Stream.empty();
+      return const Stream.empty();
     }
   }
 
@@ -581,8 +605,8 @@ class DatabaseService {
     }
   }
 
-  // add or update restaurant data
-  Future addOrUpdateRestaurantData(
+  // create or overwrite restaurant data
+  Future createOrOverwriteRestaurantData(
       String uid,
       String name,
       String phone,
@@ -593,6 +617,7 @@ class DatabaseService {
       int seats) async {
     try {
       await restaurantsCollection.doc(uid).set({
+        'restaurantId': uid,
         'name': name,
         'lowerCaseName': name.toLowerCase(),
         'phone': phone,
@@ -620,6 +645,7 @@ class DatabaseService {
     }
   }
 
+  // ingredients list from snapshot
   List<Ingredient> _ingredientsListFromSnapshot(QuerySnapshot snapshot) {
     try {
       return snapshot.docs.map((doc) {
@@ -635,6 +661,7 @@ class DatabaseService {
     }
   }
 
+  // get ingredients stream
   Stream<List<Ingredient>> get ingredients {
     try {
       return ingredientsCollection
@@ -642,11 +669,12 @@ class DatabaseService {
           .map(_ingredientsListFromSnapshot);
     } catch (e) {
       debugPrint(e.toString());
-      return Stream.empty();
+      return const Stream.empty();
     }
   }
 
-  Future addOrUpdateIngredient(String name, int co2, int grams) async {
+  // create or overwrite ingredient
+  Future createOrOverwriteIngredient(String name, int co2, int grams) async {
     try {
       await ingredientsCollection.doc(name).set({
         'name': name,
@@ -660,6 +688,7 @@ class DatabaseService {
     }
   }
 
+  // delete ingredient
   Future deleteIngredient(String name) async {
     try {
       await ingredientsCollection.doc(name).delete();

@@ -138,7 +138,7 @@ class RestaurantApplicationTile extends StatelessWidget {
                   print('Water: $waterConsumption liters');
                   print('Gas: $gasConsumption m³');
 
-                  await DatabaseService().addOrUpdateRestaurantData(
+                  await DatabaseService().createOrOverwriteRestaurantData(
                     restaurantApplication.uid,
                     restaurantApplication.name,
                     restaurantApplication.phone,

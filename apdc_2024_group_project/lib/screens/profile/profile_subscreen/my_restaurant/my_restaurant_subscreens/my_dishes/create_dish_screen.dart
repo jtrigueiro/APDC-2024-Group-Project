@@ -308,21 +308,18 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                           (previousValue, element) =>
                                               previousValue + element.co2);
                                       if (kIsWeb) {
-                                        await DatabaseService()
-                                            .addOrUpdateDishWeb(
-                                                nameController.text,
-                                                descriptionController.text,
-                                                double.parse(
-                                                    priceController.text),
-                                                dishCo2,
-                                                selectedIngredients,
-                                                await pickedImageFile!
-                                                    .readAsBytes(),
-                                                p.extension(
-                                                    pickedImageFile!.name));
+                                        await DatabaseService().createDishWeb(
+                                            nameController.text,
+                                            descriptionController.text,
+                                            double.parse(priceController.text),
+                                            dishCo2,
+                                            selectedIngredients,
+                                            await pickedImageFile!
+                                                .readAsBytes(),
+                                            p.extension(pickedImageFile!.name));
                                       } else {
                                         await DatabaseService()
-                                            .addOrUpdateDishMobile(
+                                            .createDishMobile(
                                                 nameController.text,
                                                 descriptionController.text,
                                                 double.parse(

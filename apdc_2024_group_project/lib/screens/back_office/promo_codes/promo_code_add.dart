@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddPromoCodePage extends StatefulWidget {
   @override
@@ -9,7 +8,6 @@ class AddPromoCodePage extends StatefulWidget {
 class _AddPromoCodePageState extends State<AddPromoCodePage> {
   final TextEditingController _promoCodeController = TextEditingController();
   final TextEditingController _rewardController = TextEditingController();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _addPromoCode() async {
     String promoCode = _promoCodeController.text.trim();

@@ -96,7 +96,7 @@ class RestaurantsIngredientsScreen extends StatelessWidget {
                             if (ingredientName.isNotEmpty &&
                                 co2.isNotEmpty &&
                                 grams.isNotEmpty) {
-                              DatabaseService().addOrUpdateIngredient(
+                              DatabaseService().createOrOverwriteIngredient(
                                 ingredientName,
                                 int.parse(co2),
                                 int.parse(grams),
