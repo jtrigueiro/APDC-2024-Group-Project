@@ -143,7 +143,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            'assets/images/placeholder.png',
+                            'assets/images/burger.png',
                             width: 100,
                             height: 100,
                             fit: BoxFit.cover,
