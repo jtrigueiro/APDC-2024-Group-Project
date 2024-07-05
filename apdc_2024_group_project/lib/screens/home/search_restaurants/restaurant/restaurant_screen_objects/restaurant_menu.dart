@@ -54,11 +54,14 @@ class RestaurantMenu extends StatelessWidget {
                         } else if (imageSnapshot.hasError ||
                             !imageSnapshot.hasData) {
                           return ListTile(
-                            leading: Image.asset(
-                              'assets/images/burger.png',
-                              fit: BoxFit.cover,
-                              width: 50.0,
-                              height: 50.0,
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.asset(
+                                'assets/images/burger.png',
+                                fit: BoxFit.cover,
+                                width: 50.0,
+                                height: 50.0,
+                              ),
                             ),
                             title: Text(dish.name),
                             subtitle: Text(dish.description),
@@ -71,19 +74,22 @@ class RestaurantMenu extends StatelessWidget {
                           );
                         } else {
                           return ListTile(
-                            leading: Image.network(
-                              imageSnapshot.data as String,
-                              fit: BoxFit.cover,
-                              width: 50.0,
-                              height: 50.0,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/images/burger.png',
-                                  fit: BoxFit.cover,
-                                  width: 50.0,
-                                  height: 50.0,
-                                );
-                              },
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                imageSnapshot.data as String,
+                                fit: BoxFit.cover,
+                                width: 50.0,
+                                height: 50.0,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/images/burger.png',
+                                    fit: BoxFit.cover,
+                                    width: 50.0,
+                                    height: 50.0,
+                                  );
+                                },
+                              ),
                             ),
                             title: Text(dish.name),
                             subtitle: Text(dish.description),

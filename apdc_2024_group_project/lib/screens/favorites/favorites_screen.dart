@@ -1,9 +1,9 @@
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
-import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:adc_group_project/services/models/restaurant.dart';
 
 class FavoritesScreen extends StatefulWidget {
   FavoritesScreen({super.key});
@@ -136,19 +136,22 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                     child: ListTile(
-                      leading: Image.network(
-                        restaurant.imageUrl,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/images/burger.png',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          );
-                        },
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.network(
+                          restaurant.imageUrl,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/burger.png',
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
                       ),
                       title: Text(restaurant.name),
                       subtitle: Column(
@@ -166,7 +169,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         },
                       ),
                       onTap: () {
-                        // Cria um novo objeto Restaurant com as propriedades necessárias
                         var restaurantDetail = Restaurant(
                           id: restaurant.id,
                           name: restaurant.name,
