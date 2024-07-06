@@ -8,13 +8,14 @@ class ColorAppTheme {
     background: Color.fromARGB(255, 245, 245, 245),
     onBackground:  Color.fromARGB(255, 0, 36, 0),
 
-    primary: Color.fromARGB(255, 122, 143, 122),
+    //primary: Color.fromARGB(255, 122, 143, 122),
+    primary: Color.fromARGB(255, 61, 130, 20),
     onPrimary: Color.fromARGB(255, 227, 230, 227),
 
     error: Color.fromARGB(255, 177, 45, 30),
     onError: Color.fromARGB(255, 234, 232, 232),
 
-    secondary:  Color.fromARGB(255, 0, 36, 0),
+    secondary: Color.fromARGB(255, 61, 130, 20),
 
     tertiary: Color.fromARGB(255, 208, 182, 136),
     inversePrimary: Color.fromARGB(255, 230, 228, 228),//para o form em promoCodes todo: rever

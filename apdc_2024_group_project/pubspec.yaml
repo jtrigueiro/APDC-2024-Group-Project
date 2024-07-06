@@ -107,6 +107,8 @@ flutter:
     - assets/images/restaurant1.png
     - assets/images/restaurant2.png
     - assets/images/restaurant3.png
+    - assets/images/ecodine-high-resolution-logo-transparent.png
+    - assets/images/sing-up-high-resolution-logo-transparent.png
 
     - assets/vectors/vector_34_x2.svg
     - assets/vectors/iconmap_pin_1_x2.svg

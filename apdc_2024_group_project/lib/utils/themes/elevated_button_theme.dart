@@ -7,7 +7,8 @@ class ElButtonThemeApp {
 
   static final lightElButtonTheme =  ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: Color.fromARGB(255, 39, 88, 42),
+     // backgroundColor: const Color.fromARGB(255, 39, 88, 42), verde
+      backgroundColor: const Color.fromARGB(255, 61, 130, 20),
       foregroundColor: ColorAppTheme.lightAppColorTheme.background,
       disabledBackgroundColor: Colors.grey,
       disabledForegroundColor: Colors.grey[800],

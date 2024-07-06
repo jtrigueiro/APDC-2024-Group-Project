@@ -6,21 +6,15 @@ class TextThemeApp {
   TextThemeApp._();
 
   static TextTheme lightTextTheme = TextTheme(
-    //logo
-    headlineLarge: GoogleFonts.getFont(
-      'Open Sans',
-      fontWeight: FontWeight.w600,
-      fontStyle: FontStyle.italic,
-      fontSize: 40,
-    ),
 
-    //appbar
+    //used
     titleLarge: GoogleFonts.getFont(
       'Open Sans',
       fontWeight: FontWeight.w500,
-      fontSize: 22,
+      fontSize: 25,
     ),
 
+    //used
     titleMedium: GoogleFonts.getFont(
       'Open Sans',
       fontWeight: FontWeight.w600,

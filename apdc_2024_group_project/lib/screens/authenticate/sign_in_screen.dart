@@ -43,44 +43,24 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: Column(children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50.0)),
-                            child: SvgPicture.asset("assets/vectors/logo.svg",
-                                width: 80, height: 80, fit: BoxFit.fill),
-                          ),
-                        ),
 
-                        Column(
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'EcoDine',
-                              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                                color:Theme.of(context).colorScheme.primary,
-                                decoration: TextDecoration.underline,
-                                decorationColor: ColorAppTheme.lightAppColorTheme.primary,
-                                decorationThickness: 2,
-                              ),
-                            ),
-                            Text(
-                              'Eat while helping the world',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: const Image(
+                            image: AssetImage(
+                          "assets/images/ecodine-high-resolution-logo-transparent.png",
+                        )),
+                      ),
                     ),
 
-                    customSpaceBetweenColumns(50),
-                    Text(
-                      'Sign In',
-                      style: Theme.of(context).textTheme.titleLarge,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6.0),
+                      child: Text(
+                        'Log In',
+                        style: Theme.of(context).textTheme.titleLarge
+                      ),
                     ),
 
                     Text('Enter your email and password',
@@ -88,7 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                     //form for email and password
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.fromLTRB(20, 10 , 20, 10),
                       child: Form(
                         key: _formKey,
                         child: Column(children: [
@@ -133,22 +113,24 @@ class _SignInScreenState extends State<SignInScreen> {
                       child: const Text('Log In'),
                     ),
 
-                    customSpaceBetweenColumns(50),
-                    TextButton(
-                      onPressed: () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignUpScreen()),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20,0,5),
+                      child: TextButton(
+                        onPressed: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUpScreen()),
+                          ),
+                        },
+                        style: ButtonStyle(
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                             const Color.fromARGB(255, 61, 130, 20)),
+                          overlayColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 227, 237, 220)),
                         ),
-                      },
-                      style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.primary),
-                        overlayColor: MaterialStateProperty.all(
-                            const Color.fromARGB(255, 227, 237, 220)),
+                        child: const Text("Don't have an account? Sign up!"),
                       ),
-                      child: const Text("Don't have an account? Sign up!"),
                     ),
 
                     Row(
@@ -173,10 +155,10 @@ class _SignInScreenState extends State<SignInScreen> {
                           margin: const EdgeInsets.fromLTRB(0, 0, 8.8, 0),
                           child: Text(
                             'Sign In with ',
-                            style:  GoogleFonts.getFont('Open Sans', fontWeight: FontWeight.w500,
-                                fontSize: 15 ),
-                            ),
+                            style: GoogleFonts.getFont('Open Sans',
+                                fontWeight: FontWeight.w500, fontSize: 15),
                           ),
+                        ),
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.fromLTRB(0, 11.9, 0, 9.1),
@@ -192,21 +174,23 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ],
                     ),
-                    spaceBetweenColumns(),
 
-                    InkWell(
-                      onTap: () async {
-                        await _auth.signInWithGoogle();
-                      },
-                      splashColor: Theme.of(context).colorScheme.primary,
-                      child: ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
-                        child: SvgPicture.asset(
-                          "assets/vectors/grommet_iconsgoogle_x2.svg",
-                          width: 70,
-                          height: 60,
-                          fit: BoxFit.fill,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: InkWell(
+                        onTap: () async {
+                          await _auth.signInWithGoogle();
+                        },
+                        splashColor: Theme.of(context).colorScheme.primary,
+                        child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50.0)),
+                          child: SvgPicture.asset(
+                            "assets/vectors/grommet_iconsgoogle_x2.svg",
+                            width: MediaQuery.of(context).size.width*0.1,
+                            height: MediaQuery.of(context).size.height*0.1,
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),

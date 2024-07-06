@@ -1,4 +1,3 @@
-
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
@@ -22,6 +21,7 @@ class SignUpScreenState extends State<SignUpScreen> {
   late TextEditingController confirmPasswordController;
   late String error = '';
   bool loading = false;
+
   @override
   void initState() {
     scrollController = ScrollController();
@@ -52,30 +52,41 @@ class SignUpScreenState extends State<SignUpScreen> {
               child: SingleChildScrollView(
                 controller: scrollController,
                 child: Center(
-                  heightFactor: 1.2,
+                  heightFactor: 1.1,
                   child: Column(
                     children: [
-                      ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(50.0)),
-                        child: Image.asset("assets/images/logo-color-cut.png",
-                            width: 100, height: 100, fit: BoxFit.fill),
-                      ),
-                      Text(
-                        'Sign Up',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      customSpaceBetweenColumns(20),
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.symmetric(vertical: 0),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          child: const Image(
+                              image: AssetImage(
+                            "assets/images/sing-up-high-resolution-logo-transparent.png",
+                          )),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        child: Text(
+                          'Welcome to EcoDine',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color:
+                                      const Color.fromARGB(255, 61, 130, 20)),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                         child: Form(
                           key: _formKey,
                           child: Column(children: [
                             textForms(
-                                nameController, 'Name', 'Enter your Name'),
+                                nameController, 'Name*', 'Enter your Name'),
                             spaceBetweenColumns(),
                             textForms(
-                                emailController, 'Email', 'Enter a Email'),
+                                emailController, 'Email*', 'Enter a Email'),
                             spaceBetweenColumns(),
                             TextFormField(
                               validator: (val) => val!.isEmpty
@@ -86,7 +97,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                               obscureText: true,
                               controller: passwordController,
                               decoration: const InputDecoration().copyWith(
-                                labelText: 'Password',
+                                labelText: 'Password*',
                               ),
                             ),
                             spaceBetweenColumns(),
@@ -98,11 +109,25 @@ class SignUpScreenState extends State<SignUpScreen> {
                                       : null),
                               obscureText: true,
                               controller: confirmPasswordController,
-                              decoration: InputDecoration().copyWith(
-                                labelText: 'Confirm Password',
+                              decoration: const InputDecoration().copyWith(
+                                labelText: 'Confirm Password*',
                               ),
                             ),
                           ]),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(30, 5, 0, 15),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '* Required Fields',
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(
+                                color: const Color.fromARGB(255, 61, 130, 20),
+                              ),
                         ),
                       ),
                       TextButton(
@@ -111,7 +136,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                         },
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all<Color>(
-                              Theme.of(context).colorScheme.primary),
+                              Theme.of(context).colorScheme.secondary),
                           overlayColor: MaterialStateProperty.all(
                               const Color.fromARGB(255, 227, 237, 220)),
                         ),
@@ -148,7 +173,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                             'Nunito',
                             fontWeight: FontWeight.w700,
                             fontSize: 16,
-                            color: Color.fromARGB(255, 202, 52, 76),
+                            color: const Color.fromARGB(255, 202, 52, 76),
                           ),
                         ),
                       ),
