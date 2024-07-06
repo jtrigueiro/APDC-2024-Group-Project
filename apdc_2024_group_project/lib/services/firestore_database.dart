@@ -17,10 +17,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 // firestore database service
 class DatabaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Storage do Firebase
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseStorage _storage = FirebaseStorage
+      .instance; // TODO: this should not be here, do not mix db classes - jose to wilker
 
   // users collection reference
   final CollectionReference usersCollection =
@@ -38,11 +38,37 @@ class DatabaseService {
   final CollectionReference ingredientsCollection =
       FirebaseFirestore.instance.collection('ingredients');
 
+  // support messages collection reference
+  final CollectionReference supportMessagesCollection =
+      FirebaseFirestore.instance.collection('support_messages');
+
+  // promo codes collection reference
+  final CollectionReference promoCodesCollection =
+      FirebaseFirestore.instance.collection('promo_codes');
+
   // subcollections variables
   // ignore: constant_identifier_names
   static const String DISHES_SUBCOLLECTION = "dishes";
   // ignore: constant_identifier_names
   static const String INGREDIENTS_SUBCOLLECTION = "ingredients";
+  // ignore: constant_identifier_names
+  static const String FAVORITES_SUBCOLLECTION = "favorites_restaurants";
+  // ignore: constant_identifier_names
+  static const String SETTINGS_SUBCOLLECTION = "settings";
+  // ignore: constant_identifier_names
+  static const String USER_PROMOS_SUBCOLLECTION = "user_promos";
+
+  // documents variables
+  // ignore: constant_identifier_names
+  static const String NOTIFICATION_SETTINGS_DOCUMENT = "notification_settings";
+
+  // shared preferences variables
+  // ignore: constant_identifier_names
+  static const String USER_NAME_PREF = 'userName';
+  // ignore: constant_identifier_names
+  static const String USER_EMAIL_PREF = 'userEmail';
+  // ignore: constant_identifier_names
+  static const String USER_IMAGE_PREF = 'profile_image';
 
   // ----------------- Sign Up -----------------
   // create or overwrite user data
@@ -551,7 +577,7 @@ class DatabaseService {
   }
 
   // ----------------- Favorites -----------------
-
+  // get favorite restaurants
   Future<List<FavoriteRestaurant>> getFavoriteRestaurants(
       {DocumentSnapshot? lastDocument, int pageSize = 10}) async {
     User? user = _auth.currentUser;
@@ -559,10 +585,9 @@ class DatabaseService {
       return [];
     }
 
-    Query query = _firestore
-        .collection('users')
+    Query query = usersCollection
         .doc(user.uid)
-        .collection('favorites_restaurants')
+        .collection(FAVORITES_SUBCOLLECTION)
         .limit(pageSize);
 
     if (lastDocument != null) {
@@ -577,24 +602,23 @@ class DatabaseService {
     List<FavoriteRestaurant> newRestaurants = [];
     for (var doc in favoriteSnapshot.docs) {
       DocumentSnapshot restaurantDoc =
-          await _firestore.collection('restaurants').doc(doc.id).get();
+          await restaurantsCollection.doc(doc.id).get();
       newRestaurants.add(FavoriteRestaurant.fromFirestore(restaurantDoc));
     }
 
     return newRestaurants;
   }
 
-// remove favorite restaurant
+  // remove favorit restaurant
   Future<void> removeFavoriteRestaurant(String restaurantId) async {
     User? user = _auth.currentUser;
     if (user == null) {
       return;
     }
 
-    DocumentReference userDoc = _firestore
-        .collection('users')
+    DocumentReference userDoc = usersCollection
         .doc(user.uid)
-        .collection('favorites_restaurants')
+        .collection(FAVORITES_SUBCOLLECTION)
         .doc(restaurantId);
 
     await userDoc.delete();
@@ -604,10 +628,9 @@ class DatabaseService {
   Future<bool> checkIfFavorite(String restaurantId) async {
     User? user = _auth.currentUser;
     if (user != null) {
-      DocumentSnapshot userDoc = await _firestore
-          .collection('users')
+      DocumentSnapshot userDoc = await usersCollection
           .doc(user.uid)
-          .collection('favorites_restaurants')
+          .collection(FAVORITES_SUBCOLLECTION)
           .doc(restaurantId)
           .get();
       return userDoc.exists;
@@ -619,10 +642,9 @@ class DatabaseService {
   Future<void> toggleFavorite(String restaurantId, bool isFavorite) async {
     User? user = _auth.currentUser;
     if (user != null) {
-      DocumentReference favoriteRef = _firestore
-          .collection('users')
+      DocumentReference favoriteRef = usersCollection
           .doc(user.uid)
-          .collection('favorites_restaurants')
+          .collection(FAVORITES_SUBCOLLECTION)
           .doc(restaurantId);
       if (isFavorite) {
         await favoriteRef.delete();
@@ -633,15 +655,15 @@ class DatabaseService {
   }
 
   // ----------------- Help and Support -----------------
-  // send email and add to firestore
   Future<void> sendEmailAndAddToFirestore(String message) async {
     final User? user = _auth.currentUser;
 
     if (user != null) {
       String userId = user.uid;
-      String messageId = _firestore.collection('support_messages').doc().id;
+      String messageId = supportMessagesCollection.doc().id;
 
-      await _firestore.collection('support_messages').doc(messageId).set({
+      await supportMessagesCollection.doc(messageId).set({
+        'messageId': messageId,
         'userId': userId,
         'email': user.email,
         'message': message,
@@ -659,19 +681,18 @@ class DatabaseService {
 
   Future<Map<String, String>> loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String name = prefs.getString('userName') ?? '';
-    String email = prefs.getString('userEmail') ?? '';
+    String name = prefs.getString(USER_NAME_PREF) ?? '';
+    String email = prefs.getString(USER_EMAIL_PREF) ?? '';
 
     if (name.isEmpty || email.isEmpty) {
       User? user = _auth.currentUser;
       if (user != null) {
-        DocumentSnapshot userData =
-            await _firestore.collection('users').doc(user.uid).get();
+        DocumentSnapshot userData = await usersCollection.doc(user.uid).get();
         if (userData.exists) {
           name = userData['name'] ?? '';
           email = userData['email'] ?? user.email!;
-          prefs.setString('userName', name);
-          prefs.setString('userEmail', email);
+          prefs.setString(USER_NAME_PREF, name);
+          prefs.setString(USER_EMAIL_PREF, email);
         }
       }
     }
@@ -681,14 +702,14 @@ class DatabaseService {
   Future<void> updateUserData(String name, String email) async {
     User? user = _auth.currentUser;
     if (user != null) {
-      await _firestore.collection('users').doc(user.uid).update({
+      await usersCollection.doc(user.uid).update({
         'name': name,
         'email': email,
       });
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('userName', name);
-      prefs.setString('userEmail', email);
+      prefs.setString(USER_NAME_PREF, name);
+      prefs.setString(USER_EMAIL_PREF, email);
     } else {
       throw Exception('Usuário não autenticado.');
     }
@@ -696,7 +717,7 @@ class DatabaseService {
 
   Future<Uint8List?> loadImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? imageBase64 = prefs.getString('profile_image');
+    String? imageBase64 = prefs.getString(USER_IMAGE_PREF);
     if (imageBase64 != null) {
       return base64Decode(imageBase64);
     }
@@ -705,15 +726,14 @@ class DatabaseService {
 
   Future<String?> loadUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? name = prefs.getString('userName');
+    String? name = prefs.getString(USER_NAME_PREF);
 
     if (name == null) {
       User? user = _auth.currentUser;
       if (user != null) {
-        DocumentSnapshot userData =
-            await _firestore.collection('users').doc(user.uid).get();
+        DocumentSnapshot userData = await usersCollection.doc(user.uid).get();
         name = userData['name'];
-        await prefs.setString('userName', name!);
+        await prefs.setString(USER_NAME_PREF, name!);
       }
     }
 
@@ -723,11 +743,10 @@ class DatabaseService {
   // ----------------- User Settings -----------------
   Future<DocumentSnapshot> getUserSettings(String userId) async {
     try {
-      return await _firestore
-          .collection('users')
+      return await usersCollection
           .doc(userId)
-          .collection('settings')
-          .doc('notification_settings')
+          .collection(SETTINGS_SUBCOLLECTION)
+          .doc(NOTIFICATION_SETTINGS_DOCUMENT)
           .get();
     } catch (e) {
       throw Exception("Error loading user settings: $e");
@@ -737,11 +756,10 @@ class DatabaseService {
   Future<void> updateUserSettings(
       String userId, bool specialOffers, bool reservationInfo) async {
     try {
-      await _firestore
-          .collection('users')
+      await usersCollection
           .doc(userId)
-          .collection('settings')
-          .doc('notification_settings')
+          .collection(SETTINGS_SUBCOLLECTION)
+          .doc(NOTIFICATION_SETTINGS_DOCUMENT)
           .set({
         'specialOffers': specialOffers,
         'reservationInfo': reservationInfo,
@@ -753,11 +771,10 @@ class DatabaseService {
 
   Future<void> deleteUserNotificationSettings(String userId) async {
     try {
-      await _firestore
-          .collection('users')
+      await usersCollection
           .doc(userId)
-          .collection('settings')
-          .doc('notification_settings')
+          .collection(SETTINGS_SUBCOLLECTION)
+          .doc(NOTIFICATION_SETTINGS_DOCUMENT)
           .delete();
     } catch (e) {
       print("Error deleting user notification settings: $e");
@@ -767,10 +784,9 @@ class DatabaseService {
 
   Future<void> deleteUserPromos(String userId) async {
     try {
-      QuerySnapshot promosSnapshot = await _firestore
-          .collection('users')
+      QuerySnapshot promosSnapshot = await usersCollection
           .doc(userId)
-          .collection('user_promos')
+          .collection(USER_PROMOS_SUBCOLLECTION)
           .get();
 
       for (DocumentSnapshot doc in promosSnapshot.docs) {
@@ -784,10 +800,9 @@ class DatabaseService {
 
   Future<void> deleteUserFavoriteRestaurants(String userId) async {
     try {
-      QuerySnapshot favoritesSnapshot = await _firestore
-          .collection('users')
+      QuerySnapshot favoritesSnapshot = await usersCollection
           .doc(userId)
-          .collection('favorites_restaurants')
+          .collection(FAVORITES_SUBCOLLECTION)
           .get();
 
       for (DocumentSnapshot doc in favoritesSnapshot.docs) {
@@ -801,7 +816,7 @@ class DatabaseService {
 
   Future<void> deleteUser(String userId) async {
     try {
-      await _firestore.collection('users').doc(userId).delete();
+      await usersCollection.doc(userId).delete();
     } catch (e) {
       print("Error deleting user document: $e");
       throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
@@ -811,7 +826,7 @@ class DatabaseService {
   // ----------------- User Promos -----------------
   Future<DocumentSnapshot> getPromoCode(String promoCode) async {
     try {
-      return await _firestore.collection('promo_codes').doc(promoCode).get();
+      return await promoCodesCollection.doc(promoCode).get();
     } catch (e) {
       print("Error getting promo code: $e");
       throw e; // Você pode optar por lidar com o erro aqui ou propagá-lo para cima
@@ -825,10 +840,9 @@ class DatabaseService {
 
       if (user != null) {
         // Referência à coleção de promoções do usuário
-        DocumentReference userPromoDoc = _firestore
-            .collection('users')
+        DocumentReference userPromoDoc = usersCollection
             .doc(user.uid)
-            .collection('user_promos')
+            .collection(USER_PROMOS_SUBCOLLECTION)
             .doc(promoCode);
 
         // Adicionar a promoção à coleção de promoções do usuário
@@ -990,7 +1004,7 @@ class DatabaseService {
     required DocumentSnapshot? lastDocument,
     required int pageSize,
   }) async {
-    Query query = _firestore.collection('promo_codes').limit(pageSize);
+    Query query = promoCodesCollection.limit(pageSize);
 
     if (lastDocument != null) {
       query = query.startAfterDocument(lastDocument);
@@ -1007,7 +1021,7 @@ class DatabaseService {
 
   Future<void> deletePromoCode(String promoCodeId) async {
     try {
-      await _firestore.collection('promo_codes').doc(promoCodeId).delete();
+      await promoCodesCollection.doc(promoCodeId).delete();
     } catch (e) {
       print("Error deleting promo code: $e");
       throw e; // Você pode optar por lidar com o erro ou propagá-lo para cima
