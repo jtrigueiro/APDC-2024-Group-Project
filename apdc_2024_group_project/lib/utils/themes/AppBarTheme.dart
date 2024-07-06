@@ -13,7 +13,7 @@ class AppBarAppTheme {
     scrolledUnderElevation: 2,
     iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 36, 0)),
     titleTextStyle: TextThemeApp.lightTextTheme.titleLarge!.copyWith(color: ColorAppTheme.lightAppColorTheme.onBackground),
-    elevation: 1,
+    elevation: 0.5,
     shadowColor: const Color.fromARGB(255, 122, 143, 122),
 
   );

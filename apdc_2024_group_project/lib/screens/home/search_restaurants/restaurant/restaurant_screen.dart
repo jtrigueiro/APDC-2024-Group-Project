@@ -15,35 +15,32 @@ class RestaurantScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                RestaurantInfo(info: info),
-                RestaurantMenu(info: info),
-                SizedBox(height: currentHeight * 0.1), // Space for the button
-              ],
-            ),
-          ),
-          Positioned(
-            height: currentHeight * 0.07,
-            width: MediaQuery.of(context).size.width,
-            bottom: currentHeight * 0.02,
-            child: Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ReserveScreen(restaurant: info)));
-                },
-                child: const Text("Reserve"),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            RestaurantInfo(info: info),
+            RestaurantMenu(info: info),
+            SizedBox(height: currentHeight * 0.1), // Space for the button
+
+            Positioned(
+              height: currentHeight * 0.07,
+              width: MediaQuery.of(context).size.width,
+              bottom: currentHeight * 0.02,
+              child: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ReserveScreen(restaurant: info)));
+                  },
+                  child: const Text("Reserve"),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

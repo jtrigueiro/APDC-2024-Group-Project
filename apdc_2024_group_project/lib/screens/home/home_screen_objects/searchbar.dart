@@ -8,7 +8,7 @@ class SearchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
       child: InkWell(
         onTap: onPressed,
         child: Container(
@@ -20,12 +20,12 @@ class SearchButton extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 3,
                 blurRadius: 5,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
               ),
             ],
           ),
-          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-          child: Row(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+          child: const Row(
             children: [
               Icon(Icons.search, color: Colors.grey),
               SizedBox(width: 10.0),

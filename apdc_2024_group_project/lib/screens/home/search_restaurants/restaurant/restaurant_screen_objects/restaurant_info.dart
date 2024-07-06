@@ -1,5 +1,6 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantInfo extends StatefulWidget {
@@ -65,82 +66,78 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
     return isLoading
         ? const Center(child: CircularProgressIndicator())
         : SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "${widget.info.name} - ${widget.info.address}",
-                              style: const TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Row(children: [
+                      Expanded(
+                        child: Text(
+                          "${widget.info.name} - ${widget.info.address}",
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Column(
-                            children: [
-                              const Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
-                        child: Image.asset(
-                          'assets/images/restaurant1.png',
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(height: 8.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
                         children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.eco, color: Colors.green),
-                              const SizedBox(width: 4.0),
-                              Text(
-                                "${widget.info.co2EmissionEstimate} CO2e",
-                                style: const TextStyle(
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            icon: Icon(isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border),
-                            iconSize: 20,
-                            onPressed: _toggleFavorite,
+                          const Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                            size: 20,
                           ),
                         ],
-                      ),
-                      const Text(
-                        "*average per dish",
-                        style: TextStyle(
-                          fontSize: 8,
-                          fontWeight: FontWeight.w300,
-                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8.0),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: Image.asset(
+                      'assets/images/restaurant1.png',
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.eco, color: Colors.green),
+                          const SizedBox(width: 4.0),
+                          Text(
+                            "${widget.info.co2EmissionEstimate} CO2e",
+                            style: const TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: Icon(isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border),
+                        iconSize: 20,
+                        onPressed: _toggleFavorite,
+                      ),
+                    ],
+                  ),
+                  const Text(
+                    "*average per dish",
+                    style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
   }

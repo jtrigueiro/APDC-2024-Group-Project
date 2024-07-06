@@ -2,6 +2,7 @@ import 'package:adc_group_project/utils/themes/InputTheme.dart';
 import 'package:adc_group_project/utils/themes/card_theme.dart';
 import 'package:adc_group_project/utils/themes/color_scheme.dart';
 import 'package:adc_group_project/utils/themes/elevated_button_theme.dart';
+import 'package:adc_group_project/utils/themes/snack_bar_theme.dart';
 import 'package:adc_group_project/utils/themes/text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +24,8 @@ class AppThemeStyle {
     appBarTheme: AppBarAppTheme.lightAppBarTheme,
     bottomNavigationBarTheme: AppNavBarTheme.lightAppNavBarTheme,
     cardTheme: AppCardTheme.lightCardTheme,
-    colorScheme: ColorAppTheme.lightAppColorTheme
+    colorScheme: ColorAppTheme.lightAppColorTheme,
+    snackBarTheme: AppSnackBarTheme.lightAppSnackBarTheme
   );
 
   static ThemeData darkTheme = ThemeData(

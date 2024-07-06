@@ -39,7 +39,7 @@ class SignUpScreenState extends State<SignUpScreen> {
         ? const LoadingScreen()
         : Scaffold(
             appBar: AppBar(
-              title: const Text('EcoDine'),
+              title: const Text('Sign Up'),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () {
@@ -61,7 +61,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: const Image(
                               image: AssetImage(
-                            "assets/images/sing-up-high-resolution-logo-transparent.png",
+                            "assets/images/logo-no-background.png",
                           )),
                         ),
                       ),

@@ -66,6 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     Text('Enter your email and password',
                         style: Theme.of(context).textTheme.bodySmall),
 
+
                     //form for email and password
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 10 , 20, 10),
@@ -92,6 +93,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     */
                     //login button
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: Text(error,style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.error)),
+                    ),
                     ElevatedButton(
                       onPressed: () async {
                         {
@@ -104,7 +109,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             if (result == null) {
                               setState(() {
                                 loading = false;
-                                error = 'Wrong email or password.';
+                                error = 'Wrong email or password!';
                               });
                             }
                           }

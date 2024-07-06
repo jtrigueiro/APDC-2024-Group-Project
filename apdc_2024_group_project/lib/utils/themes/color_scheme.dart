@@ -15,9 +15,10 @@ class ColorAppTheme {
     error: Color.fromARGB(255, 177, 45, 30),
     onError: Color.fromARGB(255, 234, 232, 232),
 
-    secondary: Color.fromARGB(255, 61, 130, 20),
+    secondary: Color.fromARGB(255, 209, 123, 48),
+    //secondary: Color.fromARGB(255, 122, 143, 122),
 
-    tertiary: Color.fromARGB(255, 208, 182, 136),
+    tertiary:  Color.fromARGB(255, 122, 143, 122),
     inversePrimary: Color.fromARGB(255, 230, 228, 228),//para o form em promoCodes todo: rever
 
   );
