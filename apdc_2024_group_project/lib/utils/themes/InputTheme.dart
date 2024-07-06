@@ -1,3 +1,4 @@
+import 'package:adc_group_project/utils/themes/color_scheme.dart';
 import 'package:flutter/material.dart';
 
 class InputTheme {
@@ -6,15 +7,21 @@ class InputTheme {
   static final lightInputTheme =  InputDecorationTheme(
     labelStyle: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
     border: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color.fromARGB(255, 215, 184, 126)),
-        borderRadius: BorderRadius.circular(10)),
-    focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Color.fromARGB(255, 215, 184, 126)),
+        borderSide: BorderSide(color: ColorAppTheme.lightAppColorTheme.primary),
+        borderRadius: BorderRadius.circular(50)),
+    focusedBorder:  OutlineInputBorder(
+        borderSide: BorderSide(color: ColorAppTheme.lightAppColorTheme.primary),
+      borderRadius: BorderRadius.circular(20)
       ),
     errorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color.fromARGB(255, 65, 12, 18)),
-        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: ColorAppTheme.lightAppColorTheme.error),
+        borderRadius: BorderRadius.circular(20),
     ),
+    focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: ColorAppTheme.lightAppColorTheme.primary),
+        borderRadius: BorderRadius.circular(20)
+    ),
+
   );
 
 

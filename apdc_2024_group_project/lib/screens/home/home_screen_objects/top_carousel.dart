@@ -13,9 +13,9 @@ class TopCarousel extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: CarouselSlider(
         options: CarouselOptions(
-          height: 100.0,
+          height: 100,
           autoPlay: true,
-          autoPlayInterval: Duration(seconds: 4),
+          autoPlayInterval: const Duration(seconds: 7),
           scrollDirection: Axis.horizontal,
           viewportFraction:
               MediaQuery.of(context).size.width > 600 ? 0.1 : 0.25,

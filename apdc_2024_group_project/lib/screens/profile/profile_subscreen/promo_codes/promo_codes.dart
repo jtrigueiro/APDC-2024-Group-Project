@@ -96,10 +96,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
               TextFormField(
                 controller: _promoCodeController,
                 decoration: InputDecoration().copyWith(
-                  labelText: 'Enter Promocode*',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  labelText: 'Enter Promocode*'
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -118,15 +115,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
               ElevatedButton.icon(
                 onPressed: _redeemPromoCode,
                 icon: Icon(Icons.add, size: 24),
-                label: Text('Redeem Code', style: TextStyle(fontSize: 16)),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Color.fromARGB(255, 215, 184, 126),
-                  backgroundColor: Color.fromARGB(255, 117, 85, 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
+                label: Text('Redeem Code', style: TextStyle(fontSize: 16))
               ),
               SizedBox(
                   height: MediaQuery.of(context)

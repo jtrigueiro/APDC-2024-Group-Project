@@ -23,8 +23,8 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
   };
 
   List<Color> colorList = [
-    const Color.fromARGB(255, 117, 85, 18),
-    const Color.fromARGB(255, 182, 141, 64),
+    const Color.fromARGB(255, 122, 143, 122),
+    const Color.fromARGB(255, 8, 76, 8),
   ];
 
   @override
@@ -43,12 +43,13 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('My Carbon Footprint',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      SizedBox(width: 10),
-                      Icon(
-                        Icons.eco,
-                        color: Color.fromARGB(255, 182, 141, 64),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text('My Carbon Footprint',
+                            style: Theme.of(context).textTheme.titleMedium),
+                      ),
+                      const Icon(Icons.eco,
+                        color: Color.fromARGB(255, 122, 143, 122),
                       ),
                     ],
                   ),
@@ -68,28 +69,30 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                     ),
                     chartValuesOptions: ChartValuesOptions(
                       chartValueStyle:
-                          Theme.of(context).textTheme.bodyMedium ?? TextStyle(),
+                          Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white54),
                       showChartValueBackground: false,
+                      showChartValuesInPercentage: true,
                       showChartValuesOutside: true,
+
                     ),
-                    animationDuration: Duration(seconds: 1),
+                    animationDuration: const Duration(seconds: 1),
                     emptyColor: Colors.green,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 50, 10, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 50, 10, 0),
                   child: Column(
                     children: [
                       Row(
                         children: [
                           Icon(
                             Icons.food_bank_outlined,
-                            color: Color.fromARGB(255, 182, 141, 64),
+                            color: colorList[0],
                           ),
-                          SizedBox(width: 5),
+                          const SizedBox(width: 5),
                           Text('Food ',
                               style: Theme.of(context).textTheme.titleMedium),
-                          SizedBox(width: 60),
+                          const SizedBox(width: 60),
                           Text(carbonMap.values.first.toString(),
                               style: Theme.of(context).textTheme.titleMedium),
                         ],
@@ -98,12 +101,12 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                         children: [
                           Icon(
                             Icons.emoji_transportation,
-                            color: Color.fromARGB(255, 182, 141, 64),
+                            color: colorList[0],
                           ),
-                          SizedBox(width: 5),
+                          const SizedBox(width: 5),
                           Text('Transport ',
                               style: Theme.of(context).textTheme.titleMedium),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Text(carbonMap.values.last.toString(),
                               style: Theme.of(context).textTheme.titleMedium),
                         ],

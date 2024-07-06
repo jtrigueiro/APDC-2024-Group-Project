@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:adc_group_project/screens/home/search_restaurants/search_restaurants_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
+import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/screens/home/home_screen_objects/searchbar.dart';
@@ -131,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, constraints) {
         return (gettingLocation || gettingRestaurants) ? const LoadingScreen() : Column(
           children: [
-            const SizedBox(height: 20.0),
+            customSpaceBetweenColumns(40),
             SearchButton(onPressed: () => _onSearchPressed(context, userLocation)),
             TopCarousel(images: topCarouselImages),
             Expanded(child: MiddleCarousel(items: items)),

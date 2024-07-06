@@ -1,59 +1,50 @@
+import 'package:adc_group_project/utils/themes/color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TextThemeApp {
   TextThemeApp._();
 
-  static TextTheme LightTextTheme = TextTheme(
+  static TextTheme lightTextTheme = TextTheme(
     //logo
     headlineLarge: GoogleFonts.getFont(
-      'Nunito',
-      fontWeight: FontWeight.bold,
+      'Open Sans',
+      fontWeight: FontWeight.w600,
       fontStyle: FontStyle.italic,
       fontSize: 40,
-      color: const Color.fromARGB(255, 182, 141, 64),
-      decoration: TextDecoration.underline,
-      decorationColor: const Color.fromARGB(255, 182, 141, 64),
-      decorationThickness: 2,
     ),
 
     //appbar
     titleLarge: GoogleFonts.getFont(
-      'Nunito',
-      fontWeight: FontWeight.w600,
-      fontSize: 26,
-      color: const Color.fromARGB(255, 117, 85, 18),
+      'Open Sans',
+      fontWeight: FontWeight.w500,
+      fontSize: 22,
     ),
 
     titleMedium: GoogleFonts.getFont(
-      'Nunito',
+      'Open Sans',
       fontWeight: FontWeight.w600,
       fontSize: 20,
-      color: const Color.fromARGB(255, 182, 141, 64),
     ),
 
     //cards carrousel
     displaySmall: GoogleFonts.getFont(
-      'Nunito',
-      fontWeight: FontWeight.bold,
-      fontSize: 15,
-      color: const Color.fromARGB(255, 39, 65, 58),
+      'Open Sans',
+      fontWeight: FontWeight.w600,
+      fontSize: 20,
     ),
 
     bodyMedium: GoogleFonts.getFont(
-      'Nunito',
+      'Open Sans',
       fontWeight: FontWeight.bold,
-      fontStyle: FontStyle.italic,
       fontSize: 15,
-      color: const Color.fromARGB(255, 215, 184, 126),
     ),
 
     bodySmall: GoogleFonts.getFont(
-      'Nunito',
+        'Open Sans',
       fontWeight: FontWeight.normal,
       fontStyle: FontStyle.italic,
-      fontSize: 13,
-      color: const Color.fromARGB(255, 208, 182, 136),
+      fontSize: 13
     ),
   );
 

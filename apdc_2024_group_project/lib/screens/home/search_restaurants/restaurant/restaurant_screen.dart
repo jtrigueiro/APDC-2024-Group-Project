@@ -39,11 +39,7 @@ class RestaurantScreen extends StatelessWidget {
                           builder: (context) =>
                               ReserveScreen(restaurant: info)));
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  textStyle: TextStyle(fontSize: 16),
-                ),
-                child: const Text(" R E S E R V E"),
+                child: const Text("Reserve"),
               ),
             ),
           ),

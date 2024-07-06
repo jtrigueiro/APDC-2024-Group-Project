@@ -12,9 +12,9 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<CustomUser?>(context);
     if (user == null) {
-      return SignInScreen();
+      return const SignInScreen();
     } else {
-      return HomeRouter();
+      return const HomeRouter();
     }
   }
 }

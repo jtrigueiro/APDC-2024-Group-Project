@@ -62,25 +62,27 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Help and Support',
-        ),
+        title: const Text('Help and Support',),
         leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+            icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(18.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(height: 20),
-              Text(
-                'Need Assistance?',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              const Padding(
+                padding:  EdgeInsets.symmetric(vertical: 40),
+                child:  Text(
+                  'Need Assistance?',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500,
+                 ),
+                ),
               ),
-              SizedBox(height: 20),
+
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -90,13 +92,13 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                 child: Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.tertiary,
+                    color: Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.help, size: 40, color: Theme.of(context).colorScheme.secondary),
+                      Icon(Icons.help, size: 40, color: Theme.of(context).colorScheme.onPrimary),
                       SizedBox(width: 20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,13 +107,13 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                           Text(
                             'Contact us',
                             style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                color:Theme.of(context).colorScheme.secondary
+                                color:Theme.of(context).colorScheme.onPrimary
                             )
                           ),
                           Text(
                             'Send us an email',
                             style:  Theme.of(context).textTheme.displaySmall!.copyWith(
-                                color:Theme.of(context).colorScheme.secondary
+                                color:Theme.of(context).colorScheme.onPrimary
                             ),
                           ),
                         ],
@@ -121,18 +123,21 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                 ),
               ),
               if (_showContactForm) ...[
-                SizedBox(height: 20),
-                TextField(
-                  controller: _controller,
-                  maxLines: 5,
-                  decoration: InputDecoration(
-                    hintText: 'Describe your issue here...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: TextField(
+                    controller: _controller,
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      hintText: 'Describe your issue here...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+
                 ElevatedButton(
                   onPressed: _sendEmailAndAddToFirestore,
                   child: Text('Send'),

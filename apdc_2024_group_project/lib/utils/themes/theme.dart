@@ -15,9 +15,9 @@ class AppThemeStyle {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    primaryColor: Color.fromARGB(255, 182, 141, 64),
-    scaffoldBackgroundColor: Color.fromARGB(255, 250, 248, 223),
-    textTheme: TextThemeApp.LightTextTheme,
+    primaryColor: const Color.fromARGB(255, 122, 143, 122),
+    scaffoldBackgroundColor: ColorAppTheme.lightAppColorTheme.background,
+    textTheme: TextThemeApp.lightTextTheme,
     elevatedButtonTheme: ElButtonThemeApp.lightElButtonTheme,
     inputDecorationTheme: InputTheme.lightInputTheme,
     appBarTheme: AppBarAppTheme.lightAppBarTheme,

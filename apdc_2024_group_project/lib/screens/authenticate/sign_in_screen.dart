@@ -2,6 +2,7 @@ import 'package:adc_group_project/screens/authenticate/sign_up_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:adc_group_project/utils/themes/color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,26 +39,34 @@ class _SignInScreenState extends State<SignInScreen> {
         : Scaffold(
             body: Scrollbar(
               controller: scrollController,
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Center(
-                  heightFactor: 1.2,
+              child: Center(
+                child: SingleChildScrollView(
+                  controller: scrollController,
                   child: Column(children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50.0)),
-                          child: SvgPicture.asset("assets/vectors/logo.svg",
-                              width: 80, height: 80, fit: BoxFit.fill),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(50.0)),
+                            child: SvgPicture.asset("assets/vectors/logo.svg",
+                                width: 80, height: 80, fit: BoxFit.fill),
+                          ),
                         ),
-                        SizedBox(width: 10),
+
                         Column(
+                         crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'EcoDine',
-                              style: Theme.of(context).textTheme.headlineLarge,
+                              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                                color:Theme.of(context).colorScheme.primary,
+                                decoration: TextDecoration.underline,
+                                decorationColor: ColorAppTheme.lightAppColorTheme.primary,
+                                decorationThickness: 2,
+                              ),
                             ),
                             Text(
                               'Eat while helping the world',
@@ -79,7 +88,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                     //form for email and password
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Form(
                         key: _formKey,
                         child: Column(children: [
@@ -121,7 +130,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           }
                         }
                       },
-                      child: Text('Log In'),
+                      child: const Text('Log In'),
                     ),
 
                     customSpaceBetweenColumns(50),
@@ -135,9 +144,9 @@ class _SignInScreenState extends State<SignInScreen> {
                       },
                       style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(
-                            const Color.fromARGB(255, 208, 182, 136)),
+                            Theme.of(context).colorScheme.primary),
                         overlayColor: MaterialStateProperty.all(
-                            const Color.fromARGB(255, 221, 223, 194)),
+                            const Color.fromARGB(255, 227, 237, 220)),
                       ),
                       child: const Text("Don't have an account? Sign up!"),
                     ),
@@ -164,14 +173,10 @@ class _SignInScreenState extends State<SignInScreen> {
                           margin: const EdgeInsets.fromLTRB(0, 0, 8.8, 0),
                           child: Text(
                             'Sign In with ',
-                            style: GoogleFonts.getFont(
-                              'Nunito',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                              color: const Color.fromARGB(255, 208, 182, 136),
+                            style:  GoogleFonts.getFont('Open Sans', fontWeight: FontWeight.w500,
+                                fontSize: 15 ),
                             ),
                           ),
-                        ),
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.fromLTRB(0, 11.9, 0, 9.1),
@@ -193,7 +198,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       onTap: () async {
                         await _auth.signInWithGoogle();
                       },
-                      splashColor: Color.fromARGB(255, 208, 182, 136),
+                      splashColor: Theme.of(context).colorScheme.primary,
                       child: ClipRRect(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(50.0)),

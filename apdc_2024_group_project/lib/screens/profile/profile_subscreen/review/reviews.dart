@@ -76,14 +76,12 @@ class _ReviewsPage extends State<ReviewsPage> {
           'Reviews',
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios,
-              color: Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh,
-                color: Color.fromARGB(255, 117, 85, 18)),
+            icon: const Icon(Icons.refresh),
             onPressed: _refreshReviews,
           ),
         ],
@@ -91,12 +89,12 @@ class _ReviewsPage extends State<ReviewsPage> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 labelText: 'Search for Restaurants',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),

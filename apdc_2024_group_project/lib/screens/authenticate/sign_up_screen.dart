@@ -1,3 +1,4 @@
+
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
@@ -40,8 +41,7 @@ class SignUpScreenState extends State<SignUpScreen> {
             appBar: AppBar(
               title: const Text('EcoDine'),
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 117, 85, 18)),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -85,7 +85,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                                       : null),
                               obscureText: true,
                               controller: passwordController,
-                              decoration: InputDecoration().copyWith(
+                              decoration: const InputDecoration().copyWith(
                                 labelText: 'Password',
                               ),
                             ),
@@ -111,9 +111,9 @@ class SignUpScreenState extends State<SignUpScreen> {
                         },
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all<Color>(
-                              const Color.fromARGB(255, 208, 182, 136)),
+                              Theme.of(context).colorScheme.primary),
                           overlayColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 221, 223, 194)),
+                              const Color.fromARGB(255, 227, 237, 220)),
                         ),
                         child: const Text('Already have an account? Login!'),
                       ),

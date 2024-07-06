@@ -65,43 +65,28 @@ class _HomeRouterState extends State<HomeRouter> {
                     );
                   },
                   child: screens[_currentIndex],
-                ),  
+                ),
                 bottomNavigationBar: BottomNavigationBar(
                   currentIndex: _currentIndex,
-                  items: <BottomNavigationBarItem>[
+                  items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
-                      backgroundColor: Theme.of(context)
-                          .bottomNavigationBarTheme
-                          .backgroundColor,
-                      icon: const Icon(Icons.home),
+                      icon:  Icon(Icons.home),
                       label: 'Home',
                     ),
                     BottomNavigationBarItem(
-                      backgroundColor: Theme.of(context)
-                          .bottomNavigationBarTheme
-                          .backgroundColor,
-                      icon: const Icon(Icons.book),
+                      icon:  Icon(Icons.book),
                       label: 'Reservations',
                     ),
                     BottomNavigationBarItem(
-                      backgroundColor: Theme.of(context)
-                          .bottomNavigationBarTheme
-                          .backgroundColor,
-                      icon: const Icon(Icons.eco),
-                      label: 'Carbon Footprint',
+                      icon:  Icon(Icons.eco),
+                      label: 'CO2',
                     ),
                     BottomNavigationBarItem(
-                      backgroundColor: Theme.of(context)
-                          .bottomNavigationBarTheme
-                          .backgroundColor,
-                      icon: const Icon(Icons.favorite),
+                      icon: Icon(Icons.favorite),
                       label: 'Favorites',
                     ),
                     BottomNavigationBarItem(
-                      backgroundColor: Theme.of(context)
-                          .bottomNavigationBarTheme
-                          .backgroundColor,
-                      icon: const Icon(Icons.person),
+                      icon: Icon(Icons.person),
                       label: 'Profile',
                     ),
                   ],

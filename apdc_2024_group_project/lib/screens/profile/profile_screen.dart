@@ -58,102 +58,99 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 40), // Espaço no topo
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 60, 0, 0),
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: _pickImage,
-                          child: CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Colors.grey,
-                            backgroundImage: _imageBytes != null
-                                ? MemoryImage(_imageBytes!)
-                                : null,
-                            child: _imageBytes == null
-                                ? Icon(Icons.camera_alt, color: Colors.white)
-                                : null,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Text(
-                          _userName?.toUpperCase() ?? 'User Name',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    customSpaceBetweenColumns(40),
-                    /*profileItem( // Useless
-                      context,
-                      Icons.person,
-                      'Personal Information',
-                      ontapPersInformation(context),
-                    ),*/
-                    profileItem(
-                      context,
-                      Icons.reviews,
-                      'Reviews',
-                      ontapReviews(context),
-                    ),
-                    profileItem(
-                      context,
-                      Icons.card_giftcard,
-                      'Promo codes',
-                      ontapPromo(context),
-                    ),
-                    profileItem(
-                      context,
-                      Icons.emoji_events,
-                      'Achievements',
-                      ontapAchivements(context),
-                    ),
-                    profileItem(
-                      context,
-                      Icons.food_bank,
-                      'My Restaurant',
-                      ontapMyRestaurant(context),
-                    ),
-                    profileItem(
-                      context,
-                      Icons.settings,
-                      'Settings',
-                      ontapSettings(context),
-                    ),
-                    profileItem(
-                      context,
-                      Icons.help,
-                      'Help and Support',
-                      ontapHelpSupport(context),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.logout,
-                          color: Theme.of(context).colorScheme.error),
-                      title: Text(
-                        'Log Out',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                                color: Theme.of(context).colorScheme.error),
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: _imageBytes != null
+                            ? MemoryImage(_imageBytes!)
+                            : null,
+                        child: _imageBytes == null
+                            ? Icon(Icons.camera_alt, color: Colors.white)
+                            : null,
                       ),
-                      onTap: () async {
-                        await FirebaseAuth.instance.signOut();
-                        await SharedPreferences.getInstance()
-                            .then((prefs) => prefs.clear()); // Limpa o cache
-                      },
+                    ),
+                    SizedBox(width: 20),
+                    Text(
+                      _userName?.toUpperCase() ?? 'User Name',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                customSpaceBetweenColumns(40),
+                /*profileItem( // Useless
+                  context,
+                  Icons.person,
+                  'Personal Information',
+                  ontapPersInformation(context),
+                ),*/
+                profileItem(
+                  context,
+                  Icons.reviews,
+                  'Reviews',
+                  ontapReviews(context),
+                ),
+
+                profileItem(
+                  context,
+                  Icons.card_giftcard,
+                  'Promo codes',
+                  ontapPromo(context),
+                ),
+                profileItem(
+                  context,
+                  Icons.emoji_events,
+                  'Achievements',
+                  ontapAchivements(context),
+                ),
+                profileItem(
+                  context,
+                  Icons.food_bank,
+                  'My Restaurant',
+                  ontapMyRestaurant(context),
+                ),
+                profileItem(
+                  context,
+                  Icons.settings,
+                  'Settings',
+                  ontapSettings(context),
+                ),
+                profileItem(
+                  context,
+                  Icons.help,
+                  'Help and Support',
+                  ontapHelpSupport(context),
+                ),
+
+                ListTile(
+                  leading: Icon(Icons.logout,
+                      color: Theme.of(context).colorScheme.error),
+                  title: Text(
+                    'Log Out',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(
+                            color: Theme.of(context).colorScheme.error),
+                  ),
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    await SharedPreferences.getInstance()
+                        .then((prefs) => prefs.clear()); // Limpa o cache
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -256,7 +253,7 @@ class ProfileMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
+      leading: Icon(icon),
       title: Text(
         text,
         style: Theme.of(context).textTheme.titleMedium,

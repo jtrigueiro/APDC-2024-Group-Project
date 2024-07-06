@@ -109,7 +109,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorite Restaurants'),
+
+        title: const Text('Favorite Restaurants'),
       ),
       body: favoriteRestaurants.isEmpty && isLoading
           ? Center(child: CircularProgressIndicator())
@@ -157,8 +158,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                              'Average Footprint: ${restaurant.co2EmissionEstimate}'),
+                          Text('Average CO2: ${restaurant.co2EmissionEstimate}'),
                           Text('Address: ${restaurant.address}'),
                         ],
                       ),

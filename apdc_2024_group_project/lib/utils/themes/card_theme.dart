@@ -4,7 +4,7 @@ class AppCardTheme {
   AppCardTheme._(); //to avoid creation instances
 
   static const lightCardTheme = CardTheme(
-    color: Color.fromARGB(255, 182, 141, 64),
+    color: Color.fromARGB(255, 255, 255, 255),
     shadowColor: Colors.black,
     elevation: 3,
     clipBehavior: Clip.hardEdge,
