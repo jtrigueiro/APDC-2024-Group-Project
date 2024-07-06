@@ -1,6 +1,5 @@
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HelpAndSupportScreen extends StatefulWidget {
   const HelpAndSupportScreen({Key? key}) : super(key: key);
@@ -10,48 +9,22 @@ class HelpAndSupportScreen extends StatefulWidget {
 }
 
 class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
-  final _auth = FirebaseAuth.instance;
   final TextEditingController _controller = TextEditingController();
   bool _showContactForm = false;
+  final DatabaseService _supportService = DatabaseService();
 
   Future<void> _sendEmailAndAddToFirestore() async {
     final String body = _controller.text.trim();
 
     try {
-      User? user = _auth.currentUser;
-      if (user != null) {
-        String userId = user.uid;
+      await _supportService.sendEmailAndAddToFirestore(body);
 
-        // Gerar um ID único para cada mensagem
-        String messageId =
-            FirebaseFirestore.instance.collection('support_messages').doc().id;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Mensagem enviada com sucesso!')),
+      );
 
-        // Adicionar a mensagem ao Firestore com um novo ID único
-        await FirebaseFirestore.instance
-            .collection('support_messages')
-            .doc(messageId)
-            .set({
-          'userId': userId, // Associar à ID do usuário
-          'email': user.email,
-          'message': body,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
-
-        // Exibir uma mensagem de sucesso
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Mensagem enviada com sucesso!')),
-        );
-
-        // Realizar o pop da navegação após o sucesso
-        Navigator.of(context).pop();
-      } else {
-        // Trate o caso em que o usuário não está autenticado
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Usuário não autenticado.')),
-        );
-      }
+      Navigator.of(context).pop();
     } catch (e) {
-      // Tratar erros ao enviar mensagem ou adicionar ao Firestore
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao enviar mensagem: $e')),
       );
@@ -62,9 +35,9 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Help and Support',),
+        title: const Text('Help and Support'),
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -75,14 +48,15 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const Padding(
-                padding:  EdgeInsets.symmetric(vertical: 40),
-                child:  Text(
+                padding: EdgeInsets.symmetric(vertical: 40),
+                child: Text(
                   'Need Assistance?',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500,
-                 ),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -98,23 +72,34 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.help, size: 40, color: Theme.of(context).colorScheme.onPrimary),
+                      Icon(
+                        Icons.help,
+                        size: 40,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                       SizedBox(width: 20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           Text(
                             'Contact us',
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                color:Theme.of(context).colorScheme.onPrimary
-                            )
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary),
                           ),
                           Text(
                             'Send us an email',
-                            style:  Theme.of(context).textTheme.displaySmall!.copyWith(
-                                color:Theme.of(context).colorScheme.onPrimary
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary),
                           ),
                         ],
                       ),
@@ -123,7 +108,6 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                 ),
               ),
               if (_showContactForm) ...[
-
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: TextField(
@@ -137,7 +121,6 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                     ),
                   ),
                 ),
-
                 ElevatedButton(
                   onPressed: _sendEmailAndAddToFirestore,
                   child: Text('Send'),

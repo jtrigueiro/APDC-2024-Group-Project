@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/models/dish.dart';
+import 'package:adc_group_project/services/models/favoriterestaurant.dart';
 import 'package:adc_group_project/services/models/ingredient.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,10 +12,12 @@ import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // firestore database service
 class DatabaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Storage do Firebase
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -148,20 +152,6 @@ class DatabaseService {
       return true;
     } catch (e) {
       debugPrint(e.toString());
-      return null;
-    }
-  }
-
-  //upload files to firebase storage
-  Future<String?> uploadFile(Uint8List fileBytes, String fileName) async {
-    try {
-      final storageRef = _storage.ref().child('uploads/$fileName');
-      final metadata = SettableMetadata(contentType: 'application/pdf');
-      await storageRef.putData(fileBytes, metadata);
-      final downloadUrl = await storageRef.getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      debugPrint('Failed to upload file: $e');
       return null;
     }
   }
@@ -560,6 +550,301 @@ class DatabaseService {
     }
   }
 
+  // ----------------- Favorites -----------------
+
+  Future<List<FavoriteRestaurant>> getFavoriteRestaurants(
+      {DocumentSnapshot? lastDocument, int pageSize = 10}) async {
+    User? user = _auth.currentUser;
+    if (user == null) {
+      return [];
+    }
+
+    Query query = _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('favorites_restaurants')
+        .limit(pageSize);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    QuerySnapshot favoriteSnapshot = await query.get();
+    if (favoriteSnapshot.docs.isEmpty) {
+      return [];
+    }
+
+    List<FavoriteRestaurant> newRestaurants = [];
+    for (var doc in favoriteSnapshot.docs) {
+      DocumentSnapshot restaurantDoc =
+          await _firestore.collection('restaurants').doc(doc.id).get();
+      newRestaurants.add(FavoriteRestaurant.fromFirestore(restaurantDoc));
+    }
+
+    return newRestaurants;
+  }
+
+// remove favorite restaurant
+  Future<void> removeFavoriteRestaurant(String restaurantId) async {
+    User? user = _auth.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    DocumentReference userDoc = _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('favorites_restaurants')
+        .doc(restaurantId);
+
+    await userDoc.delete();
+  }
+
+//  check if favorite
+  Future<bool> checkIfFavorite(String restaurantId) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('favorites_restaurants')
+          .doc(restaurantId)
+          .get();
+      return userDoc.exists;
+    }
+    return false;
+  }
+
+// toggle favorite
+  Future<void> toggleFavorite(String restaurantId, bool isFavorite) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentReference favoriteRef = _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('favorites_restaurants')
+          .doc(restaurantId);
+      if (isFavorite) {
+        await favoriteRef.delete();
+      } else {
+        await favoriteRef.set(<String, dynamic>{});
+      }
+    }
+  }
+
+  // ----------------- Help and Support -----------------
+  // send email and add to firestore
+  Future<void> sendEmailAndAddToFirestore(String message) async {
+    final User? user = _auth.currentUser;
+
+    if (user != null) {
+      String userId = user.uid;
+      String messageId = _firestore.collection('support_messages').doc().id;
+
+      await _firestore.collection('support_messages').doc(messageId).set({
+        'userId': userId,
+        'email': user.email,
+        'message': message,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } else {
+      throw Exception('Usuário não autenticado.');
+    }
+  }
+
+  // ----------------- Profile -----------------
+  Future<User?> getCurrentUser() async {
+    return _auth.currentUser;
+  }
+
+  Future<Map<String, String>> loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String name = prefs.getString('userName') ?? '';
+    String email = prefs.getString('userEmail') ?? '';
+
+    if (name.isEmpty || email.isEmpty) {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot userData =
+            await _firestore.collection('users').doc(user.uid).get();
+        if (userData.exists) {
+          name = userData['name'] ?? '';
+          email = userData['email'] ?? user.email!;
+          prefs.setString('userName', name);
+          prefs.setString('userEmail', email);
+        }
+      }
+    }
+    return {'name': name, 'email': email};
+  }
+
+  Future<void> updateUserData(String name, String email) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      await _firestore.collection('users').doc(user.uid).update({
+        'name': name,
+        'email': email,
+      });
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('userName', name);
+      prefs.setString('userEmail', email);
+    } else {
+      throw Exception('Usuário não autenticado.');
+    }
+  }
+
+  Future<Uint8List?> loadImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? imageBase64 = prefs.getString('profile_image');
+    if (imageBase64 != null) {
+      return base64Decode(imageBase64);
+    }
+    return null;
+  }
+
+  Future<String?> loadUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? name = prefs.getString('userName');
+
+    if (name == null) {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot userData =
+            await _firestore.collection('users').doc(user.uid).get();
+        name = userData['name'];
+        await prefs.setString('userName', name!);
+      }
+    }
+
+    return name;
+  }
+
+  // ----------------- User Settings -----------------
+  Future<DocumentSnapshot> getUserSettings(String userId) async {
+    try {
+      return await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('settings')
+          .doc('notification_settings')
+          .get();
+    } catch (e) {
+      throw Exception("Error loading user settings: $e");
+    }
+  }
+
+  Future<void> updateUserSettings(
+      String userId, bool specialOffers, bool reservationInfo) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('settings')
+          .doc('notification_settings')
+          .set({
+        'specialOffers': specialOffers,
+        'reservationInfo': reservationInfo,
+      });
+    } catch (e) {
+      throw Exception("Error updating user settings: $e");
+    }
+  }
+
+  Future<void> deleteUserNotificationSettings(String userId) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('settings')
+          .doc('notification_settings')
+          .delete();
+    } catch (e) {
+      print("Error deleting user notification settings: $e");
+      throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
+    }
+  }
+
+  Future<void> deleteUserPromos(String userId) async {
+    try {
+      QuerySnapshot promosSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('user_promos')
+          .get();
+
+      for (DocumentSnapshot doc in promosSnapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      print("Error deleting user promos: $e");
+      throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
+    }
+  }
+
+  Future<void> deleteUserFavoriteRestaurants(String userId) async {
+    try {
+      QuerySnapshot favoritesSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('favorites_restaurants')
+          .get();
+
+      for (DocumentSnapshot doc in favoritesSnapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      print("Error deleting user favorite restaurants: $e");
+      throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
+    }
+  }
+
+  Future<void> deleteUser(String userId) async {
+    try {
+      await _firestore.collection('users').doc(userId).delete();
+    } catch (e) {
+      print("Error deleting user document: $e");
+      throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
+    }
+  }
+
+  // ----------------- User Promos -----------------
+  Future<DocumentSnapshot> getPromoCode(String promoCode) async {
+    try {
+      return await _firestore.collection('promo_codes').doc(promoCode).get();
+    } catch (e) {
+      print("Error getting promo code: $e");
+      throw e; // Você pode optar por lidar com o erro aqui ou propagá-lo para cima
+    }
+  }
+
+  Future<void> redeemPromoCode(String promoCode, String reward) async {
+    try {
+      // Obter o usuário atualmente autenticado
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        // Referência à coleção de promoções do usuário
+        DocumentReference userPromoDoc = _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('user_promos')
+            .doc(promoCode);
+
+        // Adicionar a promoção à coleção de promoções do usuário
+        await userPromoDoc.set({
+          'reward': reward,
+          'redeemed_at': Timestamp.now(),
+        });
+      } else {
+        throw Exception("User not logged in");
+      }
+    } catch (e) {
+      print("Error redeeming promo code: $e");
+      throw e; // Você pode optar por lidar com o erro aqui ou propagá-lo para cima
+    }
+  }
+
   // ----------------- BackOffice -----------------
   // restaurant application from snapshot
   List<RestaurantApplication> _restaurantsApplicationsListFromSnapshot(
@@ -696,6 +981,36 @@ class DatabaseService {
     } catch (e) {
       debugPrint(e.toString());
       return null;
+    }
+  }
+
+  // promocode
+
+  Future<List<DocumentSnapshot>> loadPromoCodes({
+    required DocumentSnapshot? lastDocument,
+    required int pageSize,
+  }) async {
+    Query query = _firestore.collection('promo_codes').limit(pageSize);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    try {
+      QuerySnapshot querySnapshot = await query.get();
+      return querySnapshot.docs;
+    } catch (e) {
+      print("Error loading promo codes: $e");
+      throw e; // Você pode optar por lidar com o erro ou propagá-lo para cima
+    }
+  }
+
+  Future<void> deletePromoCode(String promoCodeId) async {
+    try {
+      await _firestore.collection('promo_codes').doc(promoCodeId).delete();
+    } catch (e) {
+      print("Error deleting promo code: $e");
+      throw e; // Você pode optar por lidar com o erro ou propagá-lo para cima
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -7,7 +8,7 @@ class ActivePromoCodesPage extends StatefulWidget {
 }
 
 class _ActivePromoCodesPageState extends State<ActivePromoCodesPage> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final DatabaseService _dbService = DatabaseService();
   final ScrollController _scrollController = ScrollController();
   List<DocumentSnapshot> _promoCodes = [];
   bool _isLoading = false;
@@ -29,28 +30,20 @@ class _ActivePromoCodesPageState extends State<ActivePromoCodesPage> {
       _isLoading = true;
     });
 
-    Query query = _firestore.collection('promo_codes').limit(_pageSize);
-
-    if (_lastDocument != null) {
-      query = query.startAfterDocument(_lastDocument!);
-    }
-
     try {
-      QuerySnapshot querySnapshot = await query.get();
-      if (querySnapshot.docs.isNotEmpty) {
-        setState(() {
-          _promoCodes.addAll(querySnapshot.docs);
-          _lastDocument = querySnapshot.docs.last;
-          _isLoading = false;
-          _hasMore = querySnapshot.docs.length == _pageSize;
-        });
-        print('Loaded ${querySnapshot.docs.length} promo codes');
-      } else {
-        setState(() {
-          _isLoading = false;
-          _hasMore = false;
-        });
-      }
+      List<DocumentSnapshot> promoCodes = await _dbService.loadPromoCodes(
+        lastDocument: _lastDocument,
+        pageSize: _pageSize,
+      );
+
+      setState(() {
+        _promoCodes.addAll(promoCodes);
+        _lastDocument = promoCodes.isNotEmpty ? promoCodes.last : null;
+        _isLoading = false;
+        _hasMore = promoCodes.length == _pageSize;
+      });
+
+      print('Loaded ${promoCodes.length} promo codes');
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -68,7 +61,7 @@ class _ActivePromoCodesPageState extends State<ActivePromoCodesPage> {
 
   Future<void> _deletePromoCode(String promoCodeId) async {
     try {
-      await _firestore.collection('promo_codes').doc(promoCodeId).delete();
+      await _dbService.deletePromoCode(promoCodeId);
       setState(() {
         _promoCodes.removeWhere((promoCode) => promoCode.id == promoCodeId);
       });

@@ -7,7 +7,6 @@ import 'package:adc_group_project/screens/reservations/reservations_screen.dart'
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class HomeRouter extends StatefulWidget {
   const HomeRouter({super.key});
@@ -58,7 +57,8 @@ class _HomeRouterState extends State<HomeRouter> {
             : Scaffold(
                 body: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
                     return FadeTransition(
                       opacity: animation,
                       child: child,
@@ -70,15 +70,15 @@ class _HomeRouterState extends State<HomeRouter> {
                   currentIndex: _currentIndex,
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
-                      icon:  Icon(Icons.home),
+                      icon: Icon(Icons.home),
                       label: 'Home',
                     ),
                     BottomNavigationBarItem(
-                      icon:  Icon(Icons.book),
+                      icon: Icon(Icons.book),
                       label: 'Reservations',
                     ),
                     BottomNavigationBarItem(
-                      icon:  Icon(Icons.eco),
+                      icon: Icon(Icons.eco),
                       label: 'CO2',
                     ),
                     BottomNavigationBarItem(

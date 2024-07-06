@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:adc_group_project/screens/profile/profile_subscreen/achievement/achievement_page.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen_router.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/promo_codes/promo_codes.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _initializeProfile() async {
     _imageBytes = await _profileService.loadImage();
-    _userName = await _profileService.loadUserName();
+    _userName = await DatabaseService().loadUserName();
     setState(() {});
   }
 
@@ -100,7 +101,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Reviews',
                   ontapReviews(context),
                 ),
-
                 profileItem(
                   context,
                   Icons.card_giftcard,
@@ -131,7 +131,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Help and Support',
                   ontapHelpSupport(context),
                 ),
-
                 ListTile(
                   leading: Icon(Icons.logout,
                       color: Theme.of(context).colorScheme.error),
@@ -140,8 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium!
-                        .copyWith(
-                            color: Theme.of(context).colorScheme.error),
+                        .copyWith(color: Theme.of(context).colorScheme.error),
                   ),
                   onTap: () async {
                     await FirebaseAuth.instance.signOut();

@@ -1,7 +1,6 @@
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class RestaurantInfo extends StatefulWidget {
   const RestaurantInfo({required this.info, Key? key}) : super(key: key);
@@ -16,6 +15,8 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
   bool isFavorite = false;
   bool isLoading = true;
 
+  final DatabaseService _restaurantService = DatabaseService();
+
   @override
   void initState() {
     super.initState();
@@ -24,23 +25,12 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
 
   Future<void> _checkIfFavorite() async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .collection('favoriteRestaurants')
-            .doc(widget.info.id)
-            .get();
-        setState(() {
-          isFavorite = userDoc.exists;
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-      }
+      bool favoriteStatus =
+          await _restaurantService.checkIfFavorite(widget.info.id);
+      setState(() {
+        isFavorite = favoriteStatus;
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -53,28 +43,16 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
 
   Future<void> _toggleFavorite() async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        DocumentReference favoriteRef = FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .collection('favoriteRestaurants')
-            .doc(widget.info.id);
-        if (isFavorite) {
-          await favoriteRef.delete();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Removed from favorites!')),
-          );
-        } else {
-          await favoriteRef.set(<String, dynamic>{});
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Added to favorites!')),
-          );
-        }
-        setState(() {
-          isFavorite = !isFavorite;
-        });
-      }
+      await _restaurantService.toggleFavorite(widget.info.id, isFavorite);
+      setState(() {
+        isFavorite = !isFavorite;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(isFavorite
+                ? 'Added to favorites!'
+                : 'Removed from favorites!')),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update favorites: $e')),

@@ -1,10 +1,15 @@
 class Restaurant {
-  String id, name, address, phone, location, coordinates;
-  double co2EmissionEstimate;
-  int seats;
-  bool visible;
-  List<bool> isOpen;
-  List<String> time;
+  final String id;
+  final String name;
+  final String address;
+  final String phone;
+  final String location;
+  final String coordinates;
+  final double co2EmissionEstimate;
+  final int seats;
+  final bool visible;
+  final List<bool> isOpen;
+  final List<String> time;
 
   Restaurant({
     required this.id,

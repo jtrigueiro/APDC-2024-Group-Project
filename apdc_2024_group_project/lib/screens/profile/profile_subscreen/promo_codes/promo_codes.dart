@@ -1,6 +1,6 @@
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class PromoCodesPage extends StatefulWidget {
   PromoCodesPage({Key? key}) : super(key: key);
@@ -11,8 +11,7 @@ class PromoCodesPage extends StatefulWidget {
 
 class _PromoCodesPageState extends State<PromoCodesPage> {
   final TextEditingController _promoCodeController = TextEditingController();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseService _dbService = DatabaseService();
 
   Future<void> _redeemPromoCode() async {
     String promoCode = _promoCodeController.text.trim();
@@ -25,39 +24,18 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
     }
 
     try {
-      DocumentSnapshot promoCodeDoc =
-          await _firestore.collection('promo_codes').doc(promoCode).get();
+      DocumentSnapshot promoCodeDoc = await _dbService.getPromoCode(promoCode);
 
       if (promoCodeDoc.exists) {
         Map<String, dynamic> promoData =
             promoCodeDoc.data() as Map<String, dynamic>;
         String reward = promoData['reward'];
 
-        // Obter o usuário atualmente autenticado
-        User? user = _auth.currentUser;
+        await _dbService.redeemPromoCode(promoCode, reward);
 
-        if (user != null) {
-          // Referência à coleção de promoções do usuário
-          DocumentReference userPromoDoc = _firestore
-              .collection('users')
-              .doc(user.uid)
-              .collection('user_promos')
-              .doc(promoCode);
-
-          // Adicionar a promoção à coleção de promoções do usuário
-          await userPromoDoc.set({
-            'reward': reward,
-            'redeemed_at': Timestamp.now(),
-          });
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Promo code redeemed! Reward: $reward')),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('User not logged in')),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Promo code redeemed! Reward: $reward')),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Invalid promotional code')),
@@ -95,9 +73,8 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
             children: [
               TextFormField(
                 controller: _promoCodeController,
-                decoration: InputDecoration().copyWith(
-                  labelText: 'Enter Promocode*'
-                ),
+                decoration:
+                    InputDecoration().copyWith(labelText: 'Enter Promocode*'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a promo code';
@@ -113,10 +90,9 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
               ),
               SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: _redeemPromoCode,
-                icon: Icon(Icons.add, size: 24),
-                label: Text('Redeem Code', style: TextStyle(fontSize: 16))
-              ),
+                  onPressed: _redeemPromoCode,
+                  icon: Icon(Icons.add, size: 24),
+                  label: Text('Redeem Code', style: TextStyle(fontSize: 16))),
               SizedBox(
                   height: MediaQuery.of(context)
                       .viewInsets

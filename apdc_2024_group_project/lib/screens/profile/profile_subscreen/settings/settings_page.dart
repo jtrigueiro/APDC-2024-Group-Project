@@ -1,8 +1,9 @@
-import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settingsSubPages/privacy_police.dart';
-import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settingsSubPages/terms_of_use_page.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settingsSubPages/privacy_police.dart';
+import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settingsSubPages/terms_of_use_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -10,8 +11,10 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final DatabaseService _dbService = DatabaseService();
+
   late User _user;
   bool _specialOffers = false;
   bool _reservationInfo = false;
@@ -25,10 +28,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _loadUserSettings() async {
     try {
-      DocumentSnapshot userSettings = await _firestore
-          .collection('notification_settings')
-          .doc(_user.uid)
-          .get();
+      DocumentSnapshot userSettings =
+          await _dbService.getUserSettings(_user.uid);
       if (userSettings.exists) {
         setState(() {
           _specialOffers = userSettings['specialOffers'] ?? false;
@@ -42,10 +43,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _updateUserSettings() async {
     try {
-      await _firestore.collection('notification_settings').doc(_user.uid).set({
-        'specialOffers': _specialOffers,
-        'reservationInfo': _reservationInfo,
-      });
+      await _dbService.updateUserSettings(
+          _user.uid, _specialOffers, _reservationInfo);
     } catch (e) {
       print("Error updating user settings: $e");
     }
@@ -88,14 +87,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _deleteAccount() async {
     try {
-      // Remover dados do Firestore
-      await _firestore
-          .collection('NotificationSettings')
-          .doc(_user.uid)
-          .delete();
-      await _firestore.collection('Users').doc(_user.uid).delete();
-      await _firestore.collection('supportMessages').doc(_user.uid).delete();
-      // Outros dados relacionados ao usuário no Firestore também devem ser removidos aqui
+      await _dbService.deleteUserNotificationSettings(_user.uid);
+      await _dbService.deleteUserPromos(_user.uid);
+      await _dbService.deleteUserFavoriteRestaurants(_user.uid);
+      await _dbService.deleteUser(_user.uid);
 
       // Deletar usuário do Firebase Authentication
       await _user.delete();
@@ -128,7 +123,8 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: const Text('Settings'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios,
+              color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -179,11 +175,8 @@ class _SettingsPageState extends State<SettingsPage> {
             },
             color: Theme.of(context).colorScheme.secondary,
           ),
-          _buildListTile(
-            'Delete My Account',
-            onTap: _confirmDeleteAccount,
-            color: Colors.redAccent
-          ),
+          _buildListTile('Delete My Account',
+              onTap: _confirmDeleteAccount, color: Colors.redAccent),
         ],
       ),
     );
@@ -202,19 +195,26 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSwitchListTile( String title, bool value, Function(bool) onChanged) {
+  Widget _buildSwitchListTile(
+      String title, bool value, Function(bool) onChanged) {
     return SwitchListTile(
-      title: Text(title,style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.normal, color: Theme.of(context).colorScheme.secondary) ),
+      title: Text(title,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontStyle: FontStyle.normal,
+              color: Theme.of(context).colorScheme.secondary)),
       value: value,
       onChanged: onChanged,
-      activeColor: Theme.of(context).colorScheme.secondary, // Cor do switch ativo
+      activeColor:
+          Theme.of(context).colorScheme.secondary, // Cor do switch ativo
     );
   }
 
   Widget _buildListTile(String title,
       {required Function() onTap, Color? color}) {
     return ListTile(
-      title: Text(title, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color)),
+      title: Text(title,
+          style:
+              Theme.of(context).textTheme.bodyMedium!.copyWith(color: color)),
       trailing: Icon(Icons.chevron_right, color: color),
       onTap: onTap,
       shape: RoundedRectangleBorder(

@@ -1,11 +1,8 @@
 import 'dart:typed_data';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/themes/elevated_button_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:adc_group_project/screens/profile/profile_service.dart';
+import 'package:flutter/material.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   @override
@@ -15,62 +12,30 @@ class PersonalInformationScreen extends StatefulWidget {
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
-  late User _user;
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
-
-  late SharedPreferences _prefs;
-  final ProfileService _profileService = ProfileService();
+  final DatabaseService _databaseService = DatabaseService();
   Uint8List? _imageBytes;
 
   @override
   void initState() {
     super.initState();
-    _user = _auth.currentUser!;
     _nameController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    _initPreferences();
     _initializeProfile();
   }
 
-  Future<void> _initPreferences() async {
-    _prefs = await SharedPreferences.getInstance();
-    _loadUserData();
-  }
-
   Future<void> _initializeProfile() async {
-    _imageBytes = await _profileService.loadImage();
-    setState(() {});
-  }
-
-  Future<void> _loadUserData() async {
     try {
-      String name = _prefs.getString('userName') ?? '';
-      String email = _prefs.getString('userEmail') ?? '';
-
-      if (name.isEmpty || email.isEmpty) {
-        DocumentSnapshot userData =
-            await _firestore.collection('users').doc(_user.uid).get();
-        if (userData.exists) {
-          setState(() {
-            name = userData['name'] ?? '';
-            email = userData['email'] ?? _user.email!;
-            _nameController.text = name;
-            _emailController.text = email;
-          });
-          _prefs.setString('userName', name);
-          _prefs.setString('userEmail', email);
-        } else {
-          print("Documento do usuário não existe no Firestore.");
-        }
-      } else {
+      User? user = await _databaseService.getCurrentUser();
+      if (user != null) {
+        _imageBytes = await _databaseService.loadImage();
+        Map<String, String> userData = await _databaseService.loadUserData();
         setState(() {
-          _nameController.text = name;
-          _emailController.text = email;
+          _nameController.text = userData['name']!;
+          _emailController.text = userData['email']!;
         });
       }
     } catch (e) {
@@ -81,15 +46,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Future<void> _updateUserData() async {
     if (_formKey.currentState!.validate()) {
       try {
-        await _firestore.collection('users').doc(_user.uid).update({
-          'name': _nameController.text,
-          'email': _emailController.text,
-        });
-
-        setState(() {
-          _prefs.setString('userName', _nameController.text);
-          _prefs.setString('userEmail', _emailController.text);
-        });
+        await _databaseService.updateUserData(
+          _nameController.text,
+          _emailController.text,
+        );
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Informações atualizadas com sucesso')),

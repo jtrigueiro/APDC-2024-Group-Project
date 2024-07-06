@@ -1,10 +1,8 @@
-import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MyRestaurantSettingsScreen extends StatefulWidget {
   const MyRestaurantSettingsScreen({super.key});
