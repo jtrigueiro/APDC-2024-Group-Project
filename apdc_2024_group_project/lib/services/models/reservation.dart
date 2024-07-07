@@ -1,10 +1,9 @@
-import 'package:adc_group_project/services/models/dish.dart';
-
 class Reservation {
   String userID, restaurantID;
-  List<Dish> order;
+  List<String> order;
+  double cost;
   DateTime start;
   DateTime end;
 
-  Reservation({required this.userID, required this.restaurantID, required this.start, required this.end, required this.order});
+  Reservation({required this.userID, required this.restaurantID, required this.start, required this.end, required this.order, required this.cost});
 }

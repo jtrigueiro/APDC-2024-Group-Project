@@ -16,7 +16,7 @@ class RestaurantScreen extends StatelessWidget {
       DateTime firstDay = now;
       for (int i = 0; i < 7; i++) {
         DateTime currentDay = now.add(Duration(days: i));
-        if (info.isOpen[currentDay.weekday]) {
+        if (info.isOpen[currentDay.weekday - 1]) {
           firstDay = currentDay;
           break;
         }

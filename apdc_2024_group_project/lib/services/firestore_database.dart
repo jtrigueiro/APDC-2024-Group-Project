@@ -1087,12 +1087,14 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateRestaurantReservationsData(String userID, String restaurantID, List<Dish> order, DateTime date) async {
+  Future addOrUpdateRestaurantReservationsData(String userID, String restaurantID, List<String> order,
+  double cost, DateTime date) async {
     try {
       await reservationsCollection.doc('$userID$restaurantID$date').set({
         'userID': userID,
         'restaurantID': restaurantID,
         'order': order,
+        'cost': cost,
         'start': date,
         'end': date.add(const Duration(hours: 2)),
       });
@@ -1109,7 +1111,8 @@ class DatabaseService {
         return Reservation(
           userID: doc.get('userID') ?? '',
           restaurantID: doc.get('restaurantID') ?? '',
-          order: doc.get('order').map<Dish>((e) => e as Dish).toList(),
+          order: doc.get('order').map<String>((e) => e).toList(),
+          cost: doc.get('cost').toDouble() ?? 0,
           start: doc.get('date').toDate() ?? DateTime.now(),
           end: doc.get('end').toDate() ?? DateTime.now(),
         );
@@ -1117,17 +1120,6 @@ class DatabaseService {
     } catch (e) {
       debugPrint(e.toString());
       return [];
-    }
-  }
-
- Stream<dynamic>? reservations({required DateTime start, required DateTime end}) {
-    try {
-      return reservationsCollection
-          .snapshots()
-          .map(_ReservationsListFromSnapshot);
-    } catch (e) {
-      debugPrint(e.toString());
-      return const Stream.empty();
     }
   }
 }
