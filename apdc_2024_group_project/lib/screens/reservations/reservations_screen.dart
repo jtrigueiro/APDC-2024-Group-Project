@@ -48,7 +48,6 @@ class ReservationsScreenState extends State<ReservationsScreen> {
           title: const Text('Reservation Details'),
           content: SizedBox(
             height: 200,
-            width: 300,
             child: Column(
               children: [
                 Text('Restaurant: ${reservation.restaurantName}'),

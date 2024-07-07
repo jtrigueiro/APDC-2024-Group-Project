@@ -93,6 +93,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                     setState(() {
                       selectedDate = date;
                       _selectedDay = daysWeek[selectedDate.weekday - 1];
+                      _selectedTime = null;
                     });
                   }
                 });
@@ -120,9 +121,18 @@ class ReserveScreenState extends State<ReserveScreen> {
               alignment: const Alignment(0, 0.95),
               child: ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    _selectedIndex = 1;
-                  });
+                  if(_selectedTime != null) {
+                    setState(() {
+                      _selectedIndex = 1;
+                    });
+                  }
+                  else {
+                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                      content: const Text('Please select a time first!'),
+                      animation: CurvedAnimation(parent: const AlwaysStoppedAnimation(1), curve: Curves.easeInOut),
+                      duration: const Duration(seconds: 2),
+                    ));
+                  }
                 },
                 child: const Text('N E X T'),
               ),
@@ -272,12 +282,22 @@ class ReserveScreenState extends State<ReserveScreen> {
                         );
                     });}
                   },
-                  child: const Text('C H E C K O U T',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    child: const Positioned(
+                      bottom: 0.1,
+                      child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.shopping_cart),
+                        SizedBox(width: 20),
+                        Text('C H E C K O U T',
+                        style: TextStyle(fontWeight: FontWeight.bold),),
+                      ],
+                      ),
+                    ),
                 ),
               ),
             )
-        ),
         ],
         ),
     );
