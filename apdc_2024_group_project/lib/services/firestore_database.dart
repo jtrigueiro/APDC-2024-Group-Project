@@ -1087,10 +1087,10 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateRestaurantReservationsData(
+  Future addRestaurantReservationsData(
       String restaurantID,
       String restaurantName,
-      Map<String, int> order,
+      List<String> order,
       double cost,
       DateTime start) async {
     try {
@@ -1098,9 +1098,9 @@ class DatabaseService {
 
       if (user != null) {
         await reservationsCollection.doc().set({
-          'userID': user.uid,
-          'userName': user.displayName,
-          'restaurantID': restaurantID,
+          'userId': user.uid,
+          'userName': await loadUserName(),
+          'restaurantId': restaurantID,
           'restaurantName': restaurantName,
           'order': order,
           'cost': cost,
@@ -1121,7 +1121,7 @@ class DatabaseService {
   Future<List<Reservation>> getRestaurantReservations(String restaurantID) async {
     try {
       final QuerySnapshot snapshot = await reservationsCollection
-          .where('restaurantID', isEqualTo: restaurantID)
+          .where('restaurantId', isEqualTo: restaurantID)
           .get();
       return reservationsListFromSnapshot(snapshot);
     } catch (e) {
@@ -1136,7 +1136,7 @@ class DatabaseService {
 
       if (user != null) {
         final QuerySnapshot snapshot = await reservationsCollection
-          .where('userID', isEqualTo: user.uid)
+          .where('userId', isEqualTo: user.uid)
           .get();
       return reservationsListFromSnapshot(snapshot);
       }
@@ -1153,13 +1153,13 @@ class DatabaseService {
     try {
       return snapshot.docs.map((doc) {
         return Reservation(
-          userID: doc.get('userID') ?? '',
+          userID: doc.get('userId') ?? '',
           userName: doc.get('userName') ?? '',
-          restaurantID: doc.get('restaurantID') ?? '',
+          restaurantID: doc.get('restaurantId') ?? '',
           restaurantName: doc.get('restaurantName') ?? '',
-          order: doc.get('order').map<String>((e) => e).toList(),
+          order: doc.get('order').map<String>((e) => e as String).toList(),
           cost: doc.get('cost').toDouble() ?? 0,
-          start: doc.get('date').toDate() ?? DateTime.now(),
+          start: doc.get('start').toDate() ?? DateTime.now(),
           end: doc.get('end').toDate() ?? DateTime.now(),
         );
       }).toList();

@@ -33,7 +33,7 @@ class ReservationsScreenState extends State<ReservationsScreen> {
     return ListTile(
       leading: const Icon(Icons.restaurant),
       title: Text(reservation.restaurantName),
-      subtitle: Text(reservation.start.toString()),
+      subtitle: Text('${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
       onTap: () {
         showReservationDetails(reservation);
       },
@@ -46,18 +46,23 @@ class ReservationsScreenState extends State<ReservationsScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Reservation Details'),
-          content: Column(
-            children: [
-              Text('Restaurant: ${reservation.restaurantName}'),
-              Text('Date: ${reservation.start}'),
-              Text('Total Price: ${reservation.cost}'),
-              ListView.builder(
-                itemCount: reservation.order.length,
-                itemBuilder: (context, index) {
-                  return Text('${reservation.order.keys.elementAt(index)}: x${reservation.order.values.elementAt(index)}');
-                },
-              ),
-            ],
+          content: SizedBox(
+            height: 200,
+            width: 300,
+            child: Column(
+              children: [
+                Text('Restaurant: ${reservation.restaurantName}'),
+                Text('Date: ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
+                Text('Time: ${reservation.start.hour}:${reservation.start.minute}'),
+                Text('Total Price: ${reservation.cost}'),
+                ListView.builder(
+                  itemCount: reservation.order.length,
+                  itemBuilder: (context, index) {
+                    return Text(reservation.order[index]);
+                  },
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -84,16 +89,16 @@ class ReservationsScreenState extends State<ReservationsScreen> {
       appBar: AppBar(
         title: const Text('Reservations'),
       ),
-      body: Center(
-        child: fetchingReservations ? const LoadingScreen()
-        : ListView.builder(
-          itemCount: reservations.length,
-            physics: const ScrollPhysics(),
-          itemBuilder: (context, index) {
-            return buildReservationTile(reservations[index]);
-          },
+      body: fetchingReservations ? const LoadingScreen()
+        : Center(
+          child: ListView.builder(
+            itemCount: reservations.length,
+              physics: const ScrollPhysics(),
+            itemBuilder: (context, index) {
+              return buildReservationTile(reservations[index]);
+            },
+          ),
         ),
-      ),
-    );
+      );
   }
 }

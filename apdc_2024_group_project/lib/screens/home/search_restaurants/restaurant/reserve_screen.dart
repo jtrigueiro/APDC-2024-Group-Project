@@ -221,9 +221,11 @@ class ReserveScreenState extends State<ReserveScreen> {
                                         TextButton(
                                           onPressed: () async {
                                             Map<String, int> dishes = {};
+                                            List<String> dishNames = [];
                                             double cost = 0;
 
                                             for(Dish item in checkout) {
+                                              dishNames.add(item.name);
                                               if(!dishes.containsKey(item.id)) {
                                                 dishes[item.id] = 1;
                                               } else {
@@ -234,7 +236,7 @@ class ReserveScreenState extends State<ReserveScreen> {
 
                                             DateTime time = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, _selectedTime!.hour, _selectedTime!.minute);
 
-                                            await DatabaseService().addOrUpdateRestaurantReservationsData(widget.restaurant.id, widget.restaurant.name, dishes, cost, time);
+                                            await DatabaseService().addRestaurantReservationsData(widget.restaurant.id, widget.restaurant.name, dishNames, cost, time);
 
                                             Navigator.popUntil(context, (route) => route.isFirst);
                                             

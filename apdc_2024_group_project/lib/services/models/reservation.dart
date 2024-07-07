@@ -1,6 +1,6 @@
 class Reservation {
   String userID, userName, restaurantID, restaurantName;
-  Map<String, int> order;
+  List<String> order;
   double cost;
   DateTime start, end;
 
