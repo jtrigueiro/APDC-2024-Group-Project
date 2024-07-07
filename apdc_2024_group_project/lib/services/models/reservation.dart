@@ -1,9 +1,8 @@
 class Reservation {
-  String userID, restaurantID;
-  List<String> order;
+  String userID, userName, restaurantID, restaurantName;
+  Map<String, int> order;
   double cost;
-  DateTime start;
-  DateTime end;
+  DateTime start, end;
 
-  Reservation({required this.userID, required this.restaurantID, required this.start, required this.end, required this.order, required this.cost});
+  Reservation({required this.userID, required this.userName, required this.restaurantID, required this.restaurantName, required this.start, required this.end, required this.order, required this.cost});
 }

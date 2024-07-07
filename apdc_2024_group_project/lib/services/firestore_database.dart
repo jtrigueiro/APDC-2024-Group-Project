@@ -1089,7 +1089,8 @@ class DatabaseService {
 
   Future addOrUpdateRestaurantReservationsData(
       String restaurantID,
-      List<String> order,
+      String restaurantName,
+      Map<String, int> order,
       double cost,
       DateTime start) async {
     try {
@@ -1098,7 +1099,9 @@ class DatabaseService {
       if (user != null) {
         await reservationsCollection.doc().set({
           'userID': user.uid,
+          'userName': user.displayName,
           'restaurantID': restaurantID,
+          'restaurantName': restaurantName,
           'order': order,
           'cost': cost,
           'start': start,
@@ -1115,12 +1118,45 @@ class DatabaseService {
     }
   }
 
-  List<Reservation> _ReservationsListFromSnapshot(QuerySnapshot snapshot) {
+  Future<List<Reservation>> getRestaurantReservations(String restaurantID) async {
+    try {
+      final QuerySnapshot snapshot = await reservationsCollection
+          .where('restaurantID', isEqualTo: restaurantID)
+          .get();
+      return reservationsListFromSnapshot(snapshot);
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
+  Future<List<Reservation>> getUserReservations() async {
+    try {
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        final QuerySnapshot snapshot = await reservationsCollection
+          .where('userID', isEqualTo: user.uid)
+          .get();
+      return reservationsListFromSnapshot(snapshot);
+      }
+      else {
+        throw Exception("User not logged in");
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
+  List<Reservation> reservationsListFromSnapshot(QuerySnapshot snapshot) {
     try {
       return snapshot.docs.map((doc) {
         return Reservation(
           userID: doc.get('userID') ?? '',
+          userName: doc.get('userName') ?? '',
           restaurantID: doc.get('restaurantID') ?? '',
+          restaurantName: doc.get('restaurantName') ?? '',
           order: doc.get('order').map<String>((e) => e).toList(),
           cost: doc.get('cost').toDouble() ?? 0,
           start: doc.get('date').toDate() ?? DateTime.now(),
@@ -1132,7 +1168,7 @@ class DatabaseService {
       return [];
     }
   }
-  
+
   //-----------------RestaurantTypes-----------------
 
   Future<void> addRestaurantType(String typeName) async {
