@@ -38,12 +38,15 @@ class _SearchScreenState extends State<SearchScreen> {
   String currentLocality = '';
   bool done = false;
   bool paddingNeeded = false;
+  bool choosingDate = true;
   String? _mapStyle;
   double _markerFont = kIsWeb ? 12 : 80;
+  DateTime? _selectedDate;
 
   @override
   void initState() {
     super.initState();
+    _getDateFromUser();
     currentLocation = widget.userLocation;
     getCityByCoords(currentLocation).then((value) { getRestaurants(currentLocality); });
     _loadMapStyle();
@@ -167,6 +170,58 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void _getDateFromUser() async {
+    DateTime? _pickerDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2030));
+
+  if (_pickerDate != null) {
+    setState(() {
+      _selectedDate = _pickerDate;
+    });
+}
+ }
+
+  Future showDateBox(BuildContext context) {
+    return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Date Selection'),
+        content: const Text('Please select a date to continue.'),
+        actions: [
+          DatePickerDialog(firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 7)),
+            initialDate: DateTime.now(),
+            ),
+          Row(
+            children: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    choosingDate = false;
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Ignore'),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    choosingDate = false;
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        ],
+      );
+    },);
+  }
+
   Future<void> _searchForRestaurants(String query) async {
     restaurants.clear();
     markers.clear();
@@ -251,7 +306,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body: Center(
-        child: Column(
+        child:  Column(
           children: [
             searchBox('Search for restaurants', searchIcon,
                     _searchForRestaurants, searchController)

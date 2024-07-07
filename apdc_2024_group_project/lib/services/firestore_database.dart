@@ -6,6 +6,7 @@ import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/models/dish.dart';
 import 'package:adc_group_project/services/models/favoriterestaurant.dart';
 import 'package:adc_group_project/services/models/ingredient.dart';
+import 'package:adc_group_project/services/models/reservation.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
@@ -37,6 +38,10 @@ class DatabaseService {
   // ingredients collection reference
   final CollectionReference ingredientsCollection =
       FirebaseFirestore.instance.collection('ingredients');
+
+  // reservations collection reference
+  final CollectionReference reservationsCollection =
+      FirebaseFirestore.instance.collection('reservations');
 
   // support messages collection reference
   final CollectionReference supportMessagesCollection =
@@ -1025,6 +1030,50 @@ class DatabaseService {
     } catch (e) {
       print("Error deleting promo code: $e");
       throw e; // Você pode optar por lidar com o erro ou propagá-lo para cima
+    }
+  }
+
+  Future addOrUpdateRestaurantReservationsData(String userID, String restaurantID, List<Dish> order, DateTime date) async {
+    try {
+      await reservationsCollection.doc('$userID$restaurantID$date').set({
+        'userID': userID,
+        'restaurantID': restaurantID,
+        'order': order,
+        'start': date,
+        'end': date.add(const Duration(hours: 2)),
+      });
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  List<Reservation> _ReservationsListFromSnapshot(QuerySnapshot snapshot) {
+    try {
+      return snapshot.docs.map((doc) {
+        return Reservation(
+          userID: doc.get('userID') ?? '',
+          restaurantID: doc.get('restaurantID') ?? '',
+          order: doc.get('order').map<Dish>((e) => e as Dish).toList(),
+          start: doc.get('date').toDate() ?? DateTime.now(),
+          end: doc.get('end').toDate() ?? DateTime.now(),
+        );
+      }).toList();
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
+ Stream<dynamic>? reservations({required DateTime start, required DateTime end}) {
+    try {
+      return reservationsCollection
+          .snapshots()
+          .map(_ReservationsListFromSnapshot);
+    } catch (e) {
+      debugPrint(e.toString());
+      return const Stream.empty();
     }
   }
 }
