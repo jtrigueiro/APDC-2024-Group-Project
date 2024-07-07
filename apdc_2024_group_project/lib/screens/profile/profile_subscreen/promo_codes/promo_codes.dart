@@ -82,13 +82,11 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
               Text(
                 'Enter a promo code to redeem rewards!',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
-              SizedBox(height: 16),
               ElevatedButton.icon(
                   onPressed: _redeemPromoCode,
                   icon: Icon(Icons.add, size: 24),
