@@ -191,7 +191,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    RestaurantScreen(info: restaurantDetail),
+                                    RestaurantScreen(info: restaurantDetail, day: null),
                               ),
                             );
                           },

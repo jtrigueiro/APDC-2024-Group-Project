@@ -206,11 +206,13 @@ class DatabaseService {
   }
 
   Future getLocations() async {
+    List<String> locations = [];
     try {
       final QuerySnapshot doc = await locationsCollection.get();
-      return doc.docs.map((doc) {
-        return doc.get('location') ?? '';
-      }).toList();
+      for (var location in doc.docs) {
+        locations.add(location.get('location') ?? '');
+      }
+      return locations;
     } catch (e) {
       debugPrint(e.toString());
       return [];

@@ -1,20 +1,34 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/reserve_screen.dart';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen_objects/restaurant_info.dart';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen_objects/restaurant_menu.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
-import 'package:flutter/widgets.dart';
 
 class RestaurantScreen extends StatelessWidget {
   final Restaurant info;
+  final DateTime? day;
 
-  const RestaurantScreen({super.key, required this.info});
+  const RestaurantScreen({super.key, required this.info, required this.day});
+
+  DateTime getDay(day) {
+    if(day == null) {
+      DateTime now = DateTime.now();
+      DateTime firstDay = now;
+      for (int i = 0; i < 7; i++) {
+        DateTime currentDay = now.add(Duration(days: i));
+        if (info.isOpen[currentDay.weekday]) {
+          firstDay = currentDay;
+          break;
+        }
+      }
+      return firstDay;
+    }
+    return day;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final currentHeight = MediaQuery.of(context).size.height;
-
+    print(day.toString());
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -59,7 +73,7 @@ class RestaurantScreen extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ReserveScreen(restaurant: info)));
+                        builder: (context) => ReserveScreen(restaurant: info, day: getDay(day))));
               },
               child: const Text("Reserve"),
             ),

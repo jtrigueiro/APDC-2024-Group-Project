@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 class ReserveScreen extends StatefulWidget {
 
   Restaurant restaurant;
+  DateTime day;
 
-  ReserveScreen({super.key, required this.restaurant});
+  ReserveScreen({super.key, required this.restaurant, required this.day});
 
   @override
   _ReserveScreenState createState() => _ReserveScreenState();
@@ -20,7 +21,6 @@ class _ReserveScreenState extends State<ReserveScreen> {
   List<Set<TimeOfDay>> openHours = [{}, {}, {}, {}, {}, {}, {}];
   List<Dish> dishes = [];
   List<Dish> checkout = [];
-  late DateTime? _selectedDate;
   late String? _selectedDay;
   late TimeOfDay? _selectedTime;
   int _selectedIndex = 0;
@@ -28,9 +28,10 @@ class _ReserveScreenState extends State<ReserveScreen> {
 
   @override
   initState() {
-    constructSchedule();
-    getDishes();
     super.initState();
+    constructSchedule();
+    //getDishes();
+    
   }
 
   void constructSchedule() {
@@ -50,21 +51,12 @@ class _ReserveScreenState extends State<ReserveScreen> {
       }
     }
 
-    for(int i = DateTime.now().weekday - 1;; i++) {
-      print('iteration $i');
-      if(widget.restaurant.isOpen[(i % 7)]) {
-        setState(() {
-          print('INSIIIIIIIIIIIIIIIIIIDEEEEEEEEEEEE');
-          print(DateTime.now().weekday);
-          _selectedDate = DateTime.now().add(Duration(days: i - DateTime.now().weekday));
-          loading = false;
-        });
-        break;
-      }
-    }
-
     _selectedDay = openDays.first;
     _selectedTime = openHours[daysWeek.indexOf(_selectedDay!)].first;
+
+    setState(() {
+      loading = false;
+    });
   }
 
   void getDishes() {
@@ -76,9 +68,11 @@ class _ReserveScreenState extends State<ReserveScreen> {
   }
 
   Widget _buildBookingCalendar() {
+    DateTime _selectedDate = widget.day;
+
     return Row(
       children: [
-        CalendarDatePicker(initialDate: _selectedDate, firstDate: _selectedDate!, 
+        CalendarDatePicker(initialDate: _selectedDate, firstDate: DateTime.now(), 
         lastDate: DateTime.now().add(const Duration(days: 14)),
         selectableDayPredicate: (day) {
           return widget.restaurant.isOpen[day.weekday - 1];
@@ -88,7 +82,7 @@ class _ReserveScreenState extends State<ReserveScreen> {
             _selectedDate = date;
           });
         }),
-        _buildTimeDropdownMenu(openHours[_selectedDate!.weekday]),
+        _buildTimeDropdownMenu(openHours[_selectedDate.weekday - 1]),
       ],
     );
   }
@@ -97,6 +91,8 @@ class _ReserveScreenState extends State<ReserveScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    print('Selected day: $_selectedDay');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reserve a Table'),

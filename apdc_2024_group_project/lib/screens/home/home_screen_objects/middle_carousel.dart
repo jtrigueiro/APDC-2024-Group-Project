@@ -1,6 +1,5 @@
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -18,7 +17,7 @@ class MiddleCarousel extends StatelessWidget {
   void itemClicked(context, Restaurant item) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RestaurantScreen(info: item)),
+      MaterialPageRoute(builder: (context) => RestaurantScreen(info: item, day: null,)),
     );
   }
 

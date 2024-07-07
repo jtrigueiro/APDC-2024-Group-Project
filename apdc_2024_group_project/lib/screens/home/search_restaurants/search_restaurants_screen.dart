@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 
 class SearchScreen extends StatefulWidget {
   final LatLng userLocation;
@@ -54,8 +53,13 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void getLocations() async {
-    locations = await DatabaseService().getLocations();
+    print('fetching locations');
 
+    try {
+      locations = await DatabaseService().getLocations();
+    } catch (e) {
+      print('error fetching locations');
+    }
     setState(() {
       fetchingLocations = false;
     });
@@ -162,6 +166,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _getDateFromUser() async {
+    print('selected date before $_selectedDate');
     _selectedDate = await showDatePicker(
     context: context,
     initialDate: DateTime.now(),
@@ -177,6 +182,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
 
     if (_selectedDate != null) {
+      print('selected date after $_selectedDate');
       enhanceResult();
       setState(() {
       });
@@ -185,11 +191,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void enhanceResult() {
     int weekday = _selectedDate!.weekday;
+    print('weekday $weekday');
 
-    final values = restaurants.where((element) => element.isOpen[weekday]).toList();
+    final values = restaurants.where((element) => element.isOpen[weekday - 1]).toList();
 
-    restaurants.clear();
-    markers.clear();
+    print('values length ${values.length}');
 
     if(values.isEmpty) {
       showDialog(
@@ -211,6 +217,9 @@ class _SearchScreenState extends State<SearchScreen> {
         },);
     }
 
+    restaurants.clear();
+    markers.clear();
+
     for (int i = 0; i < values.length; i++) {
       handleRestaurant(values[i], i);
     }
@@ -231,34 +240,6 @@ class _SearchScreenState extends State<SearchScreen> {
       done = true;
       paddingNeeded = values.isEmpty ? false : true;
     });
-  }
-
-  Future<void> _centerOnUserLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return;
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(
-        CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
   }
 
   void changeCamera(int index) async {
@@ -339,11 +320,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   });
                 },
               ),
-          Expanded(
+          fetchingLocations ? const LoadingScreen() : Expanded(
             child: ListView.builder(
-              itemCount: 5,
+              itemCount: locations.length,
               itemBuilder: (context, index) {
-                List<String> locations = ['Cascais', 'Lisboa', 'Porto', 'Almada', 'Amadora'];
                 return ListTile(
                   title: Text(locations[index]),
                   leading: const Icon(Icons.location_on),
@@ -433,15 +413,14 @@ class _SearchScreenState extends State<SearchScreen> {
         }).toList(),
     );
   }
-}
 
-InkWell restaurantTile(BuildContext context, Restaurant restaurant) {
+  InkWell restaurantTile(BuildContext context, Restaurant restaurant) {
   return InkWell(
     onTap: () {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => RestaurantScreen(info: restaurant),
+          builder: (context) => RestaurantScreen(info: restaurant, day: _selectedDate),
         ),
       );
     },
@@ -493,6 +472,7 @@ InkWell restaurantTile(BuildContext context, Restaurant restaurant) {
     ),
   );
 }
+}
 
 Row textLine(String text, Icon icon) {
   return Row(
@@ -502,32 +482,4 @@ Row textLine(String text, Icon icon) {
       Text(text),
     ],
   );
-}
-
-Widget restaurantMarkers(List<Restaurant> info) {
-  return ListView.builder(
-    shrinkWrap: true,
-    scrollDirection: Axis.vertical,
-    itemCount: info.length,
-    itemBuilder: (context, index) {
-      return ListTile(
-        title: Text(info[index].name),
-        subtitle: Text(info[index].location),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RestaurantScreen(
-                info: info[index],
-              ),
-            ),
-          );
-        },
-        selectedColor: const Color(0xFFf2f2f2),
-        selected: true,
-      );
-    },
-  );
-
-  
 }
