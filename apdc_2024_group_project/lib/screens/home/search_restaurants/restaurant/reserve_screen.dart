@@ -220,9 +220,6 @@ class ReserveScreenState extends State<ReserveScreen> {
                                         ),
                                         TextButton(
                                           onPressed: () async {
-
-                                            final user = await DatabaseService().getCurrentUser();
-
                                             List<String> dishes = [];
                                             double cost = 0;
 
@@ -233,7 +230,7 @@ class ReserveScreenState extends State<ReserveScreen> {
 
                                             DateTime time = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, _selectedTime!.hour, _selectedTime!.minute);
 
-                                            await DatabaseService().addOrUpdateRestaurantReservationsData(user!.uid, widget.restaurant.id, dishes, cost, time);
+                                            await DatabaseService().addOrUpdateRestaurantReservationsData(widget.restaurant.id, dishes, cost, time);
 
                                             Navigator.popUntil(context, (route) => route.isFirst);
                                             
@@ -269,7 +266,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                         );
                     });}
                   },
-                  child: const Text('C H E C K O U T )',
+                  child: const Text('C H E C K O U T',
                     style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

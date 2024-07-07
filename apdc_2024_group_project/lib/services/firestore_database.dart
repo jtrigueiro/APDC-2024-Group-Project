@@ -1088,20 +1088,26 @@ class DatabaseService {
   }
 
   Future addOrUpdateRestaurantReservationsData(
-      String userID,
       String restaurantID,
       List<String> order,
       double cost,
-      DateTime date) async {
+      DateTime start) async {
     try {
-      await reservationsCollection.doc('$userID$restaurantID$date').set({
-        'userID': userID,
-        'restaurantID': restaurantID,
-        'order': order,
-        'cost': cost,
-        'start': date,
-        'end': date.add(const Duration(hours: 2)),
-      });
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await reservationsCollection.doc().set({
+          'userID': user.uid,
+          'restaurantID': restaurantID,
+          'order': order,
+          'cost': cost,
+          'start': start,
+          'end': start.add(const Duration(hours: 1)),
+        });
+      }
+      else {
+        throw Exception("User not logged in");
+      }
       return true;
     } catch (e) {
       debugPrint(e.toString());
@@ -1126,18 +1132,7 @@ class DatabaseService {
       return [];
     }
   }
-
-  Stream<dynamic>? reservations(
-      {required DateTime start, required DateTime end}) {
-    try {
-      return reservationsCollection
-          .snapshots()
-          .map(_ReservationsListFromSnapshot);
-    } catch (e) {
-      debugPrint(e.toString());
-      return const Stream.empty();
-    }
-  }
+  
   //-----------------RestaurantTypes-----------------
 
   Future<void> addRestaurantType(String typeName) async {
