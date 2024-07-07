@@ -148,6 +148,10 @@ class RestaurantApplicationTile extends StatelessWidget {
                     co2EmissionEstimate, // Usar o valor calculado aqui
                     restaurantApplication.seats,
                   );
+
+                  print('Location: ${restaurantApplication.location.capitalize()}');
+                  await DatabaseService().incrementLocation(restaurantApplication.location.capitalize());
+
                   await DatabaseService()
                       .deleteRestaurantApplication(restaurantApplication.uid);
                 }
@@ -183,4 +187,11 @@ class RestaurantApplicationTile extends StatelessWidget {
       ),
     );
   }
+  
 }
+
+extension StringExtensions on String { 
+  String capitalize() { 
+    return "${this[0].toUpperCase()}${substring(1)}"; 
+  } 
+} 

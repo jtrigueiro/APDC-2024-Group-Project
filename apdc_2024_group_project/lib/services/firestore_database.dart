@@ -31,6 +31,10 @@ class DatabaseService {
   final CollectionReference restaurantsApplicationsCollection =
       FirebaseFirestore.instance.collection('restaurants_applications');
 
+  // locations collection reference
+  final CollectionReference locationsCollection =
+      FirebaseFirestore.instance.collection('locations');
+
   // restaurants collection reference
   final CollectionReference restaurantsCollection =
       FirebaseFirestore.instance.collection('restaurants');
@@ -159,6 +163,67 @@ class DatabaseService {
                 time: doc.get('time').map<String>((e) => e as String).toList(),
               ))
           .toList();
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
+  // ----------------- Locations -----------------
+  
+  Future incrementLocation(String location) async {
+    /*
+    final DocumentSnapshot doc = await locationsCollection.doc(location).get();
+    if (doc.exists) {
+      await locationsCollection.doc(location).set({
+      'location': location,
+      'count': FieldValue.increment(1),
+      }, SetOptions(merge: true));
+    }
+    else {
+      print('Location does not exist yet');
+      await locationsCollection.doc(location).set({
+      'location': location,
+      'count': 1,
+      });
+      print('Location created');
+    }*/
+    try {
+      final DocumentSnapshot doc = await locationsCollection.doc(location).get();
+        await locationsCollection.doc(location).set({
+        'location': location,
+        'count': 1,
+        });
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  Future decrementLocation(String location) async {
+    final DocumentSnapshot doc = await locationsCollection.doc(location).get();
+    if (doc.exists) {
+      if(doc.get('count') > 1) {
+        await locationsCollection.doc(location).set({
+        'location': location,
+        'count': FieldValue.increment(-1),
+        }, SetOptions(merge: true));
+      }
+      else {
+        await locationsCollection.doc(location).delete();
+      }
+    }
+    else {
+      return;
+    }
+  }
+
+  Future getLocations() async {
+    try {
+      final QuerySnapshot doc = await locationsCollection.get();
+      return doc.docs.map((doc) {
+        return doc.get('location') ?? '';
+      }).toList();
     } catch (e) {
       debugPrint(e.toString());
       return [];

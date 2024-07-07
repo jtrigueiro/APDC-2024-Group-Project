@@ -42,13 +42,12 @@ class _SearchScreenState extends State<SearchScreen> {
   String? _mapStyle;
   double _markerFont = kIsWeb ? 12 : 80;
   DateTime? _selectedDate;
+  List<String> locations = [];
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-    _getDateFromUser();
-    currentLocation = widget.userLocation;
-    getCityByCoords(currentLocation).then((value) { getRestaurants(currentLocality); });
+    locations = await DatabaseService().getLocations();
     _loadMapStyle();
   }
 
@@ -73,9 +72,11 @@ class _SearchScreenState extends State<SearchScreen> {
     GeocodingService().geocode(address).then((value) {
       if (value['status'] == 'OK') {
           final int size = value['results'][0]['address_components'].length;
-          final city = value['results'][0]['address_components'][size - 4]['long_name'];
-          currentLocation = city;
+          final String city = value['results'][0]['address_components'][size - 4]['long_name'];
           locationController.text = city;
+          currentLocality = city;
+          currentLocation = LatLng(value['results'][0]['geometry']['location']['lat'],
+            value['results'][0]['geometry']['location']['lng']);
         }
       });
     }
@@ -153,6 +154,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   }
 
+  
+
   Future<void> _moveToLocation(String location) async {
     GeocodingService().geocode(location).then((value) async {
       if (value['status'] == 'OK') {
@@ -166,7 +169,6 @@ class _SearchScreenState extends State<SearchScreen> {
       } else {
         print('Error: ${value['status']}');
       }
-      currentLocality = location;
     });
   }
 
@@ -215,8 +217,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
                 child: const Text('OK'),
               ),
-            ],
-          ),
+            ]),
         ],
       );
     },);
@@ -281,9 +282,96 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  Row searchBox(String label, IconData icon, Function function,
+    TextEditingController controller, bool location) {
+  return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          margin: const EdgeInsets.all(8),
+          child: GestureDetector(
+            onTap: () {
+              location ? setState(() {
+                choosingDate = true;
+              }) :
+              function(controller.text);
+            },
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: Icon(icon, size: 20, color: const Color(0xFF000000)),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(10, 0, 11, 0),
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: label,
+                hintStyle: const TextStyle(color: Colors.grey),
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+              ),
+              onSubmitted: (value) {
+                function(value);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Scaffold locationScreen(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Location'),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          const Text('Please select a location to continue.'),
+          const SizedBox(height: 20),
+          ListTile(
+                title: const Text('Current Location'),
+                leading: const Icon(Icons.my_location),
+                onTap: () {
+                  setState(() async {
+                    currentLocation = widget.userLocation;
+                    getCityByCoords(currentLocation).then((value) { getRestaurants(currentLocality); });
+                    choosingDate = false;
+                  });
+                },
+              ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                List<String> locations = ['Cascais', 'Lisboa', 'Porto', 'Almada', 'Amadora'];
+                return ListTile(
+                  title: Text(locations[index]),
+                  leading: const Icon(Icons.location_on),
+                  onTap: () {
+                    setState(() async {
+                      getCityByAddress(locations[index]);
+                      getRestaurants(locations[index]);
+                      choosingDate = false;
+                    });
+                  },
+                );
+              },
+          ),),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return choosingDate ? locationScreen(context) : Scaffold (
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
@@ -292,16 +380,9 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         title: Row(
           children: [
-            Expanded(
-              child: searchBox("Location", locationIcon, _moveToLocation,
-                      locationController)
-                  .widget!,
-            ),
-            FloatingActionButton(
-              mini: true,
-              onPressed: _centerOnUserLocation,
-              child: const Icon(Icons.my_location),
-            ),
+            const Icon(Icons.restaurant),
+            const SizedBox(width: 20),
+            Text('Restaurants   •   $currentLocality'),
           ],
         ),
       ),
@@ -309,8 +390,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child:  Column(
           children: [
             searchBox('Search for restaurants', searchIcon,
-                    _searchForRestaurants, searchController)
-                .widget!,
+                    _searchForRestaurants, searchController, false),
             Expanded(
               child: Stack(
                 children: [
@@ -318,7 +398,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     padding: paddingNeeded ? const EdgeInsets.only(bottom: 100) : EdgeInsets.zero,
                     zoomControlsEnabled: false,
                     mapToolbarEnabled: false,
-                    myLocationButtonEnabled: true,
+                    myLocationButtonEnabled: false,
                     markers: markers,
                     onCameraMove: cameraMoved,
                     onMapCreated: _onMapCreated,
@@ -456,52 +536,6 @@ Widget restaurantMarkers(List<Restaurant> info) {
       );
     },
   );
-}
 
-SearchBox searchBox(String label, IconData icon, Function function,
-    TextEditingController controller) {
-  return SearchBox(
-    widget: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          margin: const EdgeInsets.all(8),
-          child: GestureDetector(
-            onTap: () {
-              function(controller.text);
-            },
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: Icon(icon, size: 20, color: const Color(0xFF000000)),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 11, 0),
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: label,
-                hintStyle: const TextStyle(color: Colors.grey),
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-              ),
-              onSubmitted: (value) {
-                function(value);
-              },
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class SearchBox {
-  final Widget? widget;
-
-  SearchBox({this.widget});
+  
 }
