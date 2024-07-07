@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 class BackOfficeHomeScreen extends StatelessWidget {
   BackOfficeHomeScreen({super.key});
+
   final AuthService _auth = AuthService();
 
   @override
@@ -15,72 +16,79 @@ class BackOfficeHomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Back Office'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+        child: GridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => RestaurantsApplicationsScreen(),
-                  ),
-                );
-              },
-              child: Text('Restaurants Applications'),
-            ),
-            SizedBox(height: 20), // Espaço entre os botões
-            ElevatedButton(
-              onPressed: () {
-                // Navegação para a nova tela
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SupportMessagesListScreen(), // Substitua por sua nova tela
-                  ),
-                );
-              },
-              child: Text('Helps and Support'),
-            ),
-            SizedBox(height: 20), // Espaço entre os botões
-            ElevatedButton(
-              onPressed: () {
-                // Navegação para a nova tela
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        PromoCodesHomeScreen(), // Substitua por sua nova tela
-                  ),
-                );
-              },
-              child: Text('Promo Codes Management'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navegação para a nova tela
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        RestaurantsIngredientsScreen(), // Substitua por sua nova tela
-                  ),
-                );
-              },
-              child: Text('Ingredients Management'),
-            ),
-            SizedBox(height: 20),
+            workButton('Restaurants Requests', restaurantRequests(context)),
+            workButton('Help and Support', supportTap(context)),
+            workButton('PromoCode Management', promoCodesTap(context)),
+            workButton('Ingredients Management', ingredientsTap(context)),
             ElevatedButton(
               onPressed: () async {
                 await _auth.signOut();
               },
-              child: Text('Logout'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
+              style:  const ButtonStyle(
+                  elevation: MaterialStatePropertyAll(10),
+                  backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              child: const Text('Logout'),
             ),
           ],
         ),
       ),
     );
   }
+
+  ElevatedButton workButton(String text, Function ontap) {
+    return ElevatedButton(
+      style: const ButtonStyle(elevation: MaterialStatePropertyAll(10)),
+      onPressed: () {
+        ontap();
+      },
+      child: Text(text,
+          textAlign: TextAlign.center),
+    );
+  }
+
+  Function supportTap(context) {
+    return () {
+      Navigator.of(context).push(CustomPageRoute(
+        builder: (context) => SupportMessagesListScreen(),
+      ));
+    };
+  }
+
+  Function restaurantRequests(context) {
+    return () {
+      Navigator.of(context).push(CustomPageRoute(
+        builder: (context) => RestaurantsApplicationsScreen(),
+      ));
+    };
+  }
+
+  Function promoCodesTap(context) {
+    return () {
+      Navigator.of(context).push(CustomPageRoute(
+        builder: (context) => PromoCodesHomeScreen(),
+      ));
+    };
+  }
+
+  Function ingredientsTap(context) {
+    return () {
+      Navigator.of(context).push(CustomPageRoute(
+        builder: (context) => RestaurantsIngredientsScreen(),
+      ));
+    };
+  }
+}
+
+class CustomPageRoute extends MaterialPageRoute {
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 500);
+
+  CustomPageRoute({builder}) : super(builder: builder);
 }

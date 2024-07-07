@@ -80,8 +80,7 @@ class _MyRestaurantScreenRouterState extends State<MyRestaurantScreenRouter> {
             appBar: AppBar(
               title: const Text('My Restaurant'),
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 117, 85, 18)),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded,),
                 onPressed: () {
                   Navigator.pop(context);
                 },

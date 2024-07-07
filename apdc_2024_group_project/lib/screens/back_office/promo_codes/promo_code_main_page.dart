@@ -12,7 +12,7 @@ class _PromoCodesHomeScreen extends State<PromoCodesHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PromoCodes Management'),
+        title: const Text('Promotion Codes'),
       ),
       body: Center(
         child: Column(

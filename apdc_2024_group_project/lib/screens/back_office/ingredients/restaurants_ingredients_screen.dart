@@ -15,10 +15,9 @@ class RestaurantsIngredientsScreen extends StatelessWidget {
       value: DatabaseService().ingredients,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Restaurants Ingredients'),
+          title: const Text('Ingredients List'),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: Color.fromARGB(255, 204, 178, 133)),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -26,7 +25,7 @@ class RestaurantsIngredientsScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: const Icon(Icons.add_circle_outline),
-              color: Color.fromARGB(255, 204, 178, 133),
+
               onPressed: () {
                 showDialog(
                   context: context,

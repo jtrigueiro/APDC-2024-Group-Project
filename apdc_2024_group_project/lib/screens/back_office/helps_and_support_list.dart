@@ -76,7 +76,7 @@ class _SupportMessagesListScreenState extends State<SupportMessagesListScreen> {
         _messages.removeWhere((message) => message.id == messageId);
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mensagem excluída com sucesso!')),
+        const SnackBar(content: Text('Mensagem excluída com sucesso!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -104,61 +104,69 @@ class _SupportMessagesListScreenState extends State<SupportMessagesListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text(
           'Support Messages',
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: _reloadMessages,
           ),
         ],
       ),
       body: _messages.isEmpty && _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
               controller: _scrollController,
               itemCount: _messages.length + (_hasMore ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == _messages.length) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 var message = _messages[index];
-                return Card(
-                  margin: EdgeInsets.all(10),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          message['email'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
+                  child: Card(
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 15, 10, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          Text(
+                            message['email'],
+                            style: Theme.of(context).textTheme.titleSmall),
+
+                          Text(message['message'],style: Theme.of(context).textTheme.titleMedium),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                  message['timestamp'] != null
+                                      ? (message['timestamp'] as Timestamp)
+                                      .toDate()
+                                      .toString()
+                                      : 'No date',
+                                  style: Theme.of(context).textTheme.labelSmall
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () => _deleteMessage(message.id),
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(height: 5),
-                        Text(message['message']),
-                        SizedBox(height: 5),
-                        Text(
-                          message['timestamp'] != null
-                              ? (message['timestamp'] as Timestamp)
-                                  .toDate()
-                                  .toString()
-                              : 'No date',
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () => _deleteMessage(message.id),
-                            ),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

@@ -19,8 +19,14 @@ class TextThemeApp {
       fontWeight: FontWeight.w600,
       fontSize: 20,
     ),
+    //used back office
+    titleSmall: GoogleFonts.getFont(
+      'Open Sans',
+      fontWeight: FontWeight.w400,
+      fontSize: 15,
+    ),
 
-    //used topcarousl
+    //used
     labelSmall: GoogleFonts.getFont(
       'Open Sans',
       fontWeight: FontWeight.normal,
