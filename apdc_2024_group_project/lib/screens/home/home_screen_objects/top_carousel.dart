@@ -10,7 +10,7 @@ class TopCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: CarouselSlider(
         options: CarouselOptions(
           height: 100,
@@ -38,7 +38,7 @@ class TopCarousel extends StatelessWidget {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 3,
                           blurRadius: 5,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -55,10 +55,12 @@ class TopCarousel extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 6.0),
-                  Text(
-                    item.split('/').last.split('.').first.capitalize(),
-                    style: TextStyle(fontSize: 10.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      item.split('/').last.split('.').first.capitalize(),
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
                   )
                 ],
               );

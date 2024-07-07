@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:adc_group_project/screens/home/search_restaurants/search_restaurants_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
-import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -175,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                   Expanded(child: Padding(
-                    padding: const EdgeInsets.all(1.0),
+                    padding: const EdgeInsets.only(top: 1.0),
                     child: MiddleCarousel(items: items),
                   )),
                 ],

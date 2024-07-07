@@ -2,7 +2,6 @@ import 'package:adc_group_project/screens/authenticate/sign_up_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
-import 'package:adc_group_project/utils/themes/color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';

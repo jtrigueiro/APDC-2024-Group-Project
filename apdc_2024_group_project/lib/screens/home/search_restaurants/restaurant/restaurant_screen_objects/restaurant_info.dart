@@ -72,69 +72,61 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
-                  Row(children: [
-                      Expanded(
-                        child: Text(
-                          "${widget.info.name} - ${widget.info.address}",
-                          style: const TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                    ],
+                  Text(
+                      widget.info.name,
+                      style: Theme.of(context).textTheme.titleLarge
                   ),
-                  const SizedBox(height: 8.0),
+                  Text(
+                      widget.info.address,
+                      style: Theme.of(context).textTheme.titleSmall
+                  ),
+                  const Padding(
+                    padding:  EdgeInsets.fromLTRB(0, 5, 0, 10),
+                    child:  Icon(
+                      Icons.star,
+                      color: Colors.amberAccent,
+                      size: 23,
+                    ),
+                  ),
+
                   ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
                     child: Image.asset(
                       'assets/images/restaurant1.png',
-                      width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.3,
                       fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(height: 8.0),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.eco, color: Colors.green),
-                          const SizedBox(width: 4.0),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 5.0),
+                            child: Icon(Icons.eco, color: Colors.green),
+                          ),
                           Text(
                             "${widget.info.co2EmissionEstimate} CO2e",
-                            style: const TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.normal,
+                            style: Theme.of(context).textTheme.titleSmall,
                             ),
-                          ),
                         ],
                       ),
+
                       IconButton(
                         icon: Icon(isFavorite
                             ? Icons.favorite
-                            : Icons.favorite_border),
-                        iconSize: 20,
+                            : Icons.favorite_border,color: const Color.fromARGB( 255, 227, 57, 57),),
+                        iconSize: 30,
                         onPressed: _toggleFavorite,
                       ),
                     ],
                   ),
-                  const Text(
+
+                   Text(
                     "*average per dish",
-                    style: TextStyle(
-                      fontSize: 8,
-                      fontWeight: FontWeight.w300,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 8.5),
                   ),
                 ],
               ),

@@ -1,4 +1,3 @@
-import 'package:adc_group_project/utils/themes/color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -21,7 +20,13 @@ class TextThemeApp {
       fontSize: 20,
     ),
 
-    //cards carrousel
+    //used topcarousl
+    labelSmall: GoogleFonts.getFont(
+      'Open Sans',
+      fontWeight: FontWeight.normal,
+      fontSize: 10,
+    ),
+
     displaySmall: GoogleFonts.getFont(
       'Open Sans',
       fontWeight: FontWeight.w600,
@@ -34,11 +39,12 @@ class TextThemeApp {
       fontSize: 15,
     ),
 
+    //used
     bodySmall: GoogleFonts.getFont(
         'Open Sans',
       fontWeight: FontWeight.normal,
       fontStyle: FontStyle.italic,
-      fontSize: 13
+      fontSize: 12
     ),
   );
 

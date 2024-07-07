@@ -1,6 +1,5 @@
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
-import 'package:adc_group_project/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +26,7 @@ class MiddleCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     return CarouselSlider(
       options: CarouselOptions(
+        viewportFraction: 0.5,
         enlargeCenterPage: true,
         autoPlay: true,
         autoPlayInterval: const Duration(seconds: 8),
@@ -34,30 +34,32 @@ class MiddleCarousel extends StatelessWidget {
         enableInfiniteScroll: true,
       ),
       items: items.map((item) {
-        return SizedBox(
+        return InkWell(
+          onTap: () => itemClicked(context, item),
           child: Card(
-            margin: const EdgeInsets.all(15),
-            child: InkWell(
-              onTap: () => itemClicked(context, item),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Container(// Adjust the border radius as needed
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(image:  AssetImage(
-                          'assets/images/restaurant1.png'),
-                          fit: BoxFit.cover,
-                        ),
-                        ),
+            margin: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    // Adjust the border radius as needed
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/restaurant1.png'),
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  customSpaceBetweenColumns(10),
-                  Column(
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         item.name,
-                        style: Theme.of(context).textTheme.displaySmall,
+                        style: Theme.of(context).textTheme.titleMedium,
                         maxLines: 1,
                       ),
                       Text(
@@ -68,9 +70,9 @@ class MiddleCarousel extends StatelessWidget {
                       ),
                     ],
                   ),
-                  customSpaceBetweenColumns(10)
-                ],
-              ),
+                ),
+
+              ],
             ),
           ),
         );
