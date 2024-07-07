@@ -27,6 +27,7 @@ class _MapScreenState extends State<MapScreen> {
   String googleApiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
   String travelMode = 'driving';
   double totalDistance = 0.0;
+  List<String> directions = [];
 
   @override
   void initState() {
@@ -71,58 +72,44 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _getPolyline() async {
     totalDistance = 0.0;
-    if (travelMode == 'transit') {
-      final response = await http.get(Uri.parse(
-          'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=transit&key=$googleApiKey'));
+    directions.clear();  // Clear previous directions
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['routes'].isNotEmpty) {
-          setState(() {
-            polylineCoordinates.clear();
-            polylines.clear();
-            polylineCoordinates.addAll(_decodePolyline(data['routes'][0]['overview_polyline']['points']));
-            totalDistance = _calculateTotalDistance(polylineCoordinates);
-            polylines.add(Polyline(
-              width: 5,
-              polylineId: const PolylineId('polyline'),
-              color: Colors.blue,
-              points: polylineCoordinates,
-            ));
-          });
-        } else {
-          print('No routes found');
-        }
-      } else {
-        print('Failed to fetch transit route');
-      }
-    } else {
-      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        request: PolylineRequest(
-          origin: PointLatLng(_currentPosition.latitude, _currentPosition.longitude),
-          destination: PointLatLng(widget.restaurantLocation.latitude, widget.restaurantLocation.longitude),
-          mode: travelMode == 'driving' ? TravelMode.driving : TravelMode.walking,
-        ),
-        googleApiKey: googleApiKey,
-      );
+    final response = await http.get(Uri.parse(
+        'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=$travelMode&key=$googleApiKey'));
 
-      if (result.points.isNotEmpty) {
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['routes'].isNotEmpty) {
         setState(() {
           polylineCoordinates.clear();
-          polylineCoordinates.addAll(result.points.map((point) => LatLng(point.latitude, point.longitude)));
-          totalDistance = _calculateTotalDistance(polylineCoordinates);
           polylines.clear();
+          polylineCoordinates.addAll(_decodePolyline(data['routes'][0]['overview_polyline']['points']));
+          totalDistance = _calculateTotalDistance(polylineCoordinates);
           polylines.add(Polyline(
             width: 5,
             polylineId: const PolylineId('polyline'),
             color: Colors.blue,
             points: polylineCoordinates,
           ));
+
+          // Store the directions and remove HTML tags
+          directions.addAll(
+              data['routes'][0]['legs'][0]['steps']
+                  .map<String>((step) => _removeHtmlTags(step['html_instructions'].toString()))
+                  .toList()
+          );
         });
       } else {
-        print('Error: ${result.errorMessage}');
+        print('No routes found');
       }
+    } else {
+      print('Failed to fetch route');
     }
+  }
+
+  String _removeHtmlTags(String htmlString) {
+    final regExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
+    return htmlString.replaceAll(regExp, '');
   }
 
   double _calculateTotalDistance(List<LatLng> coordinates) {
@@ -212,25 +199,43 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
             child: _currentPosition.latitude == 0 && _currentPosition.longitude == 0
                 ? Center(child: CircularProgressIndicator())
-                : GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: widget.restaurantLocation,
-                zoom: 14.0,
-              ),
-              markers: {
-                Marker(
-                  markerId: MarkerId('currentLocation'),
-                  position: _currentPosition,
-                  infoWindow: InfoWindow(title: 'Your Location'),
+                : Column(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: widget.restaurantLocation,
+                      zoom: 14.0,
+                    ),
+                    markers: {
+                      Marker(
+                        markerId: MarkerId('currentLocation'),
+                        position: _currentPosition,
+                        infoWindow: InfoWindow(title: 'Your Location'),
+                      ),
+                      Marker(
+                        markerId: MarkerId('restaurantLocation'),
+                        position: widget.restaurantLocation,
+                        infoWindow: InfoWindow(title: 'Restaurant'),
+                      ),
+                    },
+                    polylines: polylines,
+                  ),
                 ),
-                Marker(
-                  markerId: MarkerId('restaurantLocation'),
-                  position: widget.restaurantLocation,
-                  infoWindow: InfoWindow(title: 'Restaurant'),
+                Expanded(
+                  flex: 1,
+                  child: ListView.builder(
+                    itemCount: directions.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(directions[index]),
+                      );
+                    },
+                  ),
                 ),
-              },
-              polylines: polylines,
+              ],
             ),
           ),
         ],
