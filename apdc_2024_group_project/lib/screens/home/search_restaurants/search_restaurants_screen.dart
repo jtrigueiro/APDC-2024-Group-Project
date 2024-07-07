@@ -216,12 +216,13 @@ class _SearchScreenState extends State<SearchScreen> {
           );
         },);
     }
+    else {
+      restaurants.clear();
+      markers.clear();
 
-    restaurants.clear();
-    markers.clear();
-
-    for (int i = 0; i < values.length; i++) {
-      handleRestaurant(values[i], i);
+      for (int i = 0; i < values.length; i++) {
+        handleRestaurant(values[i], i);
+      }
     }
   }
 

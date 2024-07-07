@@ -27,6 +27,13 @@ class TextThemeApp {
     ),
 
     //used
+    displayMedium: GoogleFonts.getFont(
+      'Open Sans',
+      fontWeight: FontWeight.normal,
+      fontSize: 20,
+    ),
+
+    //used
     labelSmall: GoogleFonts.getFont(
       'Open Sans',
       fontWeight: FontWeight.normal,

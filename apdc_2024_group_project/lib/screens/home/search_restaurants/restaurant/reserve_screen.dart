@@ -12,31 +12,33 @@ class ReserveScreen extends StatefulWidget {
   ReserveScreen({super.key, required this.restaurant, required this.day});
 
   @override
-  _ReserveScreenState createState() => _ReserveScreenState();
+  ReserveScreenState createState() => ReserveScreenState();
 }
 
-class _ReserveScreenState extends State<ReserveScreen> {
+class ReserveScreenState extends State<ReserveScreen> {
   List<String> daysWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  Set<String> openDays = {};
+  List<String> openDays = [];
   List<Set<TimeOfDay>> openHours = [{}, {}, {}, {}, {}, {}, {}];
   List<Dish> dishes = [];
   List<Dish> checkout = [];
   late String? _selectedDay;
   late TimeOfDay? _selectedTime;
+  late DateTime selectedDate;
   int _selectedIndex = 0;
   bool loading = true;
 
+  
   @override
   initState() {
     super.initState();
-    constructSchedule();
-    //getDishes();
-    
+    selectedDate = widget.day;
+    constructSchedule(widget.restaurant.isOpen);
+    getDishes();
   }
 
-  void constructSchedule() {
+  void constructSchedule(List<bool> isOpen) {
     for(int i = 0; i < 7; i++) {
-      if(widget.restaurant.isOpen[i]) {
+      if(isOpen[i]) {
         openDays.add(daysWeek[i]);
 
         List<String> times = widget.restaurant.time[i].split('-');
@@ -51,8 +53,8 @@ class _ReserveScreenState extends State<ReserveScreen> {
       }
     }
 
-    _selectedDay = openDays.first;
-    _selectedTime = openHours[daysWeek.indexOf(_selectedDay!)].first;
+    _selectedDay = daysWeek[widget.day.weekday - 1];
+    _selectedTime = openHours[widget.day.weekday - 1].first;
 
     setState(() {
       loading = false;
@@ -67,23 +69,39 @@ class _ReserveScreenState extends State<ReserveScreen> {
     });
   }
 
-  Widget _buildBookingCalendar() {
-    DateTime _selectedDate = widget.day;
-
-    return Row(
+  Column dateSelection() {
+    return Column (
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CalendarDatePicker(initialDate: _selectedDate, firstDate: DateTime.now(), 
-        lastDate: DateTime.now().add(const Duration(days: 14)),
-        selectableDayPredicate: (day) {
-          return widget.restaurant.isOpen[day.weekday - 1];
-        },
-        onDateChanged: (DateTime date) {
-          setState(() {
-            _selectedDate = date;
-          });
-        }),
-        _buildTimeDropdownMenu(openHours[_selectedDate.weekday - 1]),
-      ],
+        const Center(child: Text('Selected Date and Time')),
+        const SizedBox(height: 20.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {
+                showDatePicker(
+                  context: context,
+                  initialDate: selectedDate,
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 14)),
+                  selectableDayPredicate: (day) {
+                    return widget.restaurant.isOpen[day.weekday - 1];
+                  },
+                ).then((date) {
+                  if (date != null) {
+                    setState(() {
+                      selectedDate = date;
+                      _selectedDay = daysWeek[selectedDate.weekday - 1];
+                    });
+                  }
+                });
+              },
+              child: Text('$_selectedDay: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),),
+            const SizedBox(width: 20.0),
+            Center( child: _buildTimeDropdownMenu(openHours[selectedDate.weekday - 1]),)
+          ],),
+        ],
     );
   }
 
@@ -91,16 +109,13 @@ class _ReserveScreenState extends State<ReserveScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    print('Selected day: $_selectedDay');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reserve a Table'),
       ),
       body: loading ? const LoadingScreen() : (_selectedIndex == 0) ? Stack(
           children: [
-            const SizedBox(height: 20.0),
-            _buildBookingCalendar(),
+            dateSelection(),
             Align(
               alignment: const Alignment(0, 0.95),
               child: ElevatedButton(
@@ -176,7 +191,72 @@ class _ReserveScreenState extends State<ReserveScreen> {
 
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  
+                                  showDialog(context: context, builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('Reservation Confirmation'),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Text('Please confirm the following details:'),
+                                          const SizedBox(height: 10),
+                                          Text('Date: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),
+                                          Text('Time: ${_selectedTime!.format(context)}'),
+                                          const SizedBox(height: 10),
+                                          const Text('Items in cart:'),
+                                          const SizedBox(height: 10),
+                                          SizedBox(
+                                            height: 200,
+                                            child: _buildMenuItems(checkout),
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            List<String> dishes = [];
+                                            double cost = 0;
+
+                                            for(Dish item in checkout) {
+                                              dishes.add(item.name);
+                                              cost += item.price;
+                                            }
+
+                                            DateTime time = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, _selectedTime!.hour, _selectedTime!.minute);
+
+                                            await DatabaseService().addOrUpdateRestaurantReservationsData(widget.restaurant.id, dishes, cost, time);
+
+                                            Navigator.popUntil(context, (route) => route.isFirst);
+                                            
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: const Text('Reservation Confirmed'),
+                                                  content: const Text('Your reservation has been confirmed!'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child: const Text('Close'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: const Text('Confirm'),
+                                        ),
+                                      ],
+                                    );
+                                  });
                                 },
                                 child: const Text('M A K E  R E S E R V A T I O N'),
                               ),
@@ -186,36 +266,14 @@ class _ReserveScreenState extends State<ReserveScreen> {
                         );
                     });}
                   },
-                  child: Text('C H E C K O U T - ( ${checkout.length} )',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  child: const Text('C H E C K O U T',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             )
         ),
-        const SizedBox(height: 20.0),
         ],
         ),
-    );
-  }
-
-  Widget _buildDropdownMenu(Set<String> items) {
-    return DropdownButton<String>(
-      enableFeedback: true,
-      menuMaxHeight: 100,
-      value: _selectedDay,
-      onChanged: (String? newValue) {
-        setState(() {
-          _selectedDay = newValue;
-          _selectedTime = openHours[daysWeek.indexOf(_selectedDay!)].first;
-        });
-      },
-      items: items
-          .map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
     );
   }
 

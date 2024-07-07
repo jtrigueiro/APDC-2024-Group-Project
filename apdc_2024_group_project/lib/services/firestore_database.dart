@@ -54,6 +54,9 @@ class DatabaseService {
   // promo codes collection reference
   final CollectionReference promoCodesCollection =
       FirebaseFirestore.instance.collection('promo_codes');
+  //restaurant types collection reference
+  final CollectionReference restaurantTypesCollection =
+      FirebaseFirestore.instance.collection('restaurant_types');
 
   // subcollections variables
   // ignore: constant_identifier_names
@@ -170,19 +173,18 @@ class DatabaseService {
   }
 
   // ----------------- Locations -----------------
-  
+
   Future incrementLocation(String location) async {
     final DocumentSnapshot doc = await locationsCollection.doc(location).get();
     if (doc.exists) {
       await locationsCollection.doc(location).set({
-      'location': location,
-      'count': FieldValue.increment(1),
+        'location': location,
+        'count': FieldValue.increment(1),
       }, SetOptions(merge: true));
-    }
-    else {
+    } else {
       await locationsCollection.doc(location).set({
-      'location': location,
-      'count': 1,
+        'location': location,
+        'count': 1,
       });
     }
   }
@@ -190,17 +192,15 @@ class DatabaseService {
   Future decrementLocation(String location) async {
     final DocumentSnapshot doc = await locationsCollection.doc(location).get();
     if (doc.exists) {
-      if(doc.get('count') > 1) {
+      if (doc.get('count') > 1) {
         await locationsCollection.doc(location).set({
-        'location': location,
-        'count': FieldValue.increment(-1),
+          'location': location,
+          'count': FieldValue.increment(-1),
         }, SetOptions(merge: true));
-      }
-      else {
+      } else {
         await locationsCollection.doc(location).delete();
       }
-    }
-    else {
+    } else {
       return;
     }
   }
@@ -1087,15 +1087,27 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateRestaurantReservationsData(String userID, String restaurantID, List<Dish> order, DateTime date) async {
+  Future addOrUpdateRestaurantReservationsData(
+      String restaurantID,
+      List<String> order,
+      double cost,
+      DateTime start) async {
     try {
-      await reservationsCollection.doc('$userID$restaurantID$date').set({
-        'userID': userID,
-        'restaurantID': restaurantID,
-        'order': order,
-        'start': date,
-        'end': date.add(const Duration(hours: 2)),
-      });
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await reservationsCollection.doc().set({
+          'userID': user.uid,
+          'restaurantID': restaurantID,
+          'order': order,
+          'cost': cost,
+          'start': start,
+          'end': start.add(const Duration(hours: 1)),
+        });
+      }
+      else {
+        throw Exception("User not logged in");
+      }
       return true;
     } catch (e) {
       debugPrint(e.toString());
@@ -1109,7 +1121,8 @@ class DatabaseService {
         return Reservation(
           userID: doc.get('userID') ?? '',
           restaurantID: doc.get('restaurantID') ?? '',
-          order: doc.get('order').map<Dish>((e) => e as Dish).toList(),
+          order: doc.get('order').map<String>((e) => e).toList(),
+          cost: doc.get('cost').toDouble() ?? 0,
           start: doc.get('date').toDate() ?? DateTime.now(),
           end: doc.get('end').toDate() ?? DateTime.now(),
         );
@@ -1119,15 +1132,37 @@ class DatabaseService {
       return [];
     }
   }
+  
+  //-----------------RestaurantTypes-----------------
 
- Stream<dynamic>? reservations({required DateTime start, required DateTime end}) {
+  Future<void> addRestaurantType(String typeName) async {
     try {
-      return reservationsCollection
-          .snapshots()
-          .map(_ReservationsListFromSnapshot);
+      await restaurantTypesCollection.add({
+        'name': typeName,
+        'created_at': Timestamp.now(),
+      });
     } catch (e) {
-      debugPrint(e.toString());
-      return const Stream.empty();
+      print("Error adding restaurant type: $e");
+      throw e; // Você pode optar por lidar com o erro aqui ou propagá-lo para cima
+    }
+  }
+
+  Future<List<DocumentSnapshot>> getRestaurantTypes() async {
+    try {
+      QuerySnapshot querySnapshot = await restaurantTypesCollection.get();
+      return querySnapshot.docs;
+    } catch (e) {
+      print("Error getting restaurant types: $e");
+      throw e;
+    }
+  }
+
+  Future<void> deleteRestaurantType(String typeId) async {
+    try {
+      await restaurantTypesCollection.doc(typeId).delete();
+    } catch (e) {
+      print("Error deleting restaurant type: $e");
+      throw e;
     }
   }
 }

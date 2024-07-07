@@ -90,8 +90,8 @@ class RestaurantPersonalizeScreenState
       fridayIsOpen = data.isOpen[4];
       saturdayIsOpen = data.isOpen[5];
       sundayIsOpen = data.isOpen[6];
-      final String mondayfromTime = data.time[1].split('-')[0];
-      final String mondaytoTime = data.time[1].split('-')[1];
+      final String mondayfromTime = data.time[0].split('-')[0];
+      final String mondaytoTime = data.time[0].split('-')[1];
       mondayFromTime = TimeOfDay.fromDateTime(DateTime(
           0,
           0,
@@ -104,8 +104,8 @@ class RestaurantPersonalizeScreenState
           0,
           int.parse(mondaytoTime.split(":")[0]),
           int.parse(mondaytoTime.split(":")[1])));
-      final String tuesdayfromTime = data.time[2].split('-')[0];
-      final String tuesdaytoTime = data.time[2].split('-')[1];
+      final String tuesdayfromTime = data.time[1].split('-')[0];
+      final String tuesdaytoTime = data.time[1].split('-')[1];
       tuesdayFromTime = TimeOfDay.fromDateTime(DateTime(
           0,
           0,
@@ -118,8 +118,8 @@ class RestaurantPersonalizeScreenState
           0,
           int.parse(tuesdaytoTime.split(":")[0]),
           int.parse(tuesdaytoTime.split(":")[1])));
-      final String wednesdayfromTime = data.time[3].split('-')[0];
-      final String wednesdaytoTime = data.time[3].split('-')[1];
+      final String wednesdayfromTime = data.time[2].split('-')[0];
+      final String wednesdaytoTime = data.time[2].split('-')[1];
       wednesdayFromTime = TimeOfDay.fromDateTime(DateTime(
           0,
           0,
@@ -132,8 +132,8 @@ class RestaurantPersonalizeScreenState
           0,
           int.parse(wednesdaytoTime.split(":")[0]),
           int.parse(wednesdaytoTime.split(":")[1])));
-      final String thursdayfromTime = data.time[4].split('-')[0];
-      final String thursdaytoTime = data.time[4].split('-')[1];
+      final String thursdayfromTime = data.time[3].split('-')[0];
+      final String thursdaytoTime = data.time[3].split('-')[1];
       thursdayFromTime = TimeOfDay.fromDateTime(DateTime(
           0,
           0,
@@ -146,8 +146,8 @@ class RestaurantPersonalizeScreenState
           0,
           int.parse(thursdaytoTime.split(":")[0]),
           int.parse(thursdaytoTime.split(":")[1])));
-      final String fridayfromTime = data.time[5].split('-')[0];
-      final String fridaytoTime = data.time[5].split('-')[1];
+      final String fridayfromTime = data.time[4].split('-')[0];
+      final String fridaytoTime = data.time[4].split('-')[1];
       fridayFromTime = TimeOfDay.fromDateTime(DateTime(
           0,
           0,
@@ -160,8 +160,8 @@ class RestaurantPersonalizeScreenState
           0,
           int.parse(fridaytoTime.split(":")[0]),
           int.parse(fridaytoTime.split(":")[1])));
-      final String saturdayfromTime = data.time[6].split('-')[0];
-      final String saturdaytoTime = data.time[6].split('-')[1];
+      final String saturdayfromTime = data.time[5].split('-')[0];
+      final String saturdaytoTime = data.time[5].split('-')[1];
       saturdayFromTime = TimeOfDay.fromDateTime(DateTime(
           0,
           0,
@@ -174,8 +174,8 @@ class RestaurantPersonalizeScreenState
           0,
           int.parse(saturdaytoTime.split(":")[0]),
           int.parse(saturdaytoTime.split(":")[1])));
-      final String sundayfromTime = data.time[0].split('-')[0];
-      final String sundaytoTime = data.time[0].split('-')[1];
+      final String sundayfromTime = data.time[6].split('-')[0];
+      final String sundaytoTime = data.time[6].split('-')[1];
       sundayFromTime = TimeOfDay.fromDateTime(DateTime(
           0,
           0,
