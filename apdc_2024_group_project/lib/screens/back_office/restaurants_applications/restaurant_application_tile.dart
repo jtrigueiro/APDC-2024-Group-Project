@@ -149,7 +149,6 @@ class RestaurantApplicationTile extends StatelessWidget {
                     restaurantApplication.seats,
                   );
 
-                  print('Location: ${restaurantApplication.location.capitalize()}');
                   await DatabaseService().incrementLocation(restaurantApplication.location.capitalize());
 
                   await DatabaseService()

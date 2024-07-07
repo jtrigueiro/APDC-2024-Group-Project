@@ -172,7 +172,6 @@ class DatabaseService {
   // ----------------- Locations -----------------
   
   Future incrementLocation(String location) async {
-    /*
     final DocumentSnapshot doc = await locationsCollection.doc(location).get();
     if (doc.exists) {
       await locationsCollection.doc(location).set({
@@ -181,22 +180,10 @@ class DatabaseService {
       }, SetOptions(merge: true));
     }
     else {
-      print('Location does not exist yet');
       await locationsCollection.doc(location).set({
       'location': location,
       'count': 1,
       });
-      print('Location created');
-    }*/
-    try {
-      final DocumentSnapshot doc = await locationsCollection.doc(location).get();
-        await locationsCollection.doc(location).set({
-        'location': location,
-        'count': 1,
-        });
-    } catch (e) {
-      debugPrint(e.toString());
-      return null;
     }
   }
 

@@ -37,6 +37,7 @@ class _SearchScreenState extends State<SearchScreen> {
   late LatLng currentLocation;
   String currentLocality = '';
   bool done = false;
+  bool fetchingLocations = true;
   bool paddingNeeded = false;
   bool choosingDate = true;
   String? _mapStyle;
@@ -45,10 +46,19 @@ class _SearchScreenState extends State<SearchScreen> {
   List<String> locations = [];
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    locations = await DatabaseService().getLocations();
+    currentLocation = widget.userLocation;
+    getLocations();
     _loadMapStyle();
+  }
+
+  void getLocations() async {
+    locations = await DatabaseService().getLocations();
+
+    setState(() {
+      fetchingLocations = false;
+    });
   }
 
   Future<int> getCityByCoords(LatLng coordinates) async {
@@ -90,10 +100,6 @@ class _SearchScreenState extends State<SearchScreen> {
     if (_mapStyle != null) {
       controller.setMapStyle(_mapStyle);
     }
-  }
-
-  void _handleTap(LatLng point) {
-    print(point);
   }
 
   void cameraMoved(CameraPosition position) {
@@ -150,77 +156,64 @@ class _SearchScreenState extends State<SearchScreen> {
       setState(() {
         done = true;
         paddingNeeded = values.isEmpty ? false : true;
+        _getDateFromUser();
       });
 
   }
 
-  
-
-  Future<void> _moveToLocation(String location) async {
-    GeocodingService().geocode(location).then((value) async {
-      if (value['status'] == 'OK') {
-        final LatLng target = LatLng(value['results'][0]['geometry']['location']['lat'],
-          value['results'][0]['geometry']['location']['lng']);
-
-        final GoogleMapController controller = await _controller.future;
-        controller.animateCamera(CameraUpdate.newLatLngZoom(target, 13.0));
-        getRestaurants(location.toLowerCase());
-
-      } else {
-        print('Error: ${value['status']}');
-      }
-    });
-  }
-
   void _getDateFromUser() async {
-    DateTime? _pickerDate = await showDatePicker(
+    _selectedDate = await showDatePicker(
     context: context,
     initialDate: DateTime.now(),
-    firstDate: DateTime(2000),
-    lastDate: DateTime(2030));
+    firstDate: DateTime.now(),
+    lastDate: DateTime.now().add(const Duration(days: 14)),
+    cancelText: 'Ignore',
+    confirmText: 'OK',
+    helpText: 'Reservation Date',
+    errorFormatText: 'Invalid date format',
+    errorInvalidText: 'Date must be within the next 14 days',
+    fieldLabelText: 'Reservation Date',
+    fieldHintText: 'Month/Day/Year',
+    );
 
-  if (_pickerDate != null) {
-    setState(() {
-      _selectedDate = _pickerDate;
-    });
-}
- }
+    if (_selectedDate != null) {
+      enhanceResult();
+      setState(() {
+      });
+    }
+  }
 
-  Future showDateBox(BuildContext context) {
-    return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Date Selection'),
-        content: const Text('Please select a date to continue.'),
-        actions: [
-          DatePickerDialog(firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 7)),
-            initialDate: DateTime.now(),
-            ),
-          Row(
-            children: [
+  void enhanceResult() {
+    int weekday = _selectedDate!.weekday;
+
+    final values = restaurants.where((element) => element.isOpen[weekday]).toList();
+
+    restaurants.clear();
+    markers.clear();
+
+    if(values.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('No restaurants available'),
+            content: const Text('There are no restaurants available on the selected date.'),
+            actions: [
               TextButton(
                 onPressed: () {
-                  setState(() {
-                    choosingDate = false;
-                  });
                   Navigator.of(context).pop();
-                },
-                child: const Text('Ignore'),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    choosingDate = false;
-                  });
-                  Navigator.of(context).pop();
+                  _getDateFromUser();
                 },
                 child: const Text('OK'),
               ),
-            ]),
-        ],
-      );
-    },);
+            ],
+          );
+        },);
+    }
+
+    for (int i = 0; i < values.length; i++) {
+      handleRestaurant(values[i], i);
+    }
   }
 
   Future<void> _searchForRestaurants(String query) async {
@@ -330,7 +323,7 @@ class _SearchScreenState extends State<SearchScreen> {
       appBar: AppBar(
         title: const Text('Location'),
       ),
-      body: Column(
+      body:  Column (
         children: [
           const SizedBox(height: 20),
           const Text('Please select a location to continue.'),
@@ -406,7 +399,6 @@ class _SearchScreenState extends State<SearchScreen> {
                       target: currentLocation,
                       zoom: 13.0,
                     ),
-                    onTap: _handleTap,
                   ) : const LoadingScreen(),
                   Align(
                     alignment: Alignment.bottomCenter,
