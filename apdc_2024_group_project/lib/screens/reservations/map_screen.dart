@@ -30,6 +30,10 @@ class _MapScreenState extends State<MapScreen> {
   String travelMode = 'driving';
   double totalDistance = 0.0;
 
+  List<Map<String, String>> _directions = [];
+  int _currentDirectionIndex = 0;
+  bool isModeLocked = false;
+
   @override
   void initState() {
     super.initState();
@@ -44,30 +48,21 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _startLocationUpdates() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return;
-      }
+      if (permission == LocationPermission.denied) return;
     }
 
-    if (permission == LocationPermission.deniedForever) {
-      return;
-    }
+    if (permission == LocationPermission.deniedForever) return;
 
     _positionStreamSubscription = Geolocator.getPositionStream(
       locationSettings: LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Update distance threshold as per your need
+        distanceFilter: 10,
       ),
     ).listen((Position position) {
       setState(() {
@@ -75,6 +70,7 @@ class _MapScreenState extends State<MapScreen> {
       });
       _updateMapLocation();
       _getPolyline();
+      _updateCurrentDirection();
     });
   }
 
@@ -105,6 +101,7 @@ class _MapScreenState extends State<MapScreen> {
               color: Colors.blue,
               points: polylineCoordinates,
             ));
+            _directions = _extractDirections(data['routes'][0]['legs'][0]['steps']);
           });
         } else {
           print('No routes found');
@@ -135,10 +132,42 @@ class _MapScreenState extends State<MapScreen> {
             points: polylineCoordinates,
           ));
         });
+
+        final response = await http.get(Uri.parse(
+            'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=$travelMode&key=$googleApiKey'));
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          if (data['routes'].isNotEmpty) {
+            setState(() {
+              _directions = _extractDirections(data['routes'][0]['legs'][0]['steps']);
+            });
+          } else {
+            print('No routes found');
+          }
+        } else {
+          print('Failed to fetch route');
+        }
       } else {
         print('Error: ${result.errorMessage}');
       }
     }
+  }
+
+  List<Map<String, String>> _extractDirections(List<dynamic> steps) {
+    List<Map<String, String>> directions = [];
+    for (var step in steps) {
+      directions.add({
+        'instruction': _removeHtmlTags(step['html_instructions']),
+        'maneuver': step['maneuver'] ?? 'straight',
+      });
+    }
+    return directions;
+  }
+
+  String _removeHtmlTags(String html) {
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+    return html.replaceAll(exp, '');
   }
 
   double _calculateTotalDistance(List<LatLng> coordinates) {
@@ -194,6 +223,16 @@ class _MapScreenState extends State<MapScreen> {
     return polyline;
   }
 
+  void _updateCurrentDirection() {
+    if (_directions.isEmpty) return;
+
+    setState(() {
+      if (_currentDirectionIndex < _directions.length - 1) {
+        _currentDirectionIndex++;
+      }
+    });
+  }
+
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
     mapController = controller;
@@ -208,10 +247,9 @@ class _MapScreenState extends State<MapScreen> {
           child: Column(
             children: [
               ListTile(
-                title: Text('Confirm Destination'),
+                title: Text('Open on Google Maps App'),
                 onTap: () {
                   Navigator.pop(context);
-                  // Open Google Maps or any other navigation app with the selected route
                   _openGoogleMaps();
                 },
               ),
@@ -238,6 +276,55 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  IconData _getManeuverIcon(String maneuver) {
+    switch (maneuver) {
+      case 'turn-slight-left':
+        return Icons.turn_slight_left;
+      case 'turn-sharp-left':
+        return Icons.turn_sharp_left;
+      case 'uturn-left':
+        return Icons.u_turn_left;
+      case 'turn-left':
+        return Icons.turn_left;
+      case 'turn-slight-right':
+        return Icons.turn_slight_right;
+      case 'turn-sharp-right':
+        return Icons.turn_sharp_right;
+      case 'uturn-right':
+        return Icons.u_turn_right;
+      case 'turn-right':
+        return Icons.turn_right;
+      case 'straight':
+        return Icons.straight;
+      case 'roundabout-left':
+        return Icons.roundabout_left;
+      case 'roundabout-right':
+        return Icons.roundabout_right;
+      case 'fork-left':
+        return Icons.call_split;
+      case 'fork-right':
+        return Icons.call_merge;
+      case 'merge':
+        return Icons.merge_type;
+      case 'ramp-left':
+        return Icons.call_split;
+      case 'ramp-right':
+        return Icons.call_merge;
+      case 'keep-left':
+        return Icons.arrow_left;
+      case 'keep-right':
+        return Icons.arrow_right;
+      case 'crossing':
+        return Icons.directions_walk;
+      case 'ramp-straight':
+        return Icons.straight;
+      case 'ferry':
+        return Icons.directions_boat;
+      default:
+        return Icons.directions;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -261,32 +348,48 @@ class _MapScreenState extends State<MapScreen> {
                 _buildTravelModeButton('driving', Icons.directions_car),
                 _buildTravelModeButton('walking', Icons.directions_walk),
                 _buildTravelModeButton('transit', Icons.directions_transit),
+                _buildLockModeButton(),
                 _buildConfirmDestinationButton(),
               ],
             ),
           ),
           Expanded(
-            child: _currentPosition.latitude == 0 && _currentPosition.longitude == 0
-                ? Center(child: CircularProgressIndicator())
-                : GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: widget.restaurantLocation,
-                zoom: 14.0,
-              ),
-              markers: {
-                Marker(
-                  markerId: MarkerId('currentLocation'),
-                  position: _currentPosition,
-                  infoWindow: InfoWindow(title: 'Your Location'),
+            child: Column(
+              children: [
+                NextDirectionBox(
+                  nextDirection: _directions.isNotEmpty && _currentDirectionIndex < _directions.length
+                      ? _directions[_currentDirectionIndex]['instruction']!
+                      : 'No directions available',
+                  directionIcon: _directions.isNotEmpty && _currentDirectionIndex < _directions.length
+                      ? _getManeuverIcon(_directions[_currentDirectionIndex]['maneuver']!)
+                      : Icons.straight,
                 ),
-                Marker(
-                  markerId: MarkerId('restaurantLocation'),
-                  position: widget.restaurantLocation,
-                  infoWindow: InfoWindow(title: 'Restaurant'),
+                Expanded(
+                  child: _currentPosition.latitude == 0 && _currentPosition.longitude == 0
+                      ? Center(child: CircularProgressIndicator())
+                      : GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: widget.restaurantLocation,
+                      zoom: 14.0,
+                    ),
+                    markers: {
+                      Marker(
+                        markerId: MarkerId('currentLocation'),
+                        position: _currentPosition,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+                        infoWindow: InfoWindow(title: 'Your Location'),
+                      ),
+                      Marker(
+                        markerId: MarkerId('restaurantLocation'),
+                        position: widget.restaurantLocation,
+                        infoWindow: InfoWindow(title: 'Restaurant'),
+                      ),
+                    },
+                    polylines: polylines,
+                  ),
                 ),
-              },
-              polylines: polylines,
+              ],
             ),
           ),
         ],
@@ -297,10 +400,12 @@ class _MapScreenState extends State<MapScreen> {
   Widget _buildTravelModeButton(String mode, IconData icon) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          travelMode = mode;
-          _getPolyline();
-        });
+        if (!isModeLocked) {
+          setState(() {
+            travelMode = mode;
+            _getPolyline();
+          });
+        }
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -318,10 +423,17 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _buildConfirmDestinationButton() {
+  Widget _buildLockModeButton() {
     return GestureDetector(
       onTap: () {
-        _showNavigationOptions();
+        setState(() {
+          isModeLocked = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Transit mode locked: $travelMode'),
+          ),
+        );
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -335,6 +447,64 @@ class _MapScreenState extends State<MapScreen> {
           size: 20.0,
           color: Colors.white,
         ),
+      ),
+    );
+  }
+
+  Widget _buildConfirmDestinationButton() {
+    return GestureDetector(
+      onTap: () {
+        _showNavigationOptions();
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10.0),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.location_on,
+          size: 20.0,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class NextDirectionBox extends StatelessWidget {
+  final String nextDirection;
+  final IconData directionIcon;
+
+  NextDirectionBox({required this.nextDirection, required this.directionIcon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            offset: Offset(0, 2),
+            blurRadius: 6.0,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(directionIcon, size: 30.0, color: Colors.blue),
+          SizedBox(width: 8.0),
+          Expanded(
+            child: Text(
+              nextDirection,
+              style: TextStyle(fontSize: 16.0),
+            ),
+          ),
+        ],
       ),
     );
   }
