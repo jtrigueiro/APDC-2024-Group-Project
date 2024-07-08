@@ -1,4 +1,6 @@
 import 'package:adc_group_project/screens/home/home_screen.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -28,10 +30,11 @@ class TopCarousel extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      height: MediaQuery.of(context).size.height * 0.1,
+                    borderRadius: BorderRadius.circular(50.0),
+                    child:
+                    Container(
+                      width: containerSize(context),
+                      height: containerSize(context),
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
@@ -64,4 +67,16 @@ class TopCarousel extends StatelessWidget {
       ),
     );
   }
+
+  double containerSize(context)
+  {
+    if(kIsWeb){
+      return MediaQuery.of(context).size.width * 0.1;
+    }
+    else
+      {
+        return MediaQuery.of(context).size.width * 0.2;
+      }
+  }
+
 }

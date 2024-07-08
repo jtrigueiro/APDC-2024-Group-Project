@@ -279,24 +279,30 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
-  Column buildPdfButton(
+  Padding buildPdfButton(IconData icon,
       String label, File? file, Uint8List? bytes, String? error) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () => _pickFile(label.toLowerCase()),
-          child: Text(
-            file == null && bytes == null
-                ? "Upload Last Month's $label Bill(*)"
-                : "$label File Selected",
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+            icon: Icon(icon),
+            onPressed: () => _pickFile(label.toLowerCase()),
+            label: Text(
+              file == null && bytes == null
+                  ? "Upload Last Month's $label Bill*"
+                  : "$label File Uploaded",
+            ),
           ),
-        ),
-        error != null
-            ? Text(
-                error,
-              )
-            : Container(),
-      ],
+          error != null
+              ? Text(
+                  error,
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 
@@ -358,45 +364,39 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   TextInputType.number,
                                   _numeric,
                                   3),
-                              const SizedBox(height: 20),
-                              MultiSelectDialogField(
-                                items: _restaurantTypeItems,
-                                title: const Text("Restaurant Types"),
-                                selectedColor: Colors.blue,
-                                buttonText:
-                                    const Text("Select Restaurant Types"),
-                                onConfirm: (results) {
-                                  _selectedRestaurantTypes =
-                                      results.cast<String>();
-                                },
-                                validator: (values) {
-                                  if (values == null || values.isEmpty) {
-                                    return "Please select at least one restaurant type.";
-                                  }
-                                  return null;
-                                },
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                                child: MultiSelectDialogField(
+                                  buttonIcon: const Icon(Icons.arrow_drop_down_sharp),
+                                  items: _restaurantTypeItems,
+                                  title: const Text("Restaurant Types"),
+                                  selectedColor: Colors.blue,
+                                  buttonText:
+                                      const Text("Select Restaurant Types"),
+                                  onConfirm: (results) {
+                                    _selectedRestaurantTypes =
+                                        results.cast<String>();
+                                  },
+                                  validator: (values) {
+                                    if (values == null || values.isEmpty) {
+                                      return "Please select at least one restaurant type.";
+                                    }
+                                    return null;
+                                  },
+                                ),
                               ),
-                              const SizedBox(height: 20),
-                              buildPdfButton("Electricity", _electricityPdf,
+                              buildPdfButton(Icons.lightbulb, "Electricity", _electricityPdf,
                                   _electricityPdfBytes, _electricityPdfError),
-                              const SizedBox(height: 10),
-                              buildPdfButton(
-                                  "Electricity",
-                                  _electricityPdf,
-                                  _electricityPdfBytes,
-                                  _electricityPdfError),
-                              buildPdfButton( "Gas",
-                                  _gasPdf, _gasPdfBytes, _gasPdfError),
-                              buildPdfButton("Water",
-                                  _waterPdf, _waterPdfBytes, _waterPdfError),
+                            buildPdfButton(Icons.gas_meter_outlined,
+                                  "Gas", _gasPdf, _gasPdfBytes, _gasPdfError),
+                              buildPdfButton(Icons.water_drop,"Water", _waterPdf, _waterPdfBytes,
+                                  _waterPdfError),
+
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 40.0),
                                 child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
                                   onPressed: _submitForm,
                                   child: const Text("Submit Application"),
                                 ),
@@ -425,7 +425,6 @@ Row buildDoubleTextForm(
       Expanded(
           child: buildTextFormField(
               label1, controller1, keyboardType, null, null)),
-      const SizedBox(width: 5),
       Expanded(
           child: buildTextFormField(
               label2, controller2, keyboardType, null, null)),
@@ -433,20 +432,24 @@ Row buildDoubleTextForm(
   );
 }
 
-TextFormField buildTextFormField(String label, TextEditingController controller,
+Padding buildTextFormField(String label, TextEditingController controller,
     TextInputType keyboardType, RegExp? regExp, int? maxLength) {
-  return TextFormField(
-    controller: controller,
-    decoration: InputDecoration(
-      labelText: "$label(*)",
-      border: const OutlineInputBorder(),
+  return Padding(
+    padding: const EdgeInsets.all(3),
+    child: TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: "$label*",
+        border: const OutlineInputBorder(),
+      ),
+      keyboardType: keyboardType,
+      inputFormatters: <TextInputFormatter>[
+        LengthLimitingTextInputFormatter(maxLength),
+        FilteringTextInputFormatter.allow(
+            regExp ?? RegExp(r'.*', dotAll: true)),
+      ],
+      validator: (value) => validateString(value, "$label is required."),
     ),
-    keyboardType: keyboardType,
-    inputFormatters: <TextInputFormatter>[
-      LengthLimitingTextInputFormatter(maxLength),
-      FilteringTextInputFormatter.allow(regExp ?? RegExp(r'.*', dotAll: true)),
-    ],
-    validator: (value) => validateString(value, "$label is required."),
   );
 }
 
