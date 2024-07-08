@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class MapScreen extends StatefulWidget {
   final LatLng restaurantLocation;
@@ -27,7 +28,6 @@ class _MapScreenState extends State<MapScreen> {
   String googleApiKey = 'AIzaSyBYDIEadA1BKbZRNEHL1WFI8PWFdXKI5ug';
   String travelMode = 'driving';
   double totalDistance = 0.0;
-  List<String> directions = [];
 
   @override
   void initState() {
@@ -72,44 +72,58 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _getPolyline() async {
     totalDistance = 0.0;
-    directions.clear();  // Clear previous directions
+    if (travelMode == 'transit') {
+      final response = await http.get(Uri.parse(
+          'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=transit&key=$googleApiKey'));
 
-    final response = await http.get(Uri.parse(
-        'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=$travelMode&key=$googleApiKey'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['routes'].isNotEmpty) {
+          setState(() {
+            polylineCoordinates.clear();
+            polylines.clear();
+            polylineCoordinates.addAll(_decodePolyline(data['routes'][0]['overview_polyline']['points']));
+            totalDistance = _calculateTotalDistance(polylineCoordinates);
+            polylines.add(Polyline(
+              width: 5,
+              polylineId: const PolylineId('polyline'),
+              color: Colors.blue,
+              points: polylineCoordinates,
+            ));
+          });
+        } else {
+          print('No routes found');
+        }
+      } else {
+        print('Failed to fetch transit route');
+      }
+    } else {
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        request: PolylineRequest(
+          origin: PointLatLng(_currentPosition.latitude, _currentPosition.longitude),
+          destination: PointLatLng(widget.restaurantLocation.latitude, widget.restaurantLocation.longitude),
+          mode: travelMode == 'driving' ? TravelMode.driving : TravelMode.walking,
+        ),
+        googleApiKey: googleApiKey,
+      );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['routes'].isNotEmpty) {
+      if (result.points.isNotEmpty) {
         setState(() {
           polylineCoordinates.clear();
-          polylines.clear();
-          polylineCoordinates.addAll(_decodePolyline(data['routes'][0]['overview_polyline']['points']));
+          polylineCoordinates.addAll(result.points.map((point) => LatLng(point.latitude, point.longitude)));
           totalDistance = _calculateTotalDistance(polylineCoordinates);
+          polylines.clear();
           polylines.add(Polyline(
             width: 5,
             polylineId: const PolylineId('polyline'),
             color: Colors.blue,
             points: polylineCoordinates,
           ));
-
-          // Store the directions and remove HTML tags
-          directions.addAll(
-              data['routes'][0]['legs'][0]['steps']
-                  .map<String>((step) => _removeHtmlTags(step['html_instructions'].toString()))
-                  .toList()
-          );
         });
       } else {
-        print('No routes found');
+        print('Error: ${result.errorMessage}');
       }
-    } else {
-      print('Failed to fetch route');
     }
-  }
-
-  String _removeHtmlTags(String htmlString) {
-    final regExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
-    return htmlString.replaceAll(regExp, '');
   }
 
   double _calculateTotalDistance(List<LatLng> coordinates) {
@@ -170,6 +184,45 @@ class _MapScreenState extends State<MapScreen> {
     mapController = controller;
   }
 
+  void _showNavigationOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 200,
+          child: Column(
+            children: [
+              ListTile(
+                title: Text('Confirm Destination'),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Open Google Maps or any other navigation app with the selected route
+                  _openGoogleMaps();
+                },
+              ),
+              ListTile(
+                title: Text('Cancel'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _openGoogleMaps() async {
+    String url =
+        'https://www.google.com/maps/dir/?api=1&origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&travelmode=$travelMode';
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,43 +252,25 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
             child: _currentPosition.latitude == 0 && _currentPosition.longitude == 0
                 ? Center(child: CircularProgressIndicator())
-                : Column(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    initialCameraPosition: CameraPosition(
-                      target: widget.restaurantLocation,
-                      zoom: 14.0,
-                    ),
-                    markers: {
-                      Marker(
-                        markerId: MarkerId('currentLocation'),
-                        position: _currentPosition,
-                        infoWindow: InfoWindow(title: 'Your Location'),
-                      ),
-                      Marker(
-                        markerId: MarkerId('restaurantLocation'),
-                        position: widget.restaurantLocation,
-                        infoWindow: InfoWindow(title: 'Restaurant'),
-                      ),
-                    },
-                    polylines: polylines,
-                  ),
+                : GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: widget.restaurantLocation,
+                zoom: 14.0,
+              ),
+              markers: {
+                Marker(
+                  markerId: MarkerId('currentLocation'),
+                  position: _currentPosition,
+                  infoWindow: InfoWindow(title: 'Your Location'),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: ListView.builder(
-                    itemCount: directions.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(directions[index]),
-                      );
-                    },
-                  ),
+                Marker(
+                  markerId: MarkerId('restaurantLocation'),
+                  position: widget.restaurantLocation,
+                  infoWindow: InfoWindow(title: 'Restaurant'),
                 ),
-              ],
+              },
+              polylines: polylines,
             ),
           ),
         ],
@@ -249,6 +284,7 @@ class _MapScreenState extends State<MapScreen> {
         setState(() {
           travelMode = mode;
           _getPolyline();
+          _showNavigationOptions();
         });
       },
       child: Container(
