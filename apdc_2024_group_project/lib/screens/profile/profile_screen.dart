@@ -3,7 +3,6 @@ import 'package:adc_group_project/screens/profile/profile_subscreen/achievement/
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen_router.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/promo_codes/promo_codes.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
-import 'package:adc_group_project/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -60,92 +59,126 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 60, 0, 0),
+            padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
             child: Column(
               children: [
-                Row(
+                Stack(
+                  alignment: Alignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: _pickImage,
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.grey,
-                        backgroundImage: _imageBytes != null
-                            ? MemoryImage(_imageBytes!)
-                            : null,
+                    CircleAvatar(
+                      radius: 70,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: _imageBytes != null
+                          ? MemoryImage(_imageBytes!)
+                          : null,
+                      child: InkWell(
+                        onTap: () {
+                          if (_imageBytes != null) {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Dialog(
+                                      elevation: 3,
+                                      backgroundColor: Colors.blueGrey,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        child: _imageBytes != null
+                                            ? Image.memory(_imageBytes!)
+                                            : null,
+                                      ),
+                                    ),
+                                  );
+                                });
+                          }
+                        },
                         child: _imageBytes == null
-                            ? Icon(Icons.camera_alt, color: Colors.white)
+                            ? const Icon(Icons.camera_alt, color: Colors.white)
                             : null,
                       ),
                     ),
-                    SizedBox(width: 20),
-                    Text(
-                      _userName?.toUpperCase() ?? 'User Name',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 90, left: 100),
+                      child: CircleAvatar(
+                          backgroundColor: Colors.black54,
+                          child: IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: _pickImage,
+                          )),
+                    )
                   ],
                 ),
-                customSpaceBetweenColumns(40),
-                /*profileItem( // Useless
-                  context,
-                  Icons.person,
-                  'Personal Information',
-                  ontapPersInformation(context),
-                ),*/
-                profileItem(
-                  context,
-                  Icons.reviews,
-                  'Reviews',
-                  ontapReviews(context),
-                ),
-                profileItem(
-                  context,
-                  Icons.card_giftcard,
-                  'Promo codes',
-                  ontapPromo(context),
-                ),
-                profileItem(
-                  context,
-                  Icons.emoji_events,
-                  'Achievements',
-                  ontapAchivements(context),
-                ),
-                profileItem(
-                  context,
-                  Icons.food_bank,
-                  'My Restaurant',
-                  ontapMyRestaurant(context),
-                ),
-                profileItem(
-                  context,
-                  Icons.settings,
-                  'Settings',
-                  ontapSettings(context),
-                ),
-                profileItem(
-                  context,
-                  Icons.help,
-                  'Help and Support',
-                  ontapHelpSupport(context),
-                ),
-                ListTile(
-                  leading: Icon(Icons.logout,
-                      color: Theme.of(context).colorScheme.error),
-                  title: Text(
-                    'Log Out',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Theme.of(context).colorScheme.error),
+                Padding(
+                  padding: const EdgeInsets.only(top:10),
+                  child: Text(
+                    _userName ?? 'User Name',
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  onTap: () async {
-                    await FirebaseAuth.instance.signOut();
-                    await SharedPreferences.getInstance()
-                        .then((prefs) => prefs.clear()); // Limpa o cache
-                  },
+                ),
+
+                Divider(color: Theme.of(context).colorScheme.primary,thickness: 2,),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: [
+                      profileItem(
+                        context,
+                        Icons.reviews_outlined,
+                        'Reviews',
+                        ontapReviews(context),
+                      ),
+                      profileItem(
+                        context,
+                        Icons.card_giftcard,
+                        'Promo codes',
+                        ontapPromo(context),
+                      ),
+                      profileItem(
+                        context,
+                        Icons.emoji_events_outlined,
+                        'Achievements',
+                        ontapAchivements(context),
+                      ),
+                      profileItem(
+                        context,
+                        Icons.food_bank_outlined,
+                        'My Restaurant',
+                        ontapMyRestaurant(context),
+                      ),
+                      profileItem(
+                        context,
+                        Icons.settings,
+                        'Settings',
+                        ontapSettings(context),
+                      ),
+                      profileItem(
+                        context,
+                        Icons.help_outline,
+                        'Help and Support',
+                        ontapHelpSupport(context),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.logout,
+                            color: Theme.of(context).colorScheme.error,size: MediaQuery.of(context).size.width*0.055,),
+                        title: Text(
+                          'Log Out',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color: Theme.of(context).colorScheme.error,fontSize: 17),
+                        ),
+                        onTap: () async {
+                          await FirebaseAuth.instance.signOut();
+                          await SharedPreferences.getInstance()
+                              .then((prefs) => prefs.clear()); // Limpa o cache
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -229,7 +262,7 @@ Function ontapHelpSupport(context) {
   return () {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => HelpAndSupportScreen(),
+        builder: (context) => const HelpAndSupportScreen(),
       ),
     );
   };
@@ -251,11 +284,8 @@ class ProfileMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon),
-      title: Text(
-        text,
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
+      leading: Icon(icon, size: MediaQuery.of(context).size.width*0.055,),
+      title: Text(text, style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 17), ),
       onTap: onTap,
     );
   }

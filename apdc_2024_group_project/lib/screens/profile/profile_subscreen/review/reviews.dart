@@ -89,7 +89,7 @@ class _ReviewsPage extends State<ReviewsPage> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -118,12 +118,12 @@ class _ReviewsPage extends State<ReviewsPage> {
                 return false;
               },
               child: _isLoading && _reviews.isEmpty
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
                       itemCount: _reviews.length + (_isLoading ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == _reviews.length) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         }
                         var review = _reviews[index];
                         if (review['restaurantName']

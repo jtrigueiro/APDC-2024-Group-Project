@@ -69,39 +69,42 @@ class ReserveScreenState extends State<ReserveScreen> {
     });
   }
 
-  Column dateSelection() {
-    return Column (
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Center(child: Text('Selected Date and Time')),
-        const SizedBox(height: 20.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {
-                showDatePicker(
-                  context: context,
-                  initialDate: selectedDate,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(const Duration(days: 14)),
-                  selectableDayPredicate: (day) {
-                    return widget.restaurant.isOpen[day.weekday - 1];
-                  },
-                ).then((date) {
-                  if (date != null) {
-                    setState(() {
-                      selectedDate = date;
-                      _selectedDay = daysWeek[selectedDate.weekday - 1];
-                    });
-                  }
-                });
-              },
-              child: Text('$_selectedDay: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),),
-            const SizedBox(width: 20.0),
-            Center( child: _buildTimeDropdownMenu(openHours[selectedDate.weekday - 1]),)
-          ],),
-        ],
+
+  Padding dateSelection() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 50.0),
+      child: Column (
+        //mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Selected Date and Time'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 14)),
+                    selectableDayPredicate: (day) {
+                      return widget.restaurant.isOpen[day.weekday - 1];
+                    },
+                  ).then((date) {
+                    if (date != null) {
+                      setState(() {
+                        selectedDate = date;
+                        _selectedDay = daysWeek[selectedDate.weekday - 1];
+                      });
+                    }
+                  });
+                },
+                child: Text('$_selectedDay: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),),
+              const SizedBox(width: 20.0),
+              Center( child: _buildTimeDropdownMenu(openHours[selectedDate.weekday - 1]),)
+            ],),
+          ],
+      ),
     );
   }
 
@@ -120,9 +123,18 @@ class ReserveScreenState extends State<ReserveScreen> {
               alignment: const Alignment(0, 0.95),
               child: ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    _selectedIndex = 1;
-                  });
+                  if(_selectedTime != null) {
+                    setState(() {
+                      _selectedIndex = 1;
+                    });
+                  }
+                  else {
+                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                      content: const Text('Please select a time first!'),
+                      animation: CurvedAnimation(parent: const AlwaysStoppedAnimation(1), curve: Curves.easeInOut),
+                      duration: const Duration(seconds: 2),
+                    ));
+                  }
                 },
                 child: const Text('N E X T'),
               ),
@@ -220,20 +232,23 @@ class ReserveScreenState extends State<ReserveScreen> {
                                         ),
                                         TextButton(
                                           onPressed: () async {
-
-                                            final user = await DatabaseService().getCurrentUser();
-
-                                            List<String> dishes = [];
+                                            Map<String, int> dishes = {};
+                                            List<String> dishNames = [];
                                             double cost = 0;
 
                                             for(Dish item in checkout) {
-                                              dishes.add(item.name);
+                                              dishNames.add(item.name);
+                                              if(!dishes.containsKey(item.id)) {
+                                                dishes[item.id] = 1;
+                                              } else {
+                                                dishes[item.id] = dishes[item.id]! + 1;
+                                              }
                                               cost += item.price;
                                             }
 
                                             DateTime time = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, _selectedTime!.hour, _selectedTime!.minute);
 
-                                            await DatabaseService().addOrUpdateRestaurantReservationsData(user!.uid, widget.restaurant.id, dishes, cost, time);
+                                            await DatabaseService().addRestaurantReservationsData(widget.restaurant.id, widget.restaurant.name, dishNames, cost, time);
 
                                             Navigator.popUntil(context, (route) => route.isFirst);
                                             
@@ -269,12 +284,22 @@ class ReserveScreenState extends State<ReserveScreen> {
                         );
                     });}
                   },
-                  child: const Text('C H E C K O U T )',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    child: const Positioned(
+                      bottom: 0.1,
+                      child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.shopping_cart),
+                        SizedBox(width: 20),
+                        Text('C H E C K O U T',
+                        style: TextStyle(fontWeight: FontWeight.bold),),
+                      ],
+                      ),
+                    ),
                 ),
               ),
             )
-        ),
         ],
         ),
     );

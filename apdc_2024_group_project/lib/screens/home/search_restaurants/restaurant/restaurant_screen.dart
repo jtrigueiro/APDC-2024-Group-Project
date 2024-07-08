@@ -70,10 +70,16 @@ class RestaurantScreen extends StatelessWidget {
 
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ReserveScreen(restaurant: info, day: getDay(day)) ;
+                 },);
+
+                /*Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ReserveScreen(restaurant: info, day: getDay(day))));
+                        builder: (context) => ReserveScreen(restaurant: info, day: getDay(day))));*/
               },
               child: const Text("Reserve"),
             ),

@@ -23,7 +23,7 @@ class RestaurantPersonalizeScreenState
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController locationController;
-  final double _weekDaysTextBoxSize = 110;
+  final double _weekDaysTextBoxSize = 120;
 
   final _formKey = GlobalKey<FormState>();
   bool loading = true;
@@ -444,7 +444,7 @@ class RestaurantPersonalizeScreenState
                                                 TimePickerEntryMode.dial);
                                     if (timeOfDay != null) {
                                       setState(() {
-                                        tuesdayFromTime = timeOfDay;
+                                        wednesdayFromTime = timeOfDay;
                                       });
                                     }
                                   },

@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class MapScreen extends StatefulWidget {
   final LatLng restaurantLocation;
@@ -20,6 +21,7 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   LatLng _currentPosition = const LatLng(0, 0);
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   List<LatLng> polylineCoordinates = [];
   late PolylinePoints polylinePoints;
@@ -32,10 +34,16 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     polylinePoints = PolylinePoints();
-    _getCurrentLocation();
+    _startLocationUpdates();
   }
 
-  void _getCurrentLocation() async {
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _startLocationUpdates() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -56,17 +64,25 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
+    _positionStreamSubscription = Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10, // Update distance threshold as per your need
+      ),
+    ).listen((Position position) {
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+      });
+      _updateMapLocation();
+      _getPolyline();
     });
+  }
 
+  void _updateMapLocation() async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(
-        CameraUpdate.newLatLng(_currentPosition));
-
-    _getPolyline();
+      CameraUpdate.newLatLng(_currentPosition),
+    );
   }
 
   Future<void> _getPolyline() async {
@@ -183,6 +199,45 @@ class _MapScreenState extends State<MapScreen> {
     mapController = controller;
   }
 
+  void _showNavigationOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 200,
+          child: Column(
+            children: [
+              ListTile(
+                title: Text('Confirm Destination'),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Open Google Maps or any other navigation app with the selected route
+                  _openGoogleMaps();
+                },
+              ),
+              ListTile(
+                title: Text('Cancel'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _openGoogleMaps() async {
+    String url =
+        'https://www.google.com/maps/dir/?api=1&origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&travelmode=$travelMode';
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,6 +261,7 @@ class _MapScreenState extends State<MapScreen> {
                 _buildTravelModeButton('driving', Icons.directions_car),
                 _buildTravelModeButton('walking', Icons.directions_walk),
                 _buildTravelModeButton('transit', Icons.directions_transit),
+                _buildConfirmDestinationButton(),
               ],
             ),
           ),
@@ -255,6 +311,27 @@ class _MapScreenState extends State<MapScreen> {
         ),
         child: Icon(
           icon,
+          size: 20.0,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConfirmDestinationButton() {
+    return GestureDetector(
+      onTap: () {
+        _showNavigationOptions();
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10.0),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.green,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.check,
           size: 20.0,
           color: Colors.white,
         ),

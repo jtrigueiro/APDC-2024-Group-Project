@@ -1106,21 +1106,30 @@ class DatabaseService {
     }
   }
 
-  Future addOrUpdateRestaurantReservationsData(
-      String userID,
+  Future addRestaurantReservationsData(
       String restaurantID,
+      String restaurantName,
       List<String> order,
       double cost,
-      DateTime date) async {
+      DateTime start) async {
     try {
-      await reservationsCollection.doc('$userID$restaurantID$date').set({
-        'userID': userID,
-        'restaurantID': restaurantID,
-        'order': order,
-        'cost': cost,
-        'start': date,
-        'end': date.add(const Duration(hours: 2)),
-      });
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await reservationsCollection.doc().set({
+          'userId': user.uid,
+          'userName': await loadUserName(),
+          'restaurantId': restaurantID,
+          'restaurantName': restaurantName,
+          'order': order,
+          'cost': cost,
+          'start': start,
+          'end': start.add(const Duration(hours: 1)),
+        });
+      }
+      else {
+        throw Exception("User not logged in");
+      }
       return true;
     } catch (e) {
       debugPrint(e.toString());
@@ -1128,15 +1137,48 @@ class DatabaseService {
     }
   }
 
-  List<Reservation> _ReservationsListFromSnapshot(QuerySnapshot snapshot) {
+  Future<List<Reservation>> getRestaurantReservations(String restaurantID) async {
+    try {
+      final QuerySnapshot snapshot = await reservationsCollection
+          .where('restaurantId', isEqualTo: restaurantID)
+          .get();
+      return reservationsListFromSnapshot(snapshot);
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
+  Future<List<Reservation>> getUserReservations() async {
+    try {
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        final QuerySnapshot snapshot = await reservationsCollection
+          .where('userId', isEqualTo: user.uid)
+          .get();
+      return reservationsListFromSnapshot(snapshot);
+      }
+      else {
+        throw Exception("User not logged in");
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
+  List<Reservation> reservationsListFromSnapshot(QuerySnapshot snapshot) {
     try {
       return snapshot.docs.map((doc) {
         return Reservation(
-          userID: doc.get('userID') ?? '',
-          restaurantID: doc.get('restaurantID') ?? '',
-          order: doc.get('order').map<String>((e) => e).toList(),
+          userID: doc.get('userId') ?? '',
+          userName: doc.get('userName') ?? '',
+          restaurantID: doc.get('restaurantId') ?? '',
+          restaurantName: doc.get('restaurantName') ?? '',
+          order: doc.get('order').map<String>((e) => e as String).toList(),
           cost: doc.get('cost').toDouble() ?? 0,
-          start: doc.get('date').toDate() ?? DateTime.now(),
+          start: doc.get('start').toDate() ?? DateTime.now(),
           end: doc.get('end').toDate() ?? DateTime.now(),
         );
       }).toList();
@@ -1146,17 +1188,6 @@ class DatabaseService {
     }
   }
 
-  Stream<dynamic>? reservations(
-      {required DateTime start, required DateTime end}) {
-    try {
-      return reservationsCollection
-          .snapshots()
-          .map(_ReservationsListFromSnapshot);
-    } catch (e) {
-      debugPrint(e.toString());
-      return const Stream.empty();
-    }
-  }
   //-----------------RestaurantTypes-----------------
 
   Future<void> addRestaurantType(String typeName) async {
