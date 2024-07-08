@@ -21,6 +21,7 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   LatLng _currentPosition = const LatLng(0, 0);
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   List<LatLng> polylineCoordinates = [];
   late PolylinePoints polylinePoints;
@@ -33,10 +34,16 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     polylinePoints = PolylinePoints();
-    _getCurrentLocation();
+    _startLocationUpdates();
   }
 
-  void _getCurrentLocation() async {
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _startLocationUpdates() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -57,17 +64,25 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
+    _positionStreamSubscription = Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10, // Update distance threshold as per your need
+      ),
+    ).listen((Position position) {
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+      });
+      _updateMapLocation();
+      _getPolyline();
     });
+  }
 
+  void _updateMapLocation() async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(
-        CameraUpdate.newLatLng(_currentPosition));
-
-    _getPolyline();
+      CameraUpdate.newLatLng(_currentPosition),
+    );
   }
 
   Future<void> _getPolyline() async {
@@ -246,6 +261,7 @@ class _MapScreenState extends State<MapScreen> {
                 _buildTravelModeButton('driving', Icons.directions_car),
                 _buildTravelModeButton('walking', Icons.directions_walk),
                 _buildTravelModeButton('transit', Icons.directions_transit),
+                _buildConfirmDestinationButton(),
               ],
             ),
           ),
@@ -284,7 +300,6 @@ class _MapScreenState extends State<MapScreen> {
         setState(() {
           travelMode = mode;
           _getPolyline();
-          _showNavigationOptions();
         });
       },
       child: Container(
@@ -296,6 +311,27 @@ class _MapScreenState extends State<MapScreen> {
         ),
         child: Icon(
           icon,
+          size: 20.0,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConfirmDestinationButton() {
+    return GestureDetector(
+      onTap: () {
+        _showNavigationOptions();
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10.0),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.green,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.check,
           size: 20.0,
           color: Colors.white,
         ),
