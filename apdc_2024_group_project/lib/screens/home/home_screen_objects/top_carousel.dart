@@ -15,7 +15,7 @@ class TopCarousel extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10.0),
       child: CarouselSlider(
         options: CarouselOptions(
-          height: MediaQuery.of(context).size.height * 0.2,
+          height: MediaQuery.of(context).size.height * 0.15,
           autoPlay: true,
           autoPlayInterval: const Duration(seconds: 7),
           scrollDirection: Axis.horizontal,
@@ -33,8 +33,8 @@ class TopCarousel extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50.0),
                     child:
                     Container(
-                      width: containerSize(context),
-                      height: containerSize(context),
+                      width: imageSize(context),
+                      height: imageSize(context),
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
@@ -68,7 +68,7 @@ class TopCarousel extends StatelessWidget {
     );
   }
 
-  double containerSize(context)
+  double imageSize(context)
   {
     if(kIsWeb){
       return MediaQuery.of(context).size.width * 0.1;
