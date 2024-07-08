@@ -229,8 +229,23 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Confirmation"),
-          content: Text(message),
+          scrollable: true,
+          title: const Text("Confirmation", textAlign: TextAlign.center),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Is this the correct address?',
+                  style: Theme.of(context).textTheme.titleSmall),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(message,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(fontWeight: FontWeight.w800)),
+              ),
+            ],
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -268,8 +283,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         _coordinates =
             '${value['results'][0]['geometry']['location']['lat']},${value['results'][0]['geometry']['location']['lng']}';
 
-        final confirmation = await _showConfirmationDialog(
-            "Is this the correct address?\n$_address");
+        final confirmation = await _showConfirmationDialog(_address);
         return bool.parse(confirmation.toString());
       } else {
         _showErrorDialog(
@@ -282,24 +296,41 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     }
   }
 
-  Column buildPdfButton(
-      String label, File? file, Uint8List? bytes, String? error) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () => _pickFile(label.toLowerCase()),
-          child: Text(
-            file == null && bytes == null
-                ? "Upload Last Month's $label Bill(*)"
-                : "$label File Selected",
+  changecolor(file, bytes) {
+    if (file == null && bytes == null) {
+      return ElevatedButton.styleFrom(backgroundColor: Colors.grey);
+    } else {
+      return ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary);
+    }
+  }
+
+  Padding buildPdfButton(IconData icon, String label, File? file,
+      Uint8List? bytes, String? error) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ElevatedButton.icon(
+            style: changecolor(file, bytes),
+            icon: Icon(icon),
+            onPressed: () => _pickFile(label.toLowerCase()),
+            label: Text(
+              file == null && bytes == null
+                  ? "Upload Last Month's $label Bill*"
+                  : "$label File Uploaded",
+            ),
           ),
-        ),
-        error != null
-            ? Text(
-                error,
-              )
-            : Container(),
-      ],
+          error != null
+              ? Text(error,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(color: Theme.of(context).colorScheme.error))
+              : Container(),
+        ],
+      ),
     );
   }
 
@@ -343,7 +374,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                               const SizedBox(height: 10),
                               buildDoubleTextForm(
                                   "Street number",
-                                  "Route",
+                                  "Street Address",
                                   streetNumberController,
                                   routeController,
                                   TextInputType.text),
@@ -361,37 +392,53 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   TextInputType.number,
                                   _numeric,
                                   3),
-                              const SizedBox(height: 20),
-                              MultiSelectDialogField(
-                                items: _restaurantTypeItems,
-                                title: const Text("Restaurant Types"),
-                                selectedColor: Colors.blue,
-                                buttonText:
-                                    const Text("Select Restaurant Types"),
-                                onConfirm: (results) {
-                                  _selectedRestaurantTypes =
-                                      results.cast<String>();
-                                },
-                                validator: (values) {
-                                  if (values == null || values.isEmpty) {
-                                    return "Please select at least one restaurant type.";
-                                  }
-                                  return null;
-                                },
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15.0),
+                                child: MultiSelectDialogField(
+                                  dialogHeight:
+                                      MediaQuery.of(context).size.height * 0.4,
+                                  buttonIcon:
+                                      const Icon(Icons.arrow_drop_down_sharp),
+                                  items: _restaurantTypeItems,
+                                  title: const Text("Restaurant Types"),
+                                  selectedColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  buttonText:
+                                      const Text("Select Restaurant Types"),
+                                  onConfirm: (results) {
+                                    _selectedRestaurantTypes =
+                                        results.cast<String>();
+                                  },
+                                  validator: (values) {
+                                    if (values == null || values.isEmpty) {
+                                      return "Please select at least one restaurant type.";
+                                    }
+                                    return null;
+                                  },
+                                ),
                               ),
-                              const SizedBox(height: 20),
-                              buildPdfButton("Electricity", _electricityPdf,
-                                  _electricityPdfBytes, _electricityPdfError),
-                              const SizedBox(height: 10),
                               buildPdfButton(
-                                  "Gas", _gasPdf, _gasPdfBytes, _gasPdfError),
-                              const SizedBox(height: 10),
-                              buildPdfButton("Water", _waterPdf, _waterPdfBytes,
-                                  _waterPdfError),
-                              const SizedBox(height: 20),
-                              ElevatedButton(
-                                onPressed: _submitForm,
-                                child: const Text("Submit Application"),
+                                  Icons.lightbulb,
+                                  "Electricity",
+                                  _electricityPdf,
+                                  _electricityPdfBytes,
+                                  _electricityPdfError),
+                              buildPdfButton(Icons.gas_meter_outlined, "Gas",
+                                  _gasPdf, _gasPdfBytes, _gasPdfError),
+                              buildPdfButton(Icons.water_drop, "Water",
+                                  _waterPdf, _waterPdfBytes, _waterPdfError),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 40.0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                  onPressed: _submitForm,
+                                  child: const Text("Submit Application"),
+                                ),
                               ),
                             ],
                           ),
@@ -417,7 +464,6 @@ Row buildDoubleTextForm(
       Expanded(
           child: buildTextFormField(
               label1, controller1, keyboardType, null, null)),
-      const SizedBox(width: 5),
       Expanded(
           child: buildTextFormField(
               label2, controller2, keyboardType, null, null)),
@@ -425,20 +471,24 @@ Row buildDoubleTextForm(
   );
 }
 
-TextFormField buildTextFormField(String label, TextEditingController controller,
+Padding buildTextFormField(String label, TextEditingController controller,
     TextInputType keyboardType, RegExp? regExp, int? maxLength) {
-  return TextFormField(
-    controller: controller,
-    decoration: InputDecoration(
-      labelText: "$label(*)",
-      border: const OutlineInputBorder(),
+  return Padding(
+    padding: const EdgeInsets.all(3),
+    child: TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: "$label*",
+        border: const OutlineInputBorder(),
+      ),
+      keyboardType: keyboardType,
+      inputFormatters: <TextInputFormatter>[
+        LengthLimitingTextInputFormatter(maxLength),
+        FilteringTextInputFormatter.allow(
+            regExp ?? RegExp(r'.*', dotAll: true)),
+      ],
+      validator: (value) => validateString(value, "$label is required."),
     ),
-    keyboardType: keyboardType,
-    inputFormatters: <TextInputFormatter>[
-      LengthLimitingTextInputFormatter(maxLength),
-      FilteringTextInputFormatter.allow(regExp ?? RegExp(r'.*', dotAll: true)),
-    ],
-    validator: (value) => validateString(value, "$label is required."),
   );
 }
 
