@@ -3,6 +3,7 @@ import 'package:adc_group_project/screens/profile/profile_subscreen/achievement/
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen_router.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/promo_codes/promo_codes.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -283,8 +284,21 @@ class ProfileMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(kIsWeb)
+      {
+        return list(context, 25);
+      }
+    else
+      {
+        return list(context,  MediaQuery.of(context).size.width*0.055);
+      }
+
+  }
+
+  ListTile list (BuildContext context, double iconSize)
+  {
     return ListTile(
-      leading: Icon(icon, size: MediaQuery.of(context).size.width*0.055,),
+      leading: Icon(icon, size:iconSize), //MediaQuery.of(context).size.width*0.055,),
       title: Text(text, style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 17), ),
       onTap: onTap,
     );
