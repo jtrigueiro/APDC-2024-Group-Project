@@ -307,9 +307,10 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body:  Column (
         children: [
-          const SizedBox(height: 20),
-          const Text('Please select a location to continue.'),
-          const SizedBox(height: 20),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.0),
+            child: Text('Please select a location to continue.'),
+          ),
           ListTile(
                 title: const Text('Current Location'),
                 leading: const Icon(Icons.my_location),
@@ -354,9 +355,11 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         title: Row(
           children: [
-            const Icon(Icons.restaurant),
-            const SizedBox(width: 20),
-            Text('Restaurants   •   $currentLocality'),
+            const Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: Icon(Icons.restaurant),
+            ),
+            Text('Restaurants  •  $currentLocality'),
           ],
         ),
       ),

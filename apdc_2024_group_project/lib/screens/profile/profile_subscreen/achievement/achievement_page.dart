@@ -38,30 +38,30 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Achievements'),
+          title: const Text('Achievements'),
            leading: IconButton(
-             icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+             icon: const Icon(Icons.arrow_back_ios),
              onPressed: () {
                Navigator.of(context).pop();
                },
            ),
         ),
-        body: Center(child: CircularProgressIndicator()),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    if (_user == null) {
+   /* if (_user == null) {
       return Scaffold(
         appBar: AppBar(title: Text('Achievements')),
         body: Center(child: Text('User not logged in')),
       );
-    }
+    }*/
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Achievements'),
+        title: const Text('Achievements'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color:Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop();
           },
