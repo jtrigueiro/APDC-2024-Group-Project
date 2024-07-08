@@ -381,14 +381,13 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   _electricityPdfBytes, _electricityPdfError),
                               const SizedBox(height: 10),
                               buildPdfButton(
-                                  Icons.lightbulb,
                                   "Electricity",
                                   _electricityPdf,
                                   _electricityPdfBytes,
                                   _electricityPdfError),
-                              buildPdfButton(Icons.gas_meter_outlined, "Gas",
+                              buildPdfButton( "Gas",
                                   _gasPdf, _gasPdfBytes, _gasPdfError),
-                              buildPdfButton(Icons.water_drop, "Water",
+                              buildPdfButton("Water",
                                   _waterPdf, _waterPdfBytes, _waterPdfError),
                               Padding(
                                 padding:
