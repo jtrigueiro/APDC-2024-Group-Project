@@ -43,20 +43,17 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 40),
+               Padding(
+                padding:const EdgeInsets.only(bottom: 20),
                 child: Text(
                   'Need Assistance?',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
+                  style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
-              ),
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -64,7 +61,7 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                   });
                 },
                 child: Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.circular(10),
@@ -72,12 +69,15 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.help,
-                        size: 40,
-                        color: Theme.of(context).colorScheme.onPrimary,
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15.0),
+                        child: Icon(
+                          Icons.help,
+                          size: 40,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                       ),
-                      SizedBox(width: 20),
+
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -121,12 +121,11 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: _sendEmailAndAddToFirestore,
-                  child: Text('Send'),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                    textStyle: TextStyle(fontSize: 18),
+                Container(
+                  alignment: Alignment.bottomRight,
+                  child: ElevatedButton(
+                    onPressed: _sendEmailAndAddToFirestore,
+                    child: const Text('Send'),
                   ),
                 ),
               ],

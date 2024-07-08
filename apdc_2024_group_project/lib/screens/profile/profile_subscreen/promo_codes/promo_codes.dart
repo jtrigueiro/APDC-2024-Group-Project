@@ -53,28 +53,26 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Promo Codes',
+        title: const Text(
+          'Promotion Codes',
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
-              color: Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        elevation: 0,
       ),
       body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
                 controller: _promoCodeController,
                 decoration:
-                    InputDecoration().copyWith(labelText: 'Enter Promocode*'),
+                    const InputDecoration().copyWith(labelText: 'Enter a promotion code*'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a promo code';
@@ -82,19 +80,26 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
                   return null;
                 },
               ),
-              Text(
-                'Enter a promo code to redeem rewards!',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              /*Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Text(
+                  'Enter a promotion code to redeem rewards!',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey[600], fontSize: 13.5)),
+                ),*/
+
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: ElevatedButton.icon(
+                    onPressed: _redeemPromoCode,
+                    icon: const Icon(Icons.add),
+                    label:  const Text('Redeem Code')),
               ),
-              ElevatedButton.icon(
-                  onPressed: _redeemPromoCode,
-                  icon: Icon(Icons.add, size: 24),
-                  label: Text('Redeem Code', style: TextStyle(fontSize: 16))),
               SizedBox(
                   height: MediaQuery.of(context)
                       .viewInsets
                       .bottom), // Espaço para evitar que o teclado cubra o botão
+
             ],
           ),
         ),
