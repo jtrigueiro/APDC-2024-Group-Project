@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
+import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/geocoding.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
@@ -208,7 +209,6 @@ class _SearchScreenState extends State<SearchScreen> {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                 // _getDateFromUser();
                 },
                 child: const Text('OK'),
               ),
@@ -438,22 +438,26 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         child: Row(
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width*0.2,
-              height: MediaQuery.of(context).size.width*0.2,
-              margin: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                /*
-                image: DecorationImage(
-                image: NetworkImage(item.imageUrl),
-                fit: BoxFit.cover,
-                ),*/
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/restaurant_1.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
+            FutureBuilder(
+              future: getRestaurantImageURL(restaurant.id),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return Container(
+                    width: MediaQuery.of(context).size.width*0.2,
+                    height: MediaQuery.of(context).size.width*0.2,
+                    margin: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      image: DecorationImage(
+                      image: NetworkImage(snapshot.data as String),
+                      fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                }
+              }
             ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -477,7 +481,12 @@ class _SearchScreenState extends State<SearchScreen> {
     ),
   );
 }
+Future<String> getRestaurantImageURL(String id) async {
+  String url = await StorageService().getRestaurantImageUrl(id);
+  return url;
 }
+}
+
 
 Row textLine(String text, IconData icon, BuildContext context, Color color) {
   return Row(

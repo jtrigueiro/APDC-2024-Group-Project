@@ -173,6 +173,41 @@ class DatabaseService {
     }
   }
 
+  Future<Restaurant> getRestaurantById(String restaurantId) async {
+      try {
+        final DocumentSnapshot doc =
+            await restaurantsCollection.doc(restaurantId).get();
+        return Restaurant(
+          id: doc.id,
+          name: doc.get('name') ?? '',
+          phone: doc.get('phone') ?? '',
+          address: doc.get('address') ?? '',
+          location: doc.get('location') ?? '',
+          coordinates: doc.get('coordinates') ?? '',
+          co2EmissionEstimate: doc.get('co2EmissionEstimate').toDouble() ?? 0,
+          seats: doc.get('seats').toInt() ?? 0,
+          visible: doc.get('visible') ?? false,
+          isOpen: doc.get('isOpen').map<bool>((e) => e as bool).toList(),
+          time: doc.get('time').map<String>((e) => e as String).toList(),
+        );
+      } catch (e) {
+        debugPrint(e.toString());
+        return Restaurant(
+          id: '',
+          name: '',
+          phone: '',
+          address: '',
+          location: '',
+          coordinates: '',
+          co2EmissionEstimate: 0,
+          seats: 0,
+          visible: false,
+          isOpen: [],
+          time: [],
+        );
+      }
+    }
+
   // ----------------- Locations -----------------
 
   Future incrementLocation(String location) async {

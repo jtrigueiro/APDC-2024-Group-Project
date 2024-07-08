@@ -79,7 +79,6 @@ class ReservationsScreenState extends State<ReservationsScreen> {
             ),
           actions: [
             TextButton(
-              
               onPressed: () {
                 Navigator.of(context).pop();
               },
