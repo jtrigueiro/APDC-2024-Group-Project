@@ -297,9 +297,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
             ),
           ),
           error != null
-              ? Text(
-                  error,
-                )
+              ? Text(error,style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.error))
               : Container(),
         ],
       ),
@@ -348,7 +346,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   15),
                               buildDoubleTextForm(
                                   "Street number",
-                                  "Route",
+                                  "Street Address",
                                   streetNumberController,
                                   routeController,
                                   TextInputType.text),
@@ -368,10 +366,12 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                                 child: MultiSelectDialogField(
+
+                                  dialogHeight: MediaQuery.of(context).size.height*0.4,
                                   buttonIcon: const Icon(Icons.arrow_drop_down_sharp),
                                   items: _restaurantTypeItems,
                                   title: const Text("Restaurant Types"),
-                                  selectedColor: Colors.blue,
+                                  selectedColor: Theme.of(context).colorScheme.primary,
                                   buttonText:
                                       const Text("Select Restaurant Types"),
                                   onConfirm: (results) {
