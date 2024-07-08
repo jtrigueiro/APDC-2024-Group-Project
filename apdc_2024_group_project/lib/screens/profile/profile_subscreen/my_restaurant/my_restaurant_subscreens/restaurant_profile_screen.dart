@@ -19,6 +19,8 @@ class RestaurantPersonalizeScreen extends StatefulWidget {
 
 class RestaurantPersonalizeScreenState
     extends State<RestaurantPersonalizeScreen> {
+  String restaurant = '';
+
   late ScrollController scrollController;
   late TextEditingController nameController;
   late TextEditingController phoneController;
@@ -57,6 +59,7 @@ class RestaurantPersonalizeScreenState
     scrollController = ScrollController();
     nameController = TextEditingController();
     phoneController = TextEditingController();
+    //restaurant = '';
     getData();
     super.initState();
   }
@@ -81,6 +84,7 @@ class RestaurantPersonalizeScreenState
       Navigator.pop(context);
       loading = false;
     } else {
+      restaurant = data.name;
       nameController.text = data.name;
       phoneController.text = data.phone;
       mondayIsOpen = data.isOpen[0];
@@ -205,8 +209,7 @@ class RestaurantPersonalizeScreenState
             appBar: AppBar(
               title: const Text('My Restaurant Profile'),
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 117, 85, 18)),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -217,14 +220,14 @@ class RestaurantPersonalizeScreenState
               child: SingleChildScrollView(
                 controller: scrollController,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Form(
                         key: _formKey,
                         child: Column(children: [
-                          SizedBox(height: 20),
                           textForms(nameController, 'Restaurant Name',
                               'Please enter a restaurant name'),
                           const SizedBox(height: 10),
@@ -233,33 +236,37 @@ class RestaurantPersonalizeScreenState
                           const SizedBox(height: 10),
                         ]),
                       ),
-                      spaceBetweenColumns(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text("Open Days",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(fontSize: 15)),
-                          Text("Open Hours",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(fontSize: 15)),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Open Days",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .copyWith(fontSize: 15)),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 25.0),
+                              child: Text("Open Hours",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(fontSize: 15)),
+                            ),
+                          ],
+                        ),
                       ),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           SizedBox(
                             width: _weekDaysTextBoxSize,
                             child: Text("Monday",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontSize: 20)),
+                                style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 20)),
                           ),
+
                           Switch(
                             value: mondayIsOpen,
                             onChanged: (value) {
@@ -267,13 +274,12 @@ class RestaurantPersonalizeScreenState
                                 mondayIsOpen = value;
                               });
                             },
-                            //activeTrackColor: Colors.lightGreenAccent,
-                            //activeColor: Colors.green,
                           ),
+
                           Container(
                             //height: MediaQuery.of(context).size.height * 0.1,
                             decoration: BoxDecoration(
-                              color: Color.fromARGB(225, 255, 255, 255),
+                              color: const Color.fromARGB(225, 255, 255, 255),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Row(

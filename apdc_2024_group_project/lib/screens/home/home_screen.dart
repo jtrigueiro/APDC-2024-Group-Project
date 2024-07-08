@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:adc_group_project/screens/home/search_restaurants/search_restaurants_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
@@ -129,7 +128,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  //todo: rever web
+  void applyFilter(List<Restaurant> filteredRestaurants) {
+    setState(() {
+      items = filteredRestaurants;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
@@ -170,7 +174,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () =>
                                   _onSearchPressed(context, userLocation)),
                         ),
-                       // TopCarousel(images: topCarouselImages),
+                        TopCarousel(
+                          images: topCarouselImages,
+                          onFilterApplied: applyFilter,
+                        ),
                       ],
                     ),
                   ),
@@ -200,7 +207,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 5,
                           blurRadius: 7,
-                          offset: const Offset(0, 1), // changes position of shadow
+                          offset:
+                              const Offset(0, 1), // changes position of shadow
                         ),
                       ],
                     ),
@@ -212,7 +220,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () =>
                                   _onSearchPressed(context, userLocation)),
                         ),
-                        TopCarousel(images: topCarouselImages),
+                        TopCarousel(
+                          images: topCarouselImages,
+                          onFilterApplied: applyFilter,
+                        ),
                       ],
                     ),
                   ),
@@ -226,8 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-  }
-
+}
 
 extension StringCasingExtension on String {
   String capitalize() {

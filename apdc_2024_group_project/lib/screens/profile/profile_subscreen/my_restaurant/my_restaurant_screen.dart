@@ -37,7 +37,6 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
                   style: Theme.of(context).textTheme.titleLarge),
               Text('location maybe?',
                   style: Theme.of(context).textTheme.bodyMedium),*/
-              customSpaceBetweenColumns(40),
               tiles('Profile', Icons.warehouse, toPersonalizePage),
               tiles('My Dishes', Icons.restaurant, toMyDishesPage),
               tiles('Reviews', Icons.star, () {}),
@@ -56,10 +55,10 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
-                .copyWith(color: Theme.of(context).colorScheme.secondary)),
+                .copyWith(color: Theme.of(context).colorScheme.onBackground)),
         leading: Icon(
           icon,
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).colorScheme.onBackground,
         ),
         onTap: () {
           ontapFunction();

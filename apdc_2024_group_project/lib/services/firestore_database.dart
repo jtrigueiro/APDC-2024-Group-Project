@@ -1259,4 +1259,21 @@ class DatabaseService {
       throw e;
     }
   }
+
+  Future<List<Restaurant>> getRestaurantsByType(String type) async {
+    List<Restaurant> restaurants = [];
+
+    QuerySnapshot snapshot = await restaurantTypesCollection
+        .doc(type)
+        .collection('restaurants')
+        .get();
+
+    for (var doc in snapshot.docs) {
+      DocumentSnapshot restaurantSnapshot =
+          await restaurantsCollection.doc(doc.get('restaurantId')).get();
+      restaurants.add(restaurantSnapshot.data() as Restaurant);
+    }
+
+    return restaurants;
+  }
 }
