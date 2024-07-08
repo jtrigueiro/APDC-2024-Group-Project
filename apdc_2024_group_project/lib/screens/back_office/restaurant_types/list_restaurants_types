@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class ListRestaurantTypesPage extends StatefulWidget {
   @override
-  _ListRestaurantTypesPageState createState() => _ListRestaurantTypesPageState();
+  _ListRestaurantTypesPageState createState() =>
+      _ListRestaurantTypesPageState();
 }
 
 class _ListRestaurantTypesPageState extends State<ListRestaurantTypesPage> {

@@ -4,11 +4,13 @@ import 'package:adc_group_project/services/geocoding.dart';
 import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class NoRestaurantScreen extends StatefulWidget {
   final Function checkCurrentIndex;
@@ -55,6 +57,31 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
   String? _electricityPdfError;
   String? _gasPdfError;
   String? _waterPdfError;
+
+  List<MultiSelectItem<String>> _restaurantTypeItems = [];
+  List<String> _selectedRestaurantTypes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRestaurantTypes();
+  }
+
+  Future<void> _loadRestaurantTypes() async {
+    try {
+      List<DocumentSnapshot> types =
+          await DatabaseService().getRestaurantTypes();
+      setState(() {
+        _restaurantTypeItems = types.map((type) {
+          final data = type.data() as Map<String, dynamic>;
+          print("Data from Firestore: $data"); // Adicione este log
+          return MultiSelectItem<String>(type.id, data['name']);
+        }).toList();
+      });
+    } catch (e) {
+      print("Error loading restaurant types: $e");
+    }
+  }
 
   Future<void> _pickFile(String fileType) async {
     try {
@@ -173,6 +200,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
           _location,
           int.parse(_numberOfSeatsController.text),
           _coordinates,
+          _selectedRestaurantTypes,
         );
 
         if (result == null) {
@@ -222,19 +250,21 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     );
   }
 
-  Future<bool> validateAddress() {
+  Future<bool> validateAddress() async {
     String address =
         "${streetNumberController.text} ${routeController.text}, ${cpController.text} ${countryController.text}";
 
-    return GeocodingService().geocode(address).then((value) async {
-      if (value['status'] == 'OK') {
-        final int size = value['results'][0]['address_components'].length;
+    try {
+      final value = await GeocodingService().geocode(address);
 
-        _address = value['results'][0]['formatted_address'];
-        _location = value['results'][0]['address_components'][size - 4]
-                ['long_name']
-            .toString()
-            .toLowerCase();
+      if (value['status'] == 'OK') {
+        final addressComponents =
+            value['results'][0]['address_components'] as List<dynamic>;
+        final int size = addressComponents.length;
+
+        _address = value['results'][0]['formatted_address'] as String;
+        _location =
+            addressComponents[size - 4]['long_name'].toString().toLowerCase();
         _coordinates =
             '${value['results'][0]['geometry']['location']['lat']},${value['results'][0]['geometry']['location']['lng']}';
 
@@ -246,7 +276,31 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
             "There were no results for the given address.\nPlease check the address and try again.\nIf the problem persists, please contact the support team.");
         return false;
       }
-    });
+    } catch (e) {
+      _showErrorDialog("Error validating address: $e");
+      return false;
+    }
+  }
+
+  Column buildPdfButton(
+      String label, File? file, Uint8List? bytes, String? error) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () => _pickFile(label.toLowerCase()),
+          child: Text(
+            file == null && bytes == null
+                ? "Upload Last Month's $label Bill(*)"
+                : "$label File Selected",
+          ),
+        ),
+        error != null
+            ? Text(
+                error,
+              )
+            : Container(),
+      ],
+    );
   }
 
   @override
@@ -308,6 +362,24 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   _numeric,
                                   3),
                               const SizedBox(height: 20),
+                              MultiSelectDialogField(
+                                items: _restaurantTypeItems,
+                                title: const Text("Restaurant Types"),
+                                selectedColor: Colors.blue,
+                                buttonText:
+                                    const Text("Select Restaurant Types"),
+                                onConfirm: (results) {
+                                  _selectedRestaurantTypes =
+                                      results.cast<String>();
+                                },
+                                validator: (values) {
+                                  if (values == null || values.isEmpty) {
+                                    return "Please select at least one restaurant type.";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
                               buildPdfButton("Electricity", _electricityPdf,
                                   _electricityPdfBytes, _electricityPdfError),
                               const SizedBox(height: 10),
@@ -332,73 +404,47 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
             ),
           );
   }
+}
 
-  Row buildDoubleTextForm(
-      String label1,
-      String label2,
-      TextEditingController controller1,
-      TextEditingController controller2,
-      TextInputType keyboardType) {
-    return Row(
-      children: [
-        Expanded(
-            child: buildTextFormField(
-                label1, controller1, keyboardType, null, null)),
-        const SizedBox(width: 5),
-        Expanded(
-            child: buildTextFormField(
-                label2, controller2, keyboardType, null, null)),
-      ],
-    );
-  }
+Row buildDoubleTextForm(
+    String label1,
+    String label2,
+    TextEditingController controller1,
+    TextEditingController controller2,
+    TextInputType keyboardType) {
+  return Row(
+    children: [
+      Expanded(
+          child: buildTextFormField(
+              label1, controller1, keyboardType, null, null)),
+      const SizedBox(width: 5),
+      Expanded(
+          child: buildTextFormField(
+              label2, controller2, keyboardType, null, null)),
+    ],
+  );
+}
 
-  TextFormField buildTextFormField(
-      String label,
-      TextEditingController controller,
-      TextInputType keyboardType,
-      RegExp? regExp,
-      int? maxLength) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: "$label(*)",
-        border: const OutlineInputBorder(),
-      ),
-      keyboardType: keyboardType,
-      inputFormatters: <TextInputFormatter>[
-        LengthLimitingTextInputFormatter(maxLength),
-        FilteringTextInputFormatter.allow(
-            regExp ?? RegExp(r'.*', dotAll: true)),
-      ],
-      validator: (value) => validateString(value, "$label is required."),
-    );
-  }
+TextFormField buildTextFormField(String label, TextEditingController controller,
+    TextInputType keyboardType, RegExp? regExp, int? maxLength) {
+  return TextFormField(
+    controller: controller,
+    decoration: InputDecoration(
+      labelText: "$label(*)",
+      border: const OutlineInputBorder(),
+    ),
+    keyboardType: keyboardType,
+    inputFormatters: <TextInputFormatter>[
+      LengthLimitingTextInputFormatter(maxLength),
+      FilteringTextInputFormatter.allow(regExp ?? RegExp(r'.*', dotAll: true)),
+    ],
+    validator: (value) => validateString(value, "$label is required."),
+  );
+}
 
-  String? validateString(String? value, String message) {
-    if (value == null || value.isEmpty) {
-      return message;
-    }
-    return null;
+String? validateString(String? value, String message) {
+  if (value == null || value.isEmpty) {
+    return message;
   }
-
-  Column buildPdfButton(
-      String label, File? file, Uint8List? bytes, String? error) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () => _pickFile(label.toLowerCase()),
-          child: Text(
-            file == null && bytes == null
-                ? "Upload Last Month's $label Bill(*)"
-                : "$label File Selected",
-          ),
-        ),
-        error != null
-            ? Text(
-                error,
-              )
-            : Container(),
-      ],
-    );
-  }
+  return null;
 }
