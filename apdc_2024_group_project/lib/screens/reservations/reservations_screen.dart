@@ -3,6 +3,7 @@ import 'package:adc_group_project/services/models/reservation.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class ReservationsScreen extends StatefulWidget {
   const ReservationsScreen({super.key});
@@ -34,7 +35,7 @@ class ReservationsScreenState extends State<ReservationsScreen> {
       leading: const Icon(Icons.restaurant),
       title: Text(reservation.restaurantName),
       subtitle: Text(
-          '${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
+          '${reservation.start.day}/${reservation.start.month}/${reservation.start.year}\n${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
       onTap: () {
         showReservationDetails(reservation);
       },
@@ -44,30 +45,41 @@ class ReservationsScreenState extends State<ReservationsScreen> {
   void showReservationDetails(Reservation reservation) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
-          title: const Text('Reservation Details'),
-          content: SizedBox(
-            height: 200,
-            child: Column(
+          scrollable: true,
+          title: const Text('Reservation Details',
+              textAlign: TextAlign.center,),
+          content: Column(
               children: [
-                Text('Restaurant: ${reservation.restaurantName}'),
+                Text('Restaurant: ${reservation.restaurantName}',
+                overflow: TextOverflow.ellipsis,),
+                
+                const SizedBox(height: 10),
                 Text(
                     'Date: ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
                 Text(
-                    'Time: ${reservation.start.hour}:${reservation.start.minute}'),
-                Text('Total Price: ${reservation.cost}'),
-                ListView.builder(
-                  itemCount: reservation.order.length,
-                  itemBuilder: (context, index) {
-                    return Text(reservation.order[index]);
-                  },
+                    'Time: ${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
+                const SizedBox(height: 20),
+                Text('Total Price: ${reservation.cost}€'),
+                const SizedBox(height: 10),
+                SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...constructMap(reservation.order).entries.map((entry) => ListTile(
+                        title: Text('${entry.key} x${entry.value}',
+                            textAlign: TextAlign.center,),
+                        leading: const Icon(Icons.fastfood),
+                      ))
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
           actions: [
             TextButton(
+              
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -83,6 +95,18 @@ class ReservationsScreenState extends State<ReservationsScreen> {
         );
       },
     );
+  }
+
+  Map<String, int> constructMap(List<String> order) {
+    final Map<String, int> map = {};
+    for (final item in order) {
+      if (map.containsKey(item)) {
+        map[item] = map[item]! + 1;
+      } else {
+        map[item] = 1;
+      }
+    }
+    return map;
   }
 
   @override
