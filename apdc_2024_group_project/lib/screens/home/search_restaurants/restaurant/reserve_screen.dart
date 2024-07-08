@@ -69,42 +69,7 @@ class ReserveScreenState extends State<ReserveScreen> {
     });
   }
 
-<<<<<<< Updated upstream
-  Column dateSelection() {
-    return Column (
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Center(child: Text('Selected Date and Time')),
-        const SizedBox(height: 20.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {
-                showDatePicker(
-                  context: context,
-                  initialDate: selectedDate,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(const Duration(days: 14)),
-                  selectableDayPredicate: (day) {
-                    return widget.restaurant.isOpen[day.weekday - 1];
-                  },
-                ).then((date) {
-                  if (date != null) {
-                    setState(() {
-                      selectedDate = date;
-                      _selectedDay = daysWeek[selectedDate.weekday - 1];
-                      _selectedTime = null;
-                    });
-                  }
-                });
-              },
-              child: Text('$_selectedDay: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),),
-            const SizedBox(width: 20.0),
-            Center( child: _buildTimeDropdownMenu(openHours[selectedDate.weekday - 1]),)
-          ],),
-        ],
-=======
+
   Padding dateSelection() {
     return Padding(
       padding: const EdgeInsets.only(top: 50.0),
@@ -140,7 +105,6 @@ class ReserveScreenState extends State<ReserveScreen> {
             ],),
           ],
       ),
->>>>>>> Stashed changes
     );
   }
 
