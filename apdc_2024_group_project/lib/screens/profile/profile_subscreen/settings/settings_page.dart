@@ -127,8 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: const Text('Settings'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios,
-              color: Color.fromARGB(255, 117, 85, 18)),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),

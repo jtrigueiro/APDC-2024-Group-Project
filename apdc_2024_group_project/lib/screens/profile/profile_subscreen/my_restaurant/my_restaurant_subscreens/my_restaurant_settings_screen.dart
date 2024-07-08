@@ -49,8 +49,7 @@ class MyRestaurantSettingsScreenState
             appBar: AppBar(
               title: const Text('My Restaurant Settings'),
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 117, 85, 18)),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -58,134 +57,126 @@ class MyRestaurantSettingsScreenState
             ),
             body: Scrollbar(
               controller: scrollController,
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      customSpaceBetweenColumns(20),
-                      Text('Activity',
-                          style: Theme.of(context).textTheme.titleLarge),
-                      const Divider(
-                          thickness: 2,
-                          color: Color.fromARGB(255, 182, 141, 64)),
-                      Row(
-                        children: [
-                          Text('Visible',
-                              style: Theme.of(context).textTheme.titleMedium),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Switch(
-                                  value: visible,
-                                  onChanged: (bool value) {
-                                    setState(() {
-                                      visible = value;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      customSpaceBetweenColumns(100),
-                      const Divider(
-                          thickness: 2,
-                          color: Color.fromARGB(255, 182, 141, 64)),
-                      Center(
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.error,
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.onError,
-                            ),
-                            child: Text(
-                              'Delete Restaurant',
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onError),
-                            ),
-                          ),
-                        ),
-                      ),
-                      customSpaceBetweenColumns(400),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                        child: Center(
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                if (await DatabaseService()
-                                            .getRestaurantImageUrl() ==
-                                        null &&
-                                    visible == true) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Error'),
-                                        content: const Text(
-                                            'Restaurant image is missing.'),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                } else if ((await DatabaseService()
-                                                .hasVisibleDishes() ==
-                                            false ||
-                                        await DatabaseService()
-                                                .hasVisibleDishes() ==
-                                            null) &&
-                                    visible == true) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Error'),
-                                        content: const Text(
-                                            'Restaurant is missing a visible dish.'),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  await DatabaseService()
-                                      .updateRestaurantVisibility(visible);
-                                  Navigator.pop(context);
-                                }
-                              },
-                              child: const Text('Save'),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+              child: ListView(
+                padding: const EdgeInsets.all(16.0),
+                children: [
+                  _buildSectionTitle('Activity'),
+                  Divider(thickness: 1, color: Theme.of(context).colorScheme.primary),
+                  SwitchListTile(
+                    tileColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    title: Text('Visible',
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            fontWeight: FontWeight.normal,
+                        )),
+                    value: visible,
+                    onChanged: (bool value) {
+                      setState(() {
+                        visible = value;
+                      });
+                    },
                   ),
-                ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(top:50.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Divider(thickness: 1, color: Theme.of(context).colorScheme.primary),
+
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                            Theme.of(context).colorScheme.error,
+                            foregroundColor:
+                            Theme.of(context).colorScheme.onError,
+                          ),
+                          child: const Text(
+                            'Delete Restaurant',
+                          ),
+                        ),
+
+                        Divider(thickness: 1, color: Theme.of(context).colorScheme.primary),
+
+                      ],
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 100.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (await DatabaseService()
+                                .getRestaurantImageUrl() ==
+                                null &&
+                                visible == true) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Error'),
+                                    content: const Text(
+                                        'Restaurant image is missing.'),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else if ((await DatabaseService()
+                                .hasVisibleDishes() ==
+                                false ||
+                                await DatabaseService()
+                                    .hasVisibleDishes() ==
+                                    null) &&
+                                visible == true) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Error'),
+                                    content: const Text(
+                                        'Restaurant is missing a visible dish.'),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              await DatabaseService()
+                                  .updateRestaurantVisibility(visible);
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(title,
+        style:
+            Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 17));
   }
 }
