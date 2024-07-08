@@ -1,11 +1,46 @@
 import 'package:adc_group_project/screens/home/home_screen.dart';
+import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:adc_group_project/services/models/restaurant.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class TopCarousel extends StatelessWidget {
+class TopCarousel extends StatefulWidget {
   final List<String> images;
+  final Function(List<Restaurant>) onFilterApplied;
+  final Function onFilterCleared;
 
-  const TopCarousel({required this.images, Key? key}) : super(key: key);
+  const TopCarousel({
+    required this.images,
+    required this.onFilterApplied,
+    required this.onFilterCleared,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _TopCarouselState createState() => _TopCarouselState();
+}
+
+class _TopCarouselState extends State<TopCarousel> {
+  String? selectedType;
+
+  void _filterRestaurants(String type) async {
+    if (selectedType == type) {
+      // Clear filter if the same type is selected again
+      setState(() {
+        selectedType = null;
+      });
+      widget.onFilterCleared();
+    } else {
+      // Apply new filter
+      setState(() {
+        selectedType = type;
+      });
+      final DatabaseService db = DatabaseService();
+      final filteredRestaurants = await db.getRestaurantsByType(type);
+      widget.onFilterApplied(filteredRestaurants);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,26 +48,29 @@ class TopCarousel extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10.0),
       child: CarouselSlider(
         options: CarouselOptions(
-          height: 100,
+          height: MediaQuery.of(context).size.height * 0.2,
           autoPlay: true,
           autoPlayInterval: const Duration(seconds: 7),
           scrollDirection: Axis.horizontal,
           viewportFraction:
-              MediaQuery.of(context).size.width > 600 ? 0.1 : 0.25,
+              MediaQuery.of(context).size.width > 600 ? 0.15 : 0.25,
           enableInfiniteScroll: true,
         ),
-        items: images.map((item) {
-          return Builder(
-            builder: (BuildContext context) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 60.0,
-                    height: 60.0,
+        items: widget.images.map((item) {
+          final type = item.split('/').last.split('.').first;
+          final isSelected = selectedType == type;
+
+          return GestureDetector(
+            onTap: () => _filterRestaurants(type),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50.0),
+                  child: Container(
+                    width: containerSize(context),
+                    height: containerSize(context),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30.0),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
@@ -41,33 +79,37 @@ class TopCarousel extends StatelessWidget {
                           offset: const Offset(0, 3),
                         ),
                       ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage(item),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: AssetImage(item),
+                        fit: BoxFit.cover,
                       ),
+                      border: isSelected
+                          ? Border.all(color: Colors.blue, width: 3.0)
+                          : null,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(
-                      item.split('/').last.split('.').first.capitalize(),
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  )
-                ],
-              );
-            },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text(
+                    type.capitalize(),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                )
+              ],
+            ),
           );
         }).toList(),
       ),
     );
+  }
+
+  double containerSize(context) {
+    if (kIsWeb) {
+      return MediaQuery.of(context).size.width * 0.1;
+    } else {
+      return MediaQuery.of(context).size.width * 0.2;
+    }
   }
 }

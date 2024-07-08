@@ -44,19 +44,22 @@ class RestaurantApplicationTile extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Enter Consumption Values'),
+          scrollable: true,
+          title: const Text('Enter Consumption Values'),
           content: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: electricityController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Electricity (kWh)'),
+                decoration: const InputDecoration(labelText: 'Electricity (kWh)'),
               ),
-              TextField(
-                controller: waterController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Water (liters)'),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: TextField(
+                  controller: waterController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Water (liters)'),
+                ),
               ),
               TextField(
                 controller: gasController,
@@ -149,7 +152,13 @@ class RestaurantApplicationTile extends StatelessWidget {
                     restaurantApplication.seats,
                   );
 
-                  await DatabaseService().incrementLocation(restaurantApplication.location.capitalize());
+                  List<String> typeNames = restaurantApplication
+                      .types; // Certifique-se de ter este campo
+                  await DatabaseService().addRestaurantIdToTypes(
+                      typeNames, restaurantApplication.uid);
+
+                  await DatabaseService().incrementLocation(
+                      restaurantApplication.location.capitalize());
 
                   await DatabaseService()
                       .deleteRestaurantApplication(restaurantApplication.uid);
@@ -186,11 +195,10 @@ class RestaurantApplicationTile extends StatelessWidget {
       ),
     );
   }
-  
 }
 
-extension StringExtensions on String { 
-  String capitalize() { 
-    return "${this[0].toUpperCase()}${substring(1)}"; 
-  } 
-} 
+extension StringExtensions on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1)}";
+  }
+}

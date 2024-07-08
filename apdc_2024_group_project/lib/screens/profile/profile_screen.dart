@@ -3,6 +3,7 @@ import 'package:adc_group_project/screens/profile/profile_subscreen/achievement/
 import 'package:adc_group_project/screens/profile/profile_subscreen/my_restaurant/my_restaurant_screen_router.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/promo_codes/promo_codes.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +16,8 @@ import 'profile_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
+
+
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -29,6 +32,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _initializeProfile();
+  }
+
+  double iconSize(BuildContext context) {
+    if (kIsWeb) {
+      return 25;
+    } else {
+      return MediaQuery.of(context).size.width * 0.055;
+    }
   }
 
   Future<void> _initializeProfile() async {
@@ -112,14 +123,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top:10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Text(
                     _userName ?? 'User Name',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-
-                Divider(color: Theme.of(context).colorScheme.primary,thickness: 2,),
+                Divider(
+                  color: Theme.of(context).colorScheme.primary,
+                  thickness: 2,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Column(
@@ -161,15 +174,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ontapHelpSupport(context),
                       ),
                       ListTile(
-                        leading: Icon(Icons.logout,
-                            color: Theme.of(context).colorScheme.error,size: MediaQuery.of(context).size.width*0.055,),
+                        leading: Icon(
+                          Icons.logout,
+                          color: Theme.of(context).colorScheme.error,
+                          size: iconSize(context),
+                        ),
                         title: Text(
                           'Log Out',
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium!
                               .copyWith(
-                                  color: Theme.of(context).colorScheme.error,fontSize: 17),
+                                  color: Theme.of(context).colorScheme.error,
+                                  fontSize: 17),
                         ),
                         onTap: () async {
                           await FirebaseAuth.instance.signOut();
@@ -284,9 +301,22 @@ class ProfileMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, size: MediaQuery.of(context).size.width*0.055,),
-      title: Text(text, style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 17), ),
+      leading: Icon(icon, size: iconSize(context)),
+      title: Text(
+        text,
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 17),
+      ),
       onTap: onTap,
     );
   }
+
+  double iconSize(BuildContext context) {
+    if (kIsWeb) {
+      return 25;
+    } else {
+      return MediaQuery.of(context).size.width * 0.055;
+    }
+  }
+
+
 }

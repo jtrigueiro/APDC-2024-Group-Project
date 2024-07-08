@@ -2,6 +2,7 @@ import 'package:adc_group_project/screens/authenticate/sign_up_screen.dart';
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,16 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   controller: scrollController,
                   child: Column(children: [
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 40),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        child: const Image(
-                            image: AssetImage(
-                          "assets/images/ecodine-high-resolution-logo-transparent.png",
-                        )),
-                      ),
-                    ),
+                    logoSize(),
 
                     Padding(
                       padding: const EdgeInsets.only(bottom: 6.0),
@@ -203,5 +195,37 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
           );
+  }
+
+  Padding logoSize()
+  {
+    if(kIsWeb)
+      {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child:
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.3,
+            child: const Image(
+                image: AssetImage(
+                  "assets/images/ecodine-high-resolution-logo-transparent.png",
+                )),
+          ),
+        );
+      }
+    else
+      {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child:
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: const Image(
+                image: AssetImage(
+                  "assets/images/ecodine-high-resolution-logo-transparent.png",
+                )),
+          ),
+        );
+      }
   }
 }

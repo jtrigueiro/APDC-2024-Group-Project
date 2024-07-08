@@ -69,6 +69,8 @@ class DatabaseService {
   static const String SETTINGS_SUBCOLLECTION = "settings";
   // ignore: constant_identifier_names
   static const String USER_PROMOS_SUBCOLLECTION = "user_promos";
+  // ignore: constant_identifier_names
+  static const String RESTAURANT_TYPES_SUBCOLLECTION = "restaurant_types";
 
   // documents variables
   // ignore: constant_identifier_names
@@ -88,7 +90,6 @@ class DatabaseService {
       String uid, String name, bool isAdmin) async {
     try {
       await usersCollection.doc(uid).set({
-        'userId': uid,
         'name': name,
         'isAdmin': isAdmin,
       });
@@ -221,22 +222,40 @@ class DatabaseService {
 
   // ----------------- No Restaurant (Application) -----------------
   // create or overwrite a restaurant application
-  Future createOrOverwriteRestaurantApplicationData(String name, String phone,
-      String address, String location, int seats, String coords) async {
+  Future createOrOverwriteRestaurantApplicationData(
+    String name,
+    String phone,
+    String address,
+    String location,
+    int seats,
+    String coords,
+    List<String> restaurantTypes,
+  ) async {
     User? user = _auth.currentUser;
     try {
-      await restaurantsApplicationsCollection.doc(user!.uid).set({
-        'restaurantId': user.uid,
+      final restaurantData = {
         'name': name,
         'phone': phone,
         'address': address,
         'location': location,
         'seats': seats,
         'coordinates': coords,
-      });
+      };
+
+      await restaurantsApplicationsCollection
+          .doc(user!.uid)
+          .set(restaurantData);
+
+      CollectionReference typesCollection = restaurantsApplicationsCollection
+          .doc(user.uid)
+          .collection(RESTAURANT_TYPES_SUBCOLLECTION);
+      for (String type in restaurantTypes) {
+        final typeData = {'name': type};
+
+        await typesCollection.doc(type).set(typeData);
+      }
       return true;
     } catch (e) {
-      debugPrint(e.toString());
       return null;
     }
   }
@@ -357,7 +376,7 @@ class DatabaseService {
       final QuerySnapshot doc = await ingredientsCollection.get();
       return doc.docs.map((doc) {
         return Ingredient(
-          name: doc.get('name') ?? '',
+          name: doc.id ?? '',
           grams: doc.get('grams').toInt() ?? 0,
           co2: doc.get('co2').toInt() ?? 0,
         );
@@ -378,7 +397,6 @@ class DatabaseService {
 
       final String dishId = path.doc().id;
       await path.doc(dishId).set({
-        'dishId': dishId,
         'name': name,
         'description': description,
         'price': price,
@@ -392,7 +410,6 @@ class DatabaseService {
             .collection(INGREDIENTS_SUBCOLLECTION)
             .doc(ingredient.name)
             .set({
-          'name': ingredient.name,
           'grams': ingredient.grams,
           'co2': ingredient.co2,
         });
@@ -417,7 +434,6 @@ class DatabaseService {
 
       final String dishId = path.doc().id;
       await path.doc(dishId).set({
-        'dishId': dishId,
         'name': name,
         'description': description,
         'price': price,
@@ -431,7 +447,6 @@ class DatabaseService {
             .collection(INGREDIENTS_SUBCOLLECTION)
             .doc(ingredient.name)
             .set({
-          'name': ingredient.name,
           'grams': ingredient.grams,
           'co2': ingredient.co2,
         });
@@ -467,10 +482,10 @@ class DatabaseService {
   }
 
   // get all restaurant dishes
-  Future<List<Dish>> getAllRestaurantDishes(String restaurantUid) async {
+  Future<List<Dish>> getAllRestaurantDishes(String restaurantId) async {
     try {
       final QuerySnapshot snapshot = await restaurantsCollection
-          .doc(restaurantUid)
+          .doc(restaurantId)
           .collection(DISHES_SUBCOLLECTION)
           .where('visible', isEqualTo: true)
           .get();
@@ -557,6 +572,7 @@ class DatabaseService {
   // get dish image url
   Future getDishImageUrlUsers(String restaurantUid, String dishId) async {
     try {
+      // TODO: this should not be here, do not mix db classes - jose to wilker
       String imageUrl = await _storage
           .ref()
           .child('restaurants/$restaurantUid/dishes/$dishId')
@@ -580,7 +596,7 @@ class DatabaseService {
           .get();
       return doc.docs.map((doc) {
         return Ingredient(
-          name: doc.get('name') ?? '',
+          name: doc.id ?? '',
           grams: doc.get('grams').toInt() ?? 0,
           co2: doc.get('co2').toInt() ?? 0,
         );
@@ -719,10 +735,8 @@ class DatabaseService {
 
     if (user != null) {
       String userId = user.uid;
-      String messageId = supportMessagesCollection.doc().id;
 
-      await supportMessagesCollection.doc(messageId).set({
-        'messageId': messageId,
+      await supportMessagesCollection.doc().set({
         'userId': userId,
         'email': user.email,
         'message': message,
@@ -919,11 +933,23 @@ class DatabaseService {
   }
 
   // ----------------- BackOffice -----------------
-  // restaurant application from snapshot
+  // restaurants applications list from snapshot
   List<RestaurantApplication> _restaurantsApplicationsListFromSnapshot(
       QuerySnapshot snapshot) {
     try {
       return snapshot.docs.map((doc) {
+        // Referência para a subcoleção restaurant_types
+        CollectionReference typesCollection =
+            doc.reference.collection('restaurant_types');
+
+        // Obter os tipos de restaurante
+        List<String> restaurantTypes = [];
+        typesCollection.get().then((typesSnapshot) {
+          typesSnapshot.docs.forEach((typeDoc) {
+            restaurantTypes.add(typeDoc.id);
+          });
+        });
+
         return RestaurantApplication(
           uid: doc.id,
           name: doc.get('name') ?? '',
@@ -932,6 +958,7 @@ class DatabaseService {
           address: doc.get('address') ?? '',
           seats: doc.get('seats').toInt() ?? 0,
           coordinates: doc.get('coordinates') ?? '',
+          types: restaurantTypes, // Lista de tipos de restaurante
         );
       }).toList();
     } catch (e) {
@@ -940,7 +967,7 @@ class DatabaseService {
     }
   }
 
-  // get restaurants applications stream
+  // get restaurants applications list stream
   Stream<List<RestaurantApplication>> get restaurantsApplications {
     try {
       return restaurantsApplicationsCollection
@@ -955,7 +982,26 @@ class DatabaseService {
   // delete restaurant application
   Future deleteRestaurantApplication(String uid) async {
     try {
+      await deleteRestaurantApplicationSubcollection(uid);
       await restaurantsApplicationsCollection.doc(uid).delete();
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  //delete restaurant application subcollection
+
+  Future deleteRestaurantApplicationSubcollection(String uid) async {
+    try {
+      CollectionReference typesCollection = restaurantsApplicationsCollection
+          .doc(uid)
+          .collection(RESTAURANT_TYPES_SUBCOLLECTION);
+      QuerySnapshot typesSnapshot = await typesCollection.get();
+      for (DocumentSnapshot doc in typesSnapshot.docs) {
+        await doc.reference.delete();
+      }
       return true;
     } catch (e) {
       debugPrint(e.toString());
@@ -975,7 +1021,6 @@ class DatabaseService {
       int seats) async {
     try {
       await restaurantsCollection.doc(uid).set({
-        'restaurantId': uid,
         'name': name,
         'lowerCaseName': name.toLowerCase(),
         'phone': phone,
@@ -1008,7 +1053,7 @@ class DatabaseService {
     try {
       return snapshot.docs.map((doc) {
         return Ingredient(
-          name: doc.get('name') ?? '',
+          name: doc.id ?? '',
           grams: doc.get('grams').toInt() ?? 0,
           co2: doc.get('co2').toInt() ?? 0,
         );
@@ -1035,7 +1080,6 @@ class DatabaseService {
   Future createOrOverwriteIngredient(String name, int co2, int grams) async {
     try {
       await ingredientsCollection.doc(name).set({
-        'name': name,
         'grams': grams,
         'co2': co2,
       });
@@ -1107,8 +1151,7 @@ class DatabaseService {
           'start': start,
           'end': start.add(const Duration(hours: 1)),
         });
-      }
-      else {
+      } else {
         throw Exception("User not logged in");
       }
       return true;
@@ -1118,7 +1161,8 @@ class DatabaseService {
     }
   }
 
-  Future<List<Reservation>> getRestaurantReservations(String restaurantID) async {
+  Future<List<Reservation>> getRestaurantReservations(
+      String restaurantID) async {
     try {
       final QuerySnapshot snapshot = await reservationsCollection
           .where('restaurantId', isEqualTo: restaurantID)
@@ -1136,11 +1180,10 @@ class DatabaseService {
 
       if (user != null) {
         final QuerySnapshot snapshot = await reservationsCollection
-          .where('userId', isEqualTo: user.uid)
-          .get();
-      return reservationsListFromSnapshot(snapshot);
-      }
-      else {
+            .where('userId', isEqualTo: user.uid)
+            .get();
+        return reservationsListFromSnapshot(snapshot);
+      } else {
         throw Exception("User not logged in");
       }
     } catch (e) {
@@ -1173,9 +1216,8 @@ class DatabaseService {
 
   Future<void> addRestaurantType(String typeName) async {
     try {
-      await restaurantTypesCollection.add({
+      await restaurantTypesCollection.doc(typeName).set({
         'name': typeName,
-        'created_at': Timestamp.now(),
       });
     } catch (e) {
       print("Error adding restaurant type: $e");
@@ -1200,5 +1242,38 @@ class DatabaseService {
       print("Error deleting restaurant type: $e");
       throw e;
     }
+  }
+
+  Future<void> addRestaurantIdToTypes(
+      List<String> typeNames, String restaurantId) async {
+    try {
+      for (String typeName in typeNames) {
+        await restaurantTypesCollection
+            .doc(typeName)
+            .collection('restaurants')
+            .doc(restaurantId)
+            .set({'restaurantId': restaurantId});
+      }
+    } catch (e) {
+      print("Error adding restaurant ID to types: $e");
+      throw e;
+    }
+  }
+
+  Future<List<Restaurant>> getRestaurantsByType(String type) async {
+    List<Restaurant> restaurants = [];
+
+    QuerySnapshot snapshot = await restaurantTypesCollection
+        .doc(type)
+        .collection('restaurants')
+        .get();
+
+    for (var doc in snapshot.docs) {
+      DocumentSnapshot restaurantSnapshot =
+          await restaurantsCollection.doc(doc.get('restaurantId')).get();
+      restaurants.add(restaurantSnapshot.data() as Restaurant);
+    }
+
+    return restaurants;
   }
 }

@@ -160,7 +160,7 @@ class _SearchScreenState extends State<SearchScreen> {
       setState(() {
         done = true;
         paddingNeeded = values.isEmpty ? false : true;
-        _getDateFromUser();
+        //_getDateFromUser(); //todo: date picker removed
       });
 
   }
@@ -208,7 +208,7 @@ class _SearchScreenState extends State<SearchScreen> {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  _getDateFromUser();
+                 // _getDateFromUser();
                 },
                 child: const Text('OK'),
               ),
@@ -307,9 +307,10 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body:  Column (
         children: [
-          const SizedBox(height: 20),
-          const Text('Please select a location to continue.'),
-          const SizedBox(height: 20),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.0),
+            child: Text('Please select a location to continue.'),
+          ),
           ListTile(
                 title: const Text('Current Location'),
                 leading: const Icon(Icons.my_location),
@@ -354,9 +355,11 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         title: Row(
           children: [
-            const Icon(Icons.restaurant),
-            const SizedBox(width: 20),
-            Text('Restaurants   •   $currentLocality'),
+            const Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: Icon(Icons.restaurant),
+            ),
+            Text('Restaurants  •  $currentLocality'),
           ],
         ),
       ),
@@ -398,8 +401,8 @@ class _SearchScreenState extends State<SearchScreen> {
       return CarouselSlider(
         carouselController: carouselController,
         options: CarouselOptions(
-          height: 100,
-          viewportFraction: 0.8,
+          height: MediaQuery.of(context).size.height*0.15,
+          //viewportFraction: 0.8,
           initialPage: 0,
           enableInfiniteScroll: false,
           scrollDirection: Axis.horizontal,
@@ -425,62 +428,65 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       );
     },
-    child: Container(
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.white,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            margin: const EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              /*
-              image: DecorationImage(
-              image: NetworkImage(item.imageUrl),
-              fit: BoxFit.cover,
-              ),*/
-              image: const DecorationImage(
-                image: AssetImage('assets/images/restaurant_1.png'),
+    child: Padding(
+      padding: const EdgeInsets.only(bottom: 10, left: 10),
+      child: Container(
+        //width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.white,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width*0.2,
+              height: MediaQuery.of(context).size.width*0.2,
+              margin: const EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                /*
+                image: DecorationImage(
+                image: NetworkImage(item.imageUrl),
                 fit: BoxFit.cover,
+                ),*/
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/restaurant_1.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox( height: 5,),
-                Text(
-                  restaurant.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25, top: 5),
+                    child: Text(
+                      restaurant.name,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                textLine('4.5', const Icon(Icons.star, color: Colors.amber, size: 16,)),
-                textLine('10.1 kg/yr CO2', const Icon(Icons.eco, size: 16, color: Colors.grey)),
-                textLine('1.2 km', const Icon(Icons.location_on, size: 16, color: Colors.grey)),
-              ],
-            ),
-        ],
+                  textLine('4.5', Icons.star ,context, Colors.amber),
+                  textLine('10.1 kg/yr CO2', Icons.eco,context,Colors.green),
+                  textLine('1.2 km', Icons.location_on,context, Colors.grey),
+                ],
+              ),
+          ],
+        ),
       ),
     ),
   );
 }
 }
 
-Row textLine(String text, Icon icon) {
+Row textLine(String text, IconData icon, BuildContext context, Color color) {
   return Row(
     children: [
-      icon,
-      const SizedBox(width: 5),
-      Text(text),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+        child: Icon(icon, size: 17, color: color),
+      ),
+      Text(text, style: Theme.of(context).textTheme.bodyMedium,),
     ],
   );
 }

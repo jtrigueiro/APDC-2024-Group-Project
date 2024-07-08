@@ -34,9 +34,6 @@ class MyDishesScreenState extends State<MyDishesScreen> {
         child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
-                unselectedLabelColor: Color.fromARGB(255, 117, 85, 18),
-                labelColor: Color.fromARGB(255, 255, 255, 255),
-                //indicatorColor: Color.fromARGB(255, 255, 255, 255),
                 tabs: [
                   Tab(
                     icon: Icon(Icons.visibility),
@@ -50,8 +47,7 @@ class MyDishesScreenState extends State<MyDishesScreen> {
               ),
               title: const Text('My Dishes'),
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 117, 85, 18)),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -59,7 +55,6 @@ class MyDishesScreenState extends State<MyDishesScreen> {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.add_circle_outline),
-                  color: Color.fromARGB(255, 255, 255, 255),
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
