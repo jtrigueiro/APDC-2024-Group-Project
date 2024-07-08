@@ -987,7 +987,26 @@ class DatabaseService {
   // delete restaurant application
   Future deleteRestaurantApplication(String uid) async {
     try {
+      await deleteRestaurantApplicationSubcollection(uid);
       await restaurantsApplicationsCollection.doc(uid).delete();
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  //delete restaurant application subcollection
+
+  Future deleteRestaurantApplicationSubcollection(String uid) async {
+    try {
+      CollectionReference typesCollection = restaurantsApplicationsCollection
+          .doc(uid)
+          .collection('restaurant_types');
+      QuerySnapshot typesSnapshot = await typesCollection.get();
+      for (DocumentSnapshot doc in typesSnapshot.docs) {
+        await doc.reference.delete();
+      }
       return true;
     } catch (e) {
       debugPrint(e.toString());
