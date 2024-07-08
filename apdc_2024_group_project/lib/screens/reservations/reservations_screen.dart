@@ -1,6 +1,7 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/reservation.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ReservationsScreen extends StatefulWidget {
@@ -11,7 +12,6 @@ class ReservationsScreen extends StatefulWidget {
 }
 
 class ReservationsScreenState extends State<ReservationsScreen> {
-
   @override
   void initState() {
     getReservations();
@@ -33,7 +33,8 @@ class ReservationsScreenState extends State<ReservationsScreen> {
     return ListTile(
       leading: const Icon(Icons.restaurant),
       title: Text(reservation.restaurantName),
-      subtitle: Text('${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
+      subtitle: Text(
+          '${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
       onTap: () {
         showReservationDetails(reservation);
       },
@@ -51,8 +52,10 @@ class ReservationsScreenState extends State<ReservationsScreen> {
             child: Column(
               children: [
                 Text('Restaurant: ${reservation.restaurantName}'),
-                Text('Date: ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
-                Text('Time: ${reservation.start.hour}:${reservation.start.minute}'),
+                Text(
+                    'Date: ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
+                Text(
+                    'Time: ${reservation.start.hour}:${reservation.start.minute}'),
                 Text('Total Price: ${reservation.cost}'),
                 ListView.builder(
                   itemCount: reservation.order.length,
@@ -84,20 +87,47 @@ class ReservationsScreenState extends State<ReservationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return webScaffold();
+    }
+    else
+      {
+        return appScaffold();
+      }
+  }
+
+  webScaffold() {
+    return Scaffold(
+      body: fetchingReservations
+          ? const LoadingScreen()
+          : Center(
+              child: ListView.builder(
+                itemCount: reservations.length,
+                physics: const ScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return buildReservationTile(reservations[index]);
+                },
+              ),
+            ),
+    );
+  }
+
+  appScaffold() {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reservations'),
       ),
-      body: fetchingReservations ? const LoadingScreen()
-        : Center(
-          child: ListView.builder(
-            itemCount: reservations.length,
-              physics: const ScrollPhysics(),
-            itemBuilder: (context, index) {
-              return buildReservationTile(reservations[index]);
-            },
-          ),
-        ),
-      );
+      body: fetchingReservations
+          ? const LoadingScreen()
+          : Center(
+              child: ListView.builder(
+                itemCount: reservations.length,
+                physics: const ScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return buildReservationTile(reservations[index]);
+                },
+              ),
+            ),
+    );
   }
 }
