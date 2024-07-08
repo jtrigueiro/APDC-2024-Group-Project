@@ -69,6 +69,7 @@ class ReserveScreenState extends State<ReserveScreen> {
     });
   }
 
+<<<<<<< Updated upstream
   Column dateSelection() {
     return Column (
       mainAxisAlignment: MainAxisAlignment.center,
@@ -103,6 +104,43 @@ class ReserveScreenState extends State<ReserveScreen> {
             Center( child: _buildTimeDropdownMenu(openHours[selectedDate.weekday - 1]),)
           ],),
         ],
+=======
+  Padding dateSelection() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 50.0),
+      child: Column (
+        //mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Selected Date and Time'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 14)),
+                    selectableDayPredicate: (day) {
+                      return widget.restaurant.isOpen[day.weekday - 1];
+                    },
+                  ).then((date) {
+                    if (date != null) {
+                      setState(() {
+                        selectedDate = date;
+                        _selectedDay = daysWeek[selectedDate.weekday - 1];
+                      });
+                    }
+                  });
+                },
+                child: Text('$_selectedDay: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),),
+              const SizedBox(width: 20.0),
+              Center( child: _buildTimeDropdownMenu(openHours[selectedDate.weekday - 1]),)
+            ],),
+          ],
+      ),
+>>>>>>> Stashed changes
     );
   }
 
