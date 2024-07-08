@@ -943,6 +943,18 @@ class DatabaseService {
       QuerySnapshot snapshot) {
     try {
       return snapshot.docs.map((doc) {
+        // Referência para a subcoleção restaurant_types
+        CollectionReference typesCollection =
+            doc.reference.collection('restaurant_types');
+
+        // Obter os tipos de restaurante
+        List<String> restaurantTypes = [];
+        typesCollection.get().then((typesSnapshot) {
+          typesSnapshot.docs.forEach((typeDoc) {
+            restaurantTypes.add(typeDoc.id);
+          });
+        });
+
         return RestaurantApplication(
           uid: doc.id,
           name: doc.get('name') ?? '',
@@ -951,6 +963,7 @@ class DatabaseService {
           address: doc.get('address') ?? '',
           seats: doc.get('seats').toInt() ?? 0,
           coordinates: doc.get('coordinates') ?? '',
+          types: restaurantTypes, // Lista de tipos de restaurante
         );
       }).toList();
     } catch (e) {
@@ -1126,8 +1139,7 @@ class DatabaseService {
           'start': start,
           'end': start.add(const Duration(hours: 1)),
         });
-      }
-      else {
+      } else {
         throw Exception("User not logged in");
       }
       return true;
@@ -1137,7 +1149,8 @@ class DatabaseService {
     }
   }
 
-  Future<List<Reservation>> getRestaurantReservations(String restaurantID) async {
+  Future<List<Reservation>> getRestaurantReservations(
+      String restaurantID) async {
     try {
       final QuerySnapshot snapshot = await reservationsCollection
           .where('restaurantId', isEqualTo: restaurantID)
@@ -1155,11 +1168,10 @@ class DatabaseService {
 
       if (user != null) {
         final QuerySnapshot snapshot = await reservationsCollection
-          .where('userId', isEqualTo: user.uid)
-          .get();
-      return reservationsListFromSnapshot(snapshot);
-      }
-      else {
+            .where('userId', isEqualTo: user.uid)
+            .get();
+        return reservationsListFromSnapshot(snapshot);
+      } else {
         throw Exception("User not logged in");
       }
     } catch (e) {
@@ -1216,6 +1228,22 @@ class DatabaseService {
       await restaurantTypesCollection.doc(typeId).delete();
     } catch (e) {
       print("Error deleting restaurant type: $e");
+      throw e;
+    }
+  }
+
+  Future<void> addRestaurantIdToTypes(
+      List<String> typeNames, String restaurantId) async {
+    try {
+      for (String typeName in typeNames) {
+        await restaurantTypesCollection
+            .doc(typeName)
+            .collection('restaurants')
+            .doc(restaurantId)
+            .set({'restaurantId': restaurantId});
+      }
+    } catch (e) {
+      print("Error adding restaurant ID to types: $e");
       throw e;
     }
   }

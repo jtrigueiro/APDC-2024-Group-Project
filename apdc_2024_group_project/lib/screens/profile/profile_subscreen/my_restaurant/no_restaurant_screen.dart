@@ -26,6 +26,9 @@ class NoRestaurantScreen extends StatefulWidget {
 }
 
 class NoRestaurantScreenState extends State<NoRestaurantScreen> {
+  static const String noRestaurantText =
+      "Seems like you have no restaurant yet!\nAdd one now!";
+
   final ScrollController scrollController = ScrollController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -311,47 +314,47 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Column(
                       children: [
-                        Text(
-                          "Seems like you have no restaurant yet!",
+                        const SizedBox(height: 20),
+                        const Text(
+                          noRestaurantText,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
-                          child: Text(
-                            'Add one now',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleMedium,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         Form(
                           key: _formKey,
                           child: Column(
                             children: [
+                              const SizedBox(height: 30),
                               buildTextFormField("Restaurant name",
                                   nameController, TextInputType.text, null, 70),
+                              const SizedBox(height: 10),
                               buildTextFormField(
                                   "Phone number",
                                   phoneController,
                                   TextInputType.phone,
                                   _numeric,
                                   15),
+                              const SizedBox(height: 10),
                               buildDoubleTextForm(
                                   "Street number",
                                   "Route",
                                   streetNumberController,
                                   routeController,
                                   TextInputType.text),
+                              const SizedBox(height: 10),
                               buildDoubleTextForm(
                                   "Postal Code",
                                   "Country",
                                   cpController,
                                   countryController,
                                   TextInputType.text),
+                              const SizedBox(height: 10),
                               buildTextFormField(
                                   "Number of seats",
                                   _numberOfSeatsController,
@@ -381,26 +384,14 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                   _electricityPdfBytes, _electricityPdfError),
                               const SizedBox(height: 10),
                               buildPdfButton(
-                                  Icons.lightbulb,
-                                  "Electricity",
-                                  _electricityPdf,
-                                  _electricityPdfBytes,
-                                  _electricityPdfError),
-                              buildPdfButton(Icons.gas_meter_outlined, "Gas",
-                                  _gasPdf, _gasPdfBytes, _gasPdfError),
-                              buildPdfButton(Icons.water_drop, "Water",
-                                  _waterPdf, _waterPdfBytes, _waterPdfError),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 40.0),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                  onPressed: _submitForm,
-                                  child: const Text("Submit Application"),
-                                ),
+                                  "Gas", _gasPdf, _gasPdfBytes, _gasPdfError),
+                              const SizedBox(height: 10),
+                              buildPdfButton("Water", _waterPdf, _waterPdfBytes,
+                                  _waterPdfError),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: _submitForm,
+                                child: const Text("Submit Application"),
                               ),
                             ],
                           ),

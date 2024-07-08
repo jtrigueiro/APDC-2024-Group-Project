@@ -149,7 +149,13 @@ class RestaurantApplicationTile extends StatelessWidget {
                     restaurantApplication.seats,
                   );
 
-                  await DatabaseService().incrementLocation(restaurantApplication.location.capitalize());
+                  List<String> typeNames = restaurantApplication
+                      .types; // Certifique-se de ter este campo
+                  await DatabaseService().addRestaurantIdToTypes(
+                      typeNames, restaurantApplication.uid);
+
+                  await DatabaseService().incrementLocation(
+                      restaurantApplication.location.capitalize());
 
                   await DatabaseService()
                       .deleteRestaurantApplication(restaurantApplication.uid);
@@ -186,11 +192,10 @@ class RestaurantApplicationTile extends StatelessWidget {
       ),
     );
   }
-  
 }
 
-extension StringExtensions on String { 
-  String capitalize() { 
-    return "${this[0].toUpperCase()}${substring(1)}"; 
-  } 
-} 
+extension StringExtensions on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1)}";
+  }
+}
