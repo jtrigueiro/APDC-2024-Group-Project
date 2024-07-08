@@ -221,22 +221,41 @@ class DatabaseService {
 
   // ----------------- No Restaurant (Application) -----------------
   // create or overwrite a restaurant application
-  Future createOrOverwriteRestaurantApplicationData(String name, String phone,
-      String address, String location, int seats, String coords) async {
+  Future createOrOverwriteRestaurantApplicationData(
+    String name,
+    String phone,
+    String address,
+    String location,
+    int seats,
+    String coords,
+    List<String> restaurantTypes,
+  ) async {
     User? user = _auth.currentUser;
     try {
-      await restaurantsApplicationsCollection.doc(user!.uid).set({
-        'restaurantId': user.uid,
+      final restaurantData = {
+        'restaurantId': user!.uid,
         'name': name,
         'phone': phone,
         'address': address,
         'location': location,
         'seats': seats,
         'coordinates': coords,
-      });
+      };
+      print("Restaurant Data: $restaurantData");
+
+      await restaurantsApplicationsCollection.doc(user.uid).set(restaurantData);
+
+      CollectionReference typesCollection = restaurantsApplicationsCollection
+          .doc(user.uid)
+          .collection('restaurant_types');
+      for (String type in restaurantTypes) {
+        final typeData = {'name': type};
+        print("Type Data: $typeData");
+        await typesCollection.doc(type).set(typeData);
+      }
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      print("Error creating or overwriting restaurant application data: $e");
       return null;
     }
   }
@@ -1173,9 +1192,8 @@ class DatabaseService {
 
   Future<void> addRestaurantType(String typeName) async {
     try {
-      await restaurantTypesCollection.add({
+      await restaurantTypesCollection.doc(typeName).set({
         'name': typeName,
-        'created_at': Timestamp.now(),
       });
     } catch (e) {
       print("Error adding restaurant type: $e");
