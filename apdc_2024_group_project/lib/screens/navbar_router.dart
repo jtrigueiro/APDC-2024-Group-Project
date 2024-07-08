@@ -6,9 +6,10 @@ import 'package:adc_group_project/screens/profile/profile_screen.dart';
 import 'package:adc_group_project/screens/reservations/reservations_screen.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class HomeRouter extends StatefulWidget {
+class HomeRouter  extends StatefulWidget {
   const HomeRouter({super.key});
 
   @override
@@ -19,6 +20,14 @@ class _HomeRouterState extends State<HomeRouter> {
   int _currentIndex = 0;
   bool loading = true;
   bool isAdmin = false;
+
+  final texts = [
+    const Text('Home'),
+    const Text('Reservations'),
+    const Text('CO2'),
+    const Text('Favorite Restaurants'),
+    const Text('Profile'),
+  ];
 
   final screens = [
     const HomeScreen(),
@@ -50,52 +59,114 @@ class _HomeRouterState extends State<HomeRouter> {
 
   @override
   Widget build(BuildContext context) {
+    if(kIsWeb)
+      {
+        return web(context);
+      }
+    else {
+      return app(context);
+    }
+   
+  }
+
+  web(BuildContext context) {
     return loading
-        ? LoadingScreen()
+        ? const LoadingScreen()
         : isAdmin
-            ? BackOfficeHomeScreen()
-            : Scaffold(
-                body: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                  child: screens[_currentIndex],
+        ? BackOfficeHomeScreen()
+        : DefaultTabController(
+      initialIndex: _currentIndex,
+      length: 5,
+          child: Scaffold(
+          appBar: AppBar(
+            title: texts[_currentIndex],
+            bottom:TabBar(
+              tabs: const <Tab>[
+                Tab(
+                  icon: Icon(Icons.home),
                 ),
-                bottomNavigationBar: BottomNavigationBar(
-                  currentIndex: _currentIndex,
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      label: 'Home',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.book),
-                      label: 'Reservations',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.eco),
-                      label: 'CO2',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.favorite),
-                      label: 'Favorites',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.person),
-                      label: 'Profile',
-                    ),
-                  ],
-                  onTap: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
+                Tab(
+                  icon: Icon(Icons.book),
                 ),
-              );
+                Tab(
+                  icon: Icon(Icons.eco),
+                ),
+                Tab(
+                  icon: Icon(Icons.favorite),
+                ),
+                Tab(
+                  icon: Icon(Icons.person),
+                ),
+              ],
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              const HomeScreen(),
+              const ReservationsScreen(),
+              CarbonFootprintScreen(),
+              FavoritesScreen(),
+              ProfileScreen(),
+
+            ],
+          )
+              ),
+        );
+  }
+
+  app(BuildContext context)
+  {
+    return loading
+        ? const LoadingScreen()
+        : isAdmin
+        ? BackOfficeHomeScreen()
+        : Scaffold(
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder:
+            (Widget child, Animation<double> animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        child: screens[_currentIndex],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'Reservations',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eco),
+            label: 'CO2',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ),
+    );
   }
 }

@@ -13,12 +13,12 @@ class TopCarousel extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10.0),
       child: CarouselSlider(
         options: CarouselOptions(
-          height: 100,
+          height: MediaQuery.of(context).size.height * 0.2,
           autoPlay: true,
           autoPlayInterval: const Duration(seconds: 7),
           scrollDirection: Axis.horizontal,
           viewportFraction:
-              MediaQuery.of(context).size.width > 600 ? 0.1 : 0.25,
+              MediaQuery.of(context).size.width > 600 ? 0.15 : 0.25,
           enableInfiniteScroll: true,
         ),
         items: images.map((item) {
@@ -27,30 +27,24 @@ class TopCarousel extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 60.0,
-                    height: 60.0,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 3,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage(item),
-                            fit: BoxFit.cover,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(30.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
                           ),
+                        ],
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage(item),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

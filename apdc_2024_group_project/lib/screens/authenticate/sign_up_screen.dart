@@ -1,6 +1,7 @@
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -55,16 +56,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                   heightFactor: 1.1,
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 0),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: const Image(
-                              image: AssetImage(
-                            "assets/images/logo-no-background.png",
-                          )),
-                        ),
-                      ),
+                      logoSize(),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: Text(
@@ -183,5 +175,37 @@ class SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
           );
+  }
+
+  Padding logoSize()
+  {
+    if(kIsWeb)
+    {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child:
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.3,
+          child: const Image(
+              image: AssetImage(
+                "assets/images/ecodine-high-resolution-logo-transparent.png",
+              )),
+        ),
+      );
+    }
+    else
+    {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child:
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.7,
+          child: const Image(
+              image: AssetImage(
+                "assets/images/ecodine-high-resolution-logo-transparent.png",
+              )),
+        ),
+      );
+    }
   }
 }

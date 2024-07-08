@@ -3,6 +3,7 @@ import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/favoriterestaurant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 
@@ -101,105 +102,111 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Favorite Restaurants'),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : favoriteRestaurants.isEmpty
-              ? noFavorites(context)
-              : NotificationListener<ScrollNotification>(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (!isLoading &&
-                        hasMore &&
-                        scrollInfo.metrics.pixels ==
-                            scrollInfo.metrics.maxScrollExtent) {
-                      _getFavoriteRestaurants();
+    if (kIsWeb) {
+      return Scaffold(body: appandWeb());
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+            title: const Text('Favorite Restaurants'),
+          ),
+          body: appandWeb());
+    }
+  }
+
+  appandWeb() {
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : favoriteRestaurants.isEmpty
+            ? noFavorites(context)
+            : NotificationListener<ScrollNotification>(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (!isLoading &&
+                      hasMore &&
+                      scrollInfo.metrics.pixels ==
+                          scrollInfo.metrics.maxScrollExtent) {
+                    _getFavoriteRestaurants();
+                  }
+                  return false;
+                },
+                child: ListView.builder(
+                  itemCount: favoriteRestaurants.length + (isLoading ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == favoriteRestaurants.length) {
+                      return const Center(child: CircularProgressIndicator());
                     }
-                    return false;
-                  },
-                  child: ListView.builder(
-                    itemCount: favoriteRestaurants.length + (isLoading ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == favoriteRestaurants.length) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      final restaurant = favoriteRestaurants[index];
-                      return Card(
-                        elevation: 3,
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: ListTile(
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Image.network(
-                              restaurant.imageUrl ?? '',
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/images/burger.png',
-                                  fit: BoxFit.cover,
-                                );
-                              },
-                            ),
-                          ),
-                          title: Text(
-                            restaurant.name,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Average CO2:',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displaySmall!
-                                      .copyWith(fontSize: 12)),
-                              Text('${restaurant.co2EmissionEstimate}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displaySmall!
-                                      .copyWith(fontSize: 12)),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(
-                              Icons.favorite,
-                              color: Color.fromARGB( 255, 227, 57, 57),
-                            ),
-                            onPressed: () {
-                              _removeFavorite(restaurant.id);
+                    final restaurant = favoriteRestaurants[index];
+                    return Card(
+                      elevation: 3,
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image.network(
+                            restaurant.imageUrl ?? '',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/images/burger.png',
+                                fit: BoxFit.cover,
+                              );
                             },
                           ),
-                          onTap: () {
-                            var restaurantDetail = Restaurant(
-                              id: restaurant.id,
-                              name: restaurant.name,
-                              address: restaurant.address,
-                              phone: restaurant.phone,
-                              location: restaurant.location,
-                              coordinates: restaurant.coordinates,
-                              co2EmissionEstimate:
-                                  restaurant.co2EmissionEstimate,
-                              seats: restaurant.seats,
-                              visible: restaurant.visible,
-                              isOpen: restaurant.isOpen,
-                              time: restaurant.time,
-                            );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    RestaurantScreen(info: restaurantDetail, day: null),
-                              ),
-                            );
+                        ),
+                        title: Text(
+                          restaurant.name,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Average CO2:',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(fontSize: 12)),
+                            Text('${restaurant.co2EmissionEstimate}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall!
+                                    .copyWith(fontSize: 12)),
+                          ],
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.favorite,
+                            color: Color.fromARGB(255, 227, 57, 57),
+                          ),
+                          onPressed: () {
+                            _removeFavorite(restaurant.id);
                           },
                         ),
-                      );
-                    },
-                  ),
+                        onTap: () {
+                          var restaurantDetail = Restaurant(
+                            id: restaurant.id,
+                            name: restaurant.name,
+                            address: restaurant.address,
+                            phone: restaurant.phone,
+                            location: restaurant.location,
+                            coordinates: restaurant.coordinates,
+                            co2EmissionEstimate: restaurant.co2EmissionEstimate,
+                            seats: restaurant.seats,
+                            visible: restaurant.visible,
+                            isOpen: restaurant.isOpen,
+                            time: restaurant.time,
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RestaurantScreen(
+                                  info: restaurantDetail, day: null),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
-    );
+              );
   }
 }

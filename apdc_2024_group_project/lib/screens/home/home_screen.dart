@@ -4,6 +4,7 @@ import 'package:adc_group_project/screens/home/search_restaurants/search_restaur
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/screens/home/home_screen_objects/searchbar.dart';
@@ -133,16 +134,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (kIsWeb) {
       return Container(
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 60.0),
-          child: Container(
-              color: Theme.of(context).colorScheme.background,
-              child: web(context)),
-        ),
-      );
+          height: MediaQuery.of(context).size.height * 0.1,
+          color: Theme.of(context).colorScheme.background,
+          child: web(context));
     } else {
-      return web(context);
+      return Container(
+          color: Theme.of(context).colorScheme.background, child: app(context));
     }
   }
 
@@ -153,27 +150,32 @@ class _HomeScreenState extends State<HomeScreen> {
             ? const LoadingScreen()
             : Column(
                 children: [
-
-                  Material(
-                    elevation: 1,
-                    shadowColor: Theme.of(context).colorScheme.primary,
-                    child:
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 40.0),
-                              child: SearchButton(
-                                  onPressed: () =>
-                                      _onSearchPressed(context, userLocation)),
-                            ),
-
-                            TopCarousel(images: topCarouselImages),
-                          ],
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: Offset(0, 1), // changes position of shadow
                         ),
-
+                      ],
                     ),
-
-                  Expanded(child: Padding(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: SearchButton(
+                              onPressed: () =>
+                                  _onSearchPressed(context, userLocation)),
+                        ),
+                       // TopCarousel(images: topCarouselImages),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                      child: Padding(
                     padding: const EdgeInsets.only(top: 1.0),
                     child: MiddleCarousel(items: items),
                   )),
@@ -182,7 +184,50 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-}
+
+  Widget app(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return (gettingLocation || gettingRestaurants)
+            ? const LoadingScreen()
+            : Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: Offset(0, 1), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 40.0),
+                          child: SearchButton(
+                              onPressed: () =>
+                                  _onSearchPressed(context, userLocation)),
+                        ),
+                        TopCarousel(images: topCarouselImages),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(top: 1.0),
+                    child: MiddleCarousel(items: items),
+                  )),
+                ],
+              );
+      },
+    );
+  }
+  }
+
 
 extension StringCasingExtension on String {
   String capitalize() {

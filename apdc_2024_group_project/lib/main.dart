@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:adc_group_project/services/models/user.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -22,19 +24,41 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+        child: buidApp(context),
+      );
+    } else {
+      return StreamProvider<CustomUser?>.value(
+          catchError: (_, __) => null,
+          initialData: null,
+          value: AuthService().user,
+          child: MaterialApp(
+              themeMode: ThemeMode.light,
+              theme: AppThemeStyle.lightTheme,
+              darkTheme: AppThemeStyle.darkTheme,
+              debugShowCheckedModeBanner: false,
+              home: const Wrapper(),
+              routes: {
+                '/home': (context) => const Wrapper(),
+              }));
+    }
+  }
+
+  Widget buidApp(BuildContext context) {
     return StreamProvider<CustomUser?>.value(
-      catchError: (_, __) => null,
-      initialData: null,
-      value: AuthService().user,
-      child: MaterialApp(
-          themeMode: ThemeMode.light,
-          theme: AppThemeStyle.lightTheme,
-          darkTheme: AppThemeStyle.darkTheme,
-          debugShowCheckedModeBanner: false,
-          home: const Wrapper(),
-          routes: {
-            '/home': (context) => const Wrapper(),
-          }),
-    );
+        catchError: (_, __) => null,
+        initialData: null,
+        value: AuthService().user,
+        child: MaterialApp(
+            themeMode: ThemeMode.light,
+            theme: AppThemeStyle.lightTheme,
+            darkTheme: AppThemeStyle.darkTheme,
+            debugShowCheckedModeBanner: false,
+            home: const Wrapper(),
+            routes: {
+              '/home': (context) => const Wrapper(),
+            }));
   }
 }
