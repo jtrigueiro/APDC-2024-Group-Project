@@ -29,21 +29,25 @@ class RestaurantRequestScreenState extends State<RestaurantRequestScreen> {
           child: SingleChildScrollView(
             controller: scrollController,
             child: Column(children: [
-              Text("You have already made a requested,", style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+              Text("You have already made a request,", style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
               Text("wait for our approval.", style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
-              Text("You will be contacted soon.", style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Text("You will be contacted soon.", style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center,),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const HelpAndSupportScreen()));
+                  },
 
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const HelpAndSupportScreen()));
-                },
-
-                child: const Text('Help & Support'),
+                  child: const Text('Help & Support'),
+                ),
               ),
             ]),
           ),

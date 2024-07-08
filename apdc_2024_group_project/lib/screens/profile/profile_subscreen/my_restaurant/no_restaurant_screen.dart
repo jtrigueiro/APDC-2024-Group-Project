@@ -226,8 +226,18 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Confirmation"),
-          content: Text(message),
+          scrollable: true,
+          title: const Text("Confirmation", textAlign: TextAlign.center),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Is this the correct address?', style: Theme.of(context).textTheme.titleSmall),
+              Padding(
+                padding: const EdgeInsets.only(top:10.0),
+                child: Text(message, style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800)),
+              ),
+            ],
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -266,7 +276,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
             '${value['results'][0]['geometry']['location']['lat']},${value['results'][0]['geometry']['location']['lng']}';
 
         final confirmation = await _showConfirmationDialog(
-            "Is this the correct address?\n$_address");
+            _address);
         return bool.parse(confirmation.toString());
       } else {
         _showErrorDialog(
@@ -278,6 +288,13 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       return false;
     }
   }
+  changecolor(file, bytes)
+  {
+    if(file == null && bytes == null)
+      {return ElevatedButton.styleFrom(backgroundColor: Colors.grey);}
+    else
+      {return ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary);}
+  }
 
   Padding buildPdfButton(IconData icon,
       String label, File? file, Uint8List? bytes, String? error) {
@@ -287,7 +304,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+            style:  changecolor(file, bytes),
             icon: Icon(icon),
             onPressed: () => _pickFile(label.toLowerCase()),
             label: Text(
@@ -397,6 +414,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 40.0),
                                 child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),
                                   onPressed: _submitForm,
                                   child: const Text("Submit Application"),
                                 ),
@@ -412,7 +430,10 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
             ),
           );
   }
+
 }
+
+
 
 Row buildDoubleTextForm(
     String label1,
