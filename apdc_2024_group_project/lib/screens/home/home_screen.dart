@@ -134,6 +134,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void clearFilter() {
+    setState(() {
+      gettingRestaurants = true;
+    });
+    getLocal(userLocation);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
@@ -177,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         TopCarousel(
                           images: topCarouselImages,
                           onFilterApplied: applyFilter,
+                          onFilterCleared: clearFilter,
                         ),
                       ],
                     ),
@@ -223,6 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         TopCarousel(
                           images: topCarouselImages,
                           onFilterApplied: applyFilter,
+                          onFilterCleared: clearFilter,
                         ),
                       ],
                     ),
