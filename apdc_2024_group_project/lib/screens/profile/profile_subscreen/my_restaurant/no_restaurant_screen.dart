@@ -24,9 +24,6 @@ class NoRestaurantScreen extends StatefulWidget {
 }
 
 class NoRestaurantScreenState extends State<NoRestaurantScreen> {
-  static const String noRestaurantText =
-      "Seems like you have no restaurant yet!\nAdd one now!";
-
   final ScrollController scrollController = ScrollController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -260,66 +257,85 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 20),
                     child: Column(
                       children: [
-                        const SizedBox(height: 20),
-                        const Text(
-                          noRestaurantText,
+                        Text(
+                          "Seems like you have no restaurant yet!",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          child: Text(
+                            'Add one now',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
                         Form(
                           key: _formKey,
                           child: Column(
                             children: [
-                              const SizedBox(height: 30),
                               buildTextFormField("Restaurant name",
                                   nameController, TextInputType.text, null, 70),
-                              const SizedBox(height: 10),
                               buildTextFormField(
                                   "Phone number",
                                   phoneController,
                                   TextInputType.phone,
                                   _numeric,
                                   15),
-                              const SizedBox(height: 10),
                               buildDoubleTextForm(
                                   "Street number",
                                   "Route",
                                   streetNumberController,
                                   routeController,
                                   TextInputType.text),
-                              const SizedBox(height: 10),
                               buildDoubleTextForm(
                                   "Postal Code",
                                   "Country",
                                   cpController,
                                   countryController,
                                   TextInputType.text),
-                              const SizedBox(height: 10),
                               buildTextFormField(
                                   "Number of seats",
                                   _numberOfSeatsController,
                                   TextInputType.number,
                                   _numeric,
                                   3),
-                              const SizedBox(height: 20),
-                              buildPdfButton("Electricity", _electricityPdf,
-                                  _electricityPdfBytes, _electricityPdfError),
-                              const SizedBox(height: 10),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(0, 5, 0, 15),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '* Required Fields',
+                                  textAlign: TextAlign.start,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                        color: Colors.black38,
+                                      ),
+                                ),
+                              ),
                               buildPdfButton(
-                                  "Gas", _gasPdf, _gasPdfBytes, _gasPdfError),
-                              const SizedBox(height: 10),
-                              buildPdfButton("Water", _waterPdf, _waterPdfBytes,
-                                  _waterPdfError),
-                              const SizedBox(height: 20),
-                              ElevatedButton(
-                                onPressed: _submitForm,
-                                child: const Text("Submit Application"),
+                                  Icons.lightbulb,
+                                  "Electricity",
+                                  _electricityPdf,
+                                  _electricityPdfBytes,
+                                  _electricityPdfError),
+                              buildPdfButton(Icons.gas_meter_outlined, "Gas",
+                                  _gasPdf, _gasPdfBytes, _gasPdfError),
+                              buildPdfButton(Icons.water_drop, "Water",
+                                  _waterPdf, _waterPdfBytes, _waterPdfError),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 40.0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary),
+                                  onPressed: _submitForm,
+                                  child: const Text("Submit Application"),
+                                ),
                               ),
                             ],
                           ),
@@ -352,25 +368,24 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     );
   }
 
-  TextFormField buildTextFormField(
-      String label,
-      TextEditingController controller,
-      TextInputType keyboardType,
-      RegExp? regExp,
-      int? maxLength) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: "$label(*)",
-        border: const OutlineInputBorder(),
+  Padding buildTextFormField(String label, TextEditingController controller,
+      TextInputType keyboardType, RegExp? regExp, int? maxLength) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: "$label*",
+          border: const OutlineInputBorder(),
+        ),
+        keyboardType: keyboardType,
+        inputFormatters: <TextInputFormatter>[
+          LengthLimitingTextInputFormatter(maxLength),
+          FilteringTextInputFormatter.allow(
+              regExp ?? RegExp(r'.*', dotAll: true)),
+        ],
+        validator: (value) => validateString(value, "$label is required."),
       ),
-      keyboardType: keyboardType,
-      inputFormatters: <TextInputFormatter>[
-        LengthLimitingTextInputFormatter(maxLength),
-        FilteringTextInputFormatter.allow(
-            regExp ?? RegExp(r'.*', dotAll: true)),
-      ],
-      validator: (value) => validateString(value, "$label is required."),
     );
   }
 
@@ -381,16 +396,23 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
     return null;
   }
 
-  Column buildPdfButton(
-      String label, File? file, Uint8List? bytes, String? error) {
+  Column buildPdfButton(IconData icon, String label, File? file,
+      Uint8List? bytes, String? error) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ElevatedButton(
+        ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 25)),
+          icon: Icon(icon),
           onPressed: () => _pickFile(label.toLowerCase()),
-          child: Text(
+          label: Text(
             file == null && bytes == null
                 ? "Upload Last Month's $label Bill(*)"
-                : "$label File Selected",
+                : "$label File Uploaded",
+
           ),
         ),
         error != null

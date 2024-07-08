@@ -56,24 +56,28 @@ class _SettingsPageState extends State<SettingsPage> {
       barrierDismissible: false, // O usuário deve tocar no botão de confirmação
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Account'),
+
+          title: const Text('Delete Account', textAlign: TextAlign.center),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Are you sure you want to delete your account?'),
-                Text('This action cannot be undone.'),
+                Text('Are you sure you want to delete your account?', textAlign: TextAlign.center ,style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: Text('This action cannot be undone.', textAlign: TextAlign.center,style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.error)),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Confirm'),
+              child: const Text('Confirm'),
               onPressed: () async {
                 Navigator.of(context).pop();
                 await _deleteAccount();
@@ -162,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               );
             },
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
           _buildListTile(
             'Privacy Policy',
@@ -173,7 +177,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               );
             },
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
           _buildListTile('Delete My Account',
               onTap: _confirmDeleteAccount, color: Colors.redAccent),
@@ -187,10 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Text(
         title,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+        style:Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 17)
       ),
     );
   }
@@ -199,13 +200,13 @@ class _SettingsPageState extends State<SettingsPage> {
       String title, bool value, Function(bool) onChanged) {
     return SwitchListTile(
       title: Text(title,
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontStyle: FontStyle.normal,
-              color: Theme.of(context).colorScheme.secondary)),
+          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+            fontWeight: FontWeight.normal,
+              color: Theme.of(context).colorScheme.onBackground)),
       value: value,
       onChanged: onChanged,
       activeColor:
-          Theme.of(context).colorScheme.secondary, // Cor do switch ativo
+          Theme.of(context).colorScheme.onBackground,
     );
   }
 
@@ -214,14 +215,14 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListTile(
       title: Text(title,
           style:
-              Theme.of(context).textTheme.bodyMedium!.copyWith(color: color)),
+              Theme.of(context).textTheme.titleSmall!.copyWith(color: color)),
       trailing: Icon(Icons.chevron_right, color: color),
       onTap: onTap,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.0),
       ),
-      tileColor: Color.fromARGB(82, 230, 230, 230),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      tileColor: const Color.fromARGB(82, 230, 230, 230),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
     );
   }
 }

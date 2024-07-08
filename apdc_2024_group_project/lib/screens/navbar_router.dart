@@ -21,8 +21,8 @@ class _HomeRouterState extends State<HomeRouter> {
   bool isAdmin = false;
 
   final screens = [
-    HomeScreen(),
-    ReservationsScreen(),
+    const HomeScreen(),
+    const ReservationsScreen(),
     CarbonFootprintScreen(),
     FavoritesScreen(),
     ProfileScreen(),
