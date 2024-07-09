@@ -92,6 +92,7 @@ class DatabaseService {
         'name': name,
         'isAdmin': isAdmin,
         'emissions': 0,
+        'deslocatEmissions': 0,
       });
       return true;
     } catch (e) {
@@ -860,19 +861,19 @@ class DatabaseService {
     return {'name': name, 'email': email};
   }
 
-  Future<List<String>> getUserEmissions() async {
+  Future<List<double>> getUserEmissions() async {
     User? user = _auth.currentUser;
 
     if (user != null) {
       DocumentSnapshot userData = await usersCollection.doc(user.uid).get();
       if (userData.exists) {
         return [
-          (userData['emissions'] ?? 0).toString(),
-          (userData['emissions'] ?? 0).toStringAsFixed(2),
+          double.parse(userData['emissions'] ?? 0),
+          double.parse(userData['deslocatEmissions'] ?? 0),
         ];
       }
     }
-    return ['0', '0.00'];
+    return [0, 0];
   }
 
   Future<void> updateUserData(String name, String email) async {
@@ -1416,6 +1417,23 @@ class DatabaseService {
       if (user != null) {
         await usersCollection.doc(user.uid).update({
           'emissions': FieldValue.increment(emissions),
+        });
+      } else {
+        throw Exception("User not logged in");
+      }
+    } catch (e) {
+      print("Error adding emission data: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> updateUserDeslocatEmissions(double emissions,) async {
+    try {
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await usersCollection.doc(user.uid).update({
+          'deslocatEmissions': FieldValue.increment(emissions),
         });
       } else {
         throw Exception("User not logged in");
