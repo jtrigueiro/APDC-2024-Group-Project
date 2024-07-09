@@ -5,7 +5,6 @@ import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../../../utils/constants.dart';
 import 'package:path/path.dart' as p;
 
@@ -26,6 +25,8 @@ class RestaurantPersonalizeScreenState
   late TextEditingController phoneController;
   late TextEditingController locationController;
   final double _weekDaysTextBoxSize = 120;
+
+  final RegExp _numeric = RegExp(r'\d');
 
   final _formKey = GlobalKey<FormState>();
   bool loading = true;
@@ -59,7 +60,6 @@ class RestaurantPersonalizeScreenState
     scrollController = ScrollController();
     nameController = TextEditingController();
     phoneController = TextEditingController();
-    //restaurant = '';
     getData();
     super.initState();
   }
@@ -236,7 +236,7 @@ class RestaurantPersonalizeScreenState
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       )
-                                    : Column( //notweb and picked a image
+                                    : Column(
                                         children: [
                                           Stack(
                                             alignment: Alignment.center,
@@ -400,7 +400,7 @@ class RestaurantPersonalizeScreenState
                           textForms(nameController, 'Restaurant Name',
                               'Please enter a restaurant name'),
                           const SizedBox(height: 10),
-                          textForms(phoneController, 'Phone number',
+                          textFormsPhone(phoneController, 'Phone number',
                               'Please enter a phone number'),
                           const SizedBox(height: 10),
                         ]),

@@ -402,7 +402,6 @@ class _SearchScreenState extends State<SearchScreen> {
         carouselController: carouselController,
         options: CarouselOptions(
           height: MediaQuery.of(context).size.height*0.15,
-          //viewportFraction: 0.8,
           initialPage: 0,
           enableInfiniteScroll: false,
           scrollDirection: Axis.horizontal,

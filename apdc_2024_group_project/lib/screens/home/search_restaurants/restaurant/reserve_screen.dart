@@ -74,7 +74,6 @@ class ReserveScreenState extends State<ReserveScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 50.0),
       child: Column (
-        //mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text('Selected Date and Time'),
           Row(
@@ -235,8 +234,10 @@ class ReserveScreenState extends State<ReserveScreen> {
                                             Map<String, int> dishes = {};
                                             List<String> dishNames = [];
                                             double cost = 0;
+                                            double totalEmissions = 0;
 
                                             for(Dish item in checkout) {
+                                              totalEmissions += item.co2;
                                               dishNames.add(item.name);
                                               if(!dishes.containsKey(item.id)) {
                                                 dishes[item.id] = 1;
@@ -246,10 +247,13 @@ class ReserveScreenState extends State<ReserveScreen> {
                                               cost += item.price;
                                             }
 
+                                            double averageEmissions = totalEmissions / checkout.length;
+
                                             DateTime time = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, _selectedTime!.hour, _selectedTime!.minute);
 
-                                            await DatabaseService().addRestaurantReservationsData(widget.restaurant.id, widget.restaurant.name, dishNames, cost, time);
-
+                                            await DatabaseService().addRestaurantReservationsData(widget.restaurant.id, widget.restaurant.name, dishNames, cost, averageEmissions, time);
+                                            await DatabaseService().updateUserEmissions(averageEmissions);
+                                            
                                             Navigator.popUntil(context, (route) => route.isFirst);
                                             
                                             showDialog(

@@ -40,10 +40,10 @@ TextFormField textForms(
 TextFormField textFormsPhone(
     TextEditingController controller, text, String textNoValue) {
   return TextFormField(
-    minLines: 9,
     keyboardType: TextInputType.number,
     inputFormatters:  <TextInputFormatter> [
       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+      LengthLimitingTextInputFormatter(15),
       FilteringTextInputFormatter.digitsOnly,
     ],
     controller: controller,

@@ -89,6 +89,7 @@ class DatabaseService {
       await usersCollection.doc(uid).set({
         'name': name,
         'isAdmin': isAdmin,
+        'emissions': 0,
       });
       return true;
     } catch (e) {
@@ -878,7 +879,7 @@ class DatabaseService {
           .delete();
     } catch (e) {
       print("Error deleting user notification settings: $e");
-      throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
+      rethrow;
     }
   }
 
@@ -894,7 +895,7 @@ class DatabaseService {
       }
     } catch (e) {
       print("Error deleting user promos: $e");
-      throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
+      rethrow;
     }
   }
 
@@ -910,7 +911,7 @@ class DatabaseService {
       }
     } catch (e) {
       print("Error deleting user favorite restaurants: $e");
-      throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
+      rethrow;
     }
   }
 
@@ -919,7 +920,7 @@ class DatabaseService {
       await usersCollection.doc(userId).delete();
     } catch (e) {
       print("Error deleting user document: $e");
-      throw e; // Você pode escolher lidar com o erro aqui ou propagá-lo para cima
+      rethrow;
     }
   }
 
@@ -929,7 +930,7 @@ class DatabaseService {
       return await promoCodesCollection.doc(promoCode).get();
     } catch (e) {
       print("Error getting promo code: $e");
-      throw e; // Você pode optar por lidar com o erro aqui ou propagá-lo para cima
+      rethrow;
     }
   }
 
@@ -955,7 +956,7 @@ class DatabaseService {
       }
     } catch (e) {
       print("Error redeeming promo code: $e");
-      throw e; // Você pode optar por lidar com o erro aqui ou propagá-lo para cima
+      rethrow; // Você pode optar por lidar com o erro aqui ou propagá-lo para cima
     }
   }
 
@@ -1145,7 +1146,7 @@ class DatabaseService {
       return querySnapshot.docs;
     } catch (e) {
       print("Error loading promo codes: $e");
-      throw e; // Você pode optar por lidar com o erro ou propagá-lo para cima
+      rethrow;
     }
   }
 
@@ -1154,7 +1155,7 @@ class DatabaseService {
       await promoCodesCollection.doc(promoCodeId).delete();
     } catch (e) {
       print("Error deleting promo code: $e");
-      throw e; // Você pode optar por lidar com o erro ou propagá-lo para cima
+      rethrow;
     }
   }
 
@@ -1163,6 +1164,7 @@ class DatabaseService {
       String restaurantName,
       List<String> order,
       double cost,
+      double averageEmission,
       DateTime start) async {
     try {
       User? user = _auth.currentUser;
@@ -1175,6 +1177,7 @@ class DatabaseService {
           'restaurantName': restaurantName,
           'order': order,
           'cost': cost,
+          'averageEmissions': averageEmission,
           'start': start,
           'end': start.add(const Duration(hours: 1)),
         });
@@ -1229,6 +1232,7 @@ class DatabaseService {
           restaurantName: doc.get('restaurantName') ?? '',
           order: doc.get('order').map<String>((e) => e as String).toList(),
           cost: doc.get('cost').toDouble() ?? 0,
+          averageEmissions: doc.get('averageEmissions').toDouble() ?? 0,
           start: doc.get('start').toDate() ?? DateTime.now(),
           end: doc.get('end').toDate() ?? DateTime.now(),
         );
@@ -1248,7 +1252,7 @@ class DatabaseService {
       });
     } catch (e) {
       print("Error adding restaurant type: $e");
-      throw e; // Você pode optar por lidar com o erro aqui ou propagá-lo para cima
+      rethrow;
     }
   }
 
@@ -1258,7 +1262,7 @@ class DatabaseService {
       return querySnapshot.docs;
     } catch (e) {
       print("Error getting restaurant types: $e");
-      throw e;
+      rethrow;
     }
   }
 
@@ -1267,7 +1271,7 @@ class DatabaseService {
       await restaurantTypesCollection.doc(typeId).delete();
     } catch (e) {
       print("Error deleting restaurant type: $e");
-      throw e;
+      rethrow;
     }
   }
 
@@ -1283,7 +1287,7 @@ class DatabaseService {
       }
     } catch (e) {
       print("Error adding restaurant ID to types: $e");
-      throw e;
+      rethrow;
     }
   }
 
@@ -1303,4 +1307,25 @@ class DatabaseService {
 
     return restaurants;
   }
+
+  // ----------------- Emissions -----------------
+
+  Future<void> updateUserEmissions(
+    double emissions,
+  ) async {
+    try {
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        await usersCollection.doc(user.uid).update({
+          'emissions': FieldValue.increment(emissions),
+        });
+      } else {
+        throw Exception("User not logged in");
+      }
+    } catch (e) {
+      print("Error adding emission data: $e");
+      rethrow;
+    }
+  } 
 }
