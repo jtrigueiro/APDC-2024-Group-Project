@@ -42,9 +42,9 @@ class MiddleCarousel extends StatelessWidget {
                 Expanded(
                   child: Container(
                     // Adjust the border radius as needed
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/images/restaurant1.png'),
+                        image: NetworkImage(item.imageUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
