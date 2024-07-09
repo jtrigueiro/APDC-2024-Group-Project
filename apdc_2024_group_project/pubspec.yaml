@@ -103,8 +103,6 @@ flutter:
     - assets/map_style.json
     - assets/vectors/grommet_iconsgoogle_x2.svg
     - assets/vectors/logo.svg
-    - assets/images/logo-color-cut.png
-
     - assets/images/italian.png
     - assets/images/burger.png
     - assets/images/traditional.png
