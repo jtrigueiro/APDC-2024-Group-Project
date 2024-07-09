@@ -39,7 +39,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
   };
 
   List<Color> colorList = [
-    const Color.fromARGB(255, 122, 143, 122),
+    const Color.fromARGB(255, 61, 130, 20),
     const Color.fromARGB(255, 8, 76, 8),
   ];
 

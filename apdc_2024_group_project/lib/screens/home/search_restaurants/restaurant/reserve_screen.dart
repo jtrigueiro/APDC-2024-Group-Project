@@ -5,7 +5,6 @@ import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
 
 class ReserveScreen extends StatefulWidget {
-
   Restaurant restaurant;
   DateTime day;
 
@@ -16,7 +15,15 @@ class ReserveScreen extends StatefulWidget {
 }
 
 class ReserveScreenState extends State<ReserveScreen> {
-  List<String> daysWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  List<String> daysWeek = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
   List<String> openDays = [];
   List<Set<TimeOfDay>> openHours = [{}, {}, {}, {}, {}, {}, {}];
   List<Dish> dishes = [];
@@ -27,7 +34,6 @@ class ReserveScreenState extends State<ReserveScreen> {
   int _selectedIndex = 0;
   bool loading = true;
 
-  
   @override
   initState() {
     super.initState();
@@ -37,18 +43,20 @@ class ReserveScreenState extends State<ReserveScreen> {
   }
 
   void constructSchedule(List<bool> isOpen) {
-    for(int i = 0; i < 7; i++) {
-      if(isOpen[i]) {
+    for (int i = 0; i < 7; i++) {
+      if (isOpen[i]) {
         openDays.add(daysWeek[i]);
 
         List<String> times = widget.restaurant.time[i].split('-');
         List<String> time = times[0].split(':');
 
-        int closingHour = int.parse(times[1].split(':')[0]) == 0 ? 24 : int.parse(times[1].split(':')[0]);
+        int closingHour = int.parse(times[1].split(':')[0]) == 0
+            ? 24
+            : int.parse(times[1].split(':')[0]);
 
         int currentHour = int.parse(time[0]);
         int currentMinute = int.parse(time[1]);
-        while(currentHour < closingHour) {
+        while (currentHour < closingHour) {
           openHours[i].add(TimeOfDay(hour: currentHour, minute: currentMinute));
           currentHour++;
         }
@@ -64,20 +72,21 @@ class ReserveScreenState extends State<ReserveScreen> {
   }
 
   void getDishes() {
-    DatabaseService().getAllRestaurantDishes(widget.restaurant.id).then((value) {
+    DatabaseService()
+        .getAllRestaurantDishes(widget.restaurant.id)
+        .then((value) {
       setState(() {
         dishes = value;
       });
     });
   }
 
-
   Padding dateSelection() {
     return Padding(
       padding: const EdgeInsets.only(top: 50.0),
-      child: Column (
+      child: Column(
         children: [
-          const Text('Selected Date and Time'),
+          const Text('Select Date and Time'),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -100,16 +109,20 @@ class ReserveScreenState extends State<ReserveScreen> {
                     }
                   });
                 },
-                child: Text('$_selectedDay: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),),
+                child: Text(
+                    '$_selectedDay: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),
+              ),
               const SizedBox(width: 20.0),
-              Center( child: _buildTimeDropdownMenu(openHours[selectedDate.weekday - 1]),)
-            ],),
-          ],
+              Center(
+                child:
+                    _buildTimeDropdownMenu(openHours[selectedDate.weekday - 1]),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -117,197 +130,339 @@ class ReserveScreenState extends State<ReserveScreen> {
       appBar: AppBar(
         title: const Text('Reserve a Table'),
       ),
-      body: loading ? const LoadingScreen() : (_selectedIndex == 0) ? Stack(
-          children: [
-            dateSelection(),
-            Align(
-              alignment: const Alignment(0, 0.95),
-              child: ElevatedButton(
-                onPressed: () {
-                  if(_selectedTime != null) {
-                    setState(() {
-                      _selectedIndex = 1;
-                    });
-                  }
-                  else {
-                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-                      content: const Text('Please select a time first!'),
-                      animation: CurvedAnimation(parent: const AlwaysStoppedAnimation(1), curve: Curves.easeInOut),
-                      duration: const Duration(seconds: 2),
-                    ));
-                  }
-                },
-                child: const Text('N E X T'),
-              ),
-            ),
-          ]
-        ) : 
-        Stack(
-          children: [
-            _buildMenuItems(dishes),
-            const SizedBox(height: 20.0),
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: ElevatedButton (
-                  onPressed: () {
-                    if(checkout.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-                        content: const Text('Add items to cart first!'),
-                        animation: CurvedAnimation(parent: const AlwaysStoppedAnimation(1), curve: Curves.easeInOut),
-                        duration: const Duration(seconds: 2),
-                      ));
-                      return;
-                    }
-                    else { showModalBottomSheet(context: context, builder: (context) {
-                      return Stack(
-                          children: [
-                            
-                            SizedBox(
-                              height: 400,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: checkout.length,
-                                itemBuilder: (context, index) {
-                                Dish dish = checkout[index];
-                                return ListTile(
-                                  title: Text(dish.name),
-                                  subtitle: Text('${dish.price.toString()}€'),
-                                  leading: const CircleAvatar(
-                                  backgroundImage: AssetImage('assets/images/burger.png'),
-                                  ),
-                                  trailing: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                    checkout.removeAt(index);
-                                    });
-                              
-                                    Navigator.of(context).pop();
-                              
-                                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-                                    content: Text('${dish.name} removed from cart'),
-                                    animation: CurvedAnimation(parent: const AlwaysStoppedAnimation(1), curve: Curves.easeInOut),
-                                    duration: const Duration(seconds: 2),
-                                    ));
-                              
-                              
-                                  },
-                                  icon: const Icon(Icons.remove_circle),
-                                  ),
-                                );
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 20.0),
-                            Align(
-                                alignment: const Alignment(0, 0.95),
-
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  
-                                  showDialog(context: context, builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text('Reservation Confirmation'),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
+      body: loading
+          ? const LoadingScreen()
+          : (_selectedIndex == 0)
+              ? Stack(children: [
+                  dateSelection(),
+                  Align(
+                    alignment: const Alignment(0, 0.95),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_selectedTime != null) {
+                          setState(() {
+                            _selectedIndex = 1;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: const Text('Please select a time first!'),
+                            animation: CurvedAnimation(
+                                parent: const AlwaysStoppedAnimation(1),
+                                curve: Curves.easeInOut),
+                            duration: const Duration(seconds: 2),
+                          ));
+                        }
+                      },
+                      child: const Text('Next'),
+                    ),
+                  ),
+                ])
+              : Stack(
+                  children: [
+                    _buildMenuItems(dishes),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 40.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (checkout.isEmpty) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content:
+                                      const Text('Choose at least one dish!'),
+                                  animation: CurvedAnimation(
+                                      parent: const AlwaysStoppedAnimation(1),
+                                      curve: Curves.easeInOut),
+                                  duration: const Duration(seconds: 2),
+                                ));
+                                return;
+                              } else {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return Stack(
                                         children: [
-                                          const Text('Please confirm the following details:'),
-                                          const SizedBox(height: 10),
-                                          Text('Date: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),
-                                          Text('Time: ${_selectedTime!.format(context)}'),
-                                          const SizedBox(height: 10),
-                                          const Text('Items in cart:'),
-                                          const SizedBox(height: 10),
                                           SizedBox(
-                                            height: 200,
-                                            child: _buildMenuItems(checkout),
-                                          ),
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('Cancel'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            Map<String, int> dishes = {};
-                                            List<String> dishNames = [];
-                                            double cost = 0;
-                                            double totalEmissions = 0;
+                                            height: 400,
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: checkout.length,
+                                              itemBuilder: (context, index) {
+                                                Dish dish = checkout[index];
+                                                return ListTile(
+                                                  title: Text(dish.name),
+                                                  subtitle: Text(
+                                                      'price: ${dish.price.toString()}€'),
+                                                  leading: const CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/burger.png'),
+                                                  ),
+                                                  trailing: IconButton(
+                                                    tooltip: 'Remove Dish',
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        checkout
+                                                            .removeAt(index);
+                                                      });
 
-                                            for(Dish item in checkout) {
-                                              totalEmissions += item.co2;
-                                              dishNames.add(item.name);
-                                              if(!dishes.containsKey(item.id)) {
-                                                dishes[item.id] = 1;
-                                              } else {
-                                                dishes[item.id] = dishes[item.id]! + 1;
-                                              }
-                                              cost += item.price;
-                                            }
+                                                      Navigator.of(context)
+                                                          .pop();
 
-                                            double averageEmissions = totalEmissions / checkout.length;
-
-                                            DateTime time = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, _selectedTime!.hour, _selectedTime!.minute);
-
-                                            await DatabaseService().addRestaurantReservationsData(widget.restaurant.id, widget.restaurant.name, dishNames, cost, averageEmissions, time);
-                                            await DatabaseService().updateUserEmissions(averageEmissions);
-                                            
-                                            Navigator.popUntil(context, (route) => route.isFirst);
-                                            
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: const Text('Reservation Confirmed'),
-                                                  content: const Text('Your reservation has been confirmed!'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context).pop();
-                                                      },
-                                                      child: const Text('Close'),
-                                                    ),
-                                                  ],
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                              SnackBar(
+                                                        content: Text(
+                                                            '${dish.name} removed from cart'),
+                                                        animation: CurvedAnimation(
+                                                            parent:
+                                                                const AlwaysStoppedAnimation(
+                                                                    1),
+                                                            curve: Curves
+                                                                .easeInOut),
+                                                        duration:
+                                                            const Duration(
+                                                                seconds: 2),
+                                                      ));
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.remove_circle),
+                                                  ),
                                                 );
                                               },
-                                            );
-                                          },
-                                          child: const Text('Confirm'),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                                },
-                                child: const Text('M A K E  R E S E R V A T I O N'),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 20.0),
+                                          Align(
+                                            alignment: const Alignment(0, 0.95),
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        //reservation confirmation
+                                                        scrollable: true,
+                                                        title: const Text(
+                                                          'Reservation Confirmation',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                        content: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            const Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          10.0),
+                                                              child: Text(
+                                                                  'Please confirm the following details:'),
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(right: 10.0),
+                                                                  child: Text('Date:',
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .titleSmall),
+                                                                ),
+                                                                Text(
+                                                                    '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .bodyMedium),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(right: 5.0),
+                                                                  child: Text('Time:',
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .titleSmall),
+                                                                ),
+                                                                Text(
+                                                                    ' ${_selectedTime!.format(context)}',
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .bodyMedium),
+                                                              ],
+                                                            ),
+
+                                                           const Padding(
+                                                              padding:  EdgeInsets.only(top: 20, bottom:  10.0),
+                                                              child:  Text(
+                                                                  'Items in cart:'),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 200,
+                                                              child:
+                                                                  _buildMenuItems(
+                                                                      checkout),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            child: const Text(
+                                                                'Cancel'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed:
+                                                                () async {
+                                                              Map<String, int>
+                                                                  dishes = {};
+                                                              List<String>
+                                                                  dishNames =
+                                                                  [];
+                                                              double cost = 0;
+                                                              double
+                                                                  totalEmissions =
+                                                                  0;
+
+                                                              for (Dish item
+                                                                  in checkout) {
+                                                                totalEmissions +=
+                                                                    item.co2;
+                                                                dishNames.add(
+                                                                    item.name);
+                                                                if (!dishes
+                                                                    .containsKey(
+                                                                        item.id)) {
+                                                                  dishes[item
+                                                                      .id] = 1;
+                                                                } else {
+                                                                  dishes[item
+                                                                          .id] =
+                                                                      dishes[item
+                                                                              .id]! +
+                                                                          1;
+                                                                }
+                                                                cost +=
+                                                                    item.price;
+                                                              }
+
+                                                              double
+                                                                  averageEmissions =
+                                                                  totalEmissions /
+                                                                      checkout
+                                                                          .length;
+
+                                                              DateTime time = DateTime(
+                                                                  selectedDate
+                                                                      .year,
+                                                                  selectedDate
+                                                                      .month,
+                                                                  selectedDate
+                                                                      .day,
+                                                                  _selectedTime!
+                                                                      .hour,
+                                                                  _selectedTime!
+                                                                      .minute);
+
+                                                              await DatabaseService()
+                                                                  .addRestaurantReservationsData(
+                                                                      widget
+                                                                          .restaurant
+                                                                          .id,
+                                                                      widget
+                                                                          .restaurant
+                                                                          .name,
+                                                                      dishNames,
+                                                                      cost,
+                                                                      averageEmissions,
+                                                                      time);
+                                                              await DatabaseService()
+                                                                  .updateUserEmissions(
+                                                                      averageEmissions);
+
+                                                              Navigator.popUntil(
+                                                                  context,
+                                                                  (route) => route
+                                                                      .isFirst);
+
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return AlertDialog(
+                                                                    title: const Text(
+                                                                        'Reservation Confirmed', textAlign: TextAlign.center,),
+                                                                    content:
+                                                                        const Text(
+                                                                            'Your reservation has been confirmed!'),
+                                                                    actions: [
+                                                                      TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                        },
+                                                                        child: const Text(
+                                                                            'Close'),
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                            child: const Text(
+                                                                'Confirm'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    });
+                                              },
+                                              child: const Text(
+                                                  'Make Reservation'),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 20.0),
+                                        ],
+                                      );
+                                    });
+                              }
+                            },
+                            child: const Positioned(
+                              bottom: 0.1,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10.0),
+                                    child: Icon(Icons.shopping_cart),
+                                  ),
+                                  Text(
+                                    'Reserve',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 20.0),
-                          ],
-                        );
-                    });}
-                  },
-                    child: const Positioned(
-                      bottom: 0.1,
-                      child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.shopping_cart),
-                        SizedBox(width: 20),
-                        Text('C H E C K O U T',
-                        style: TextStyle(fontWeight: FontWeight.bold),),
-                      ],
+                          ),
+                        ),
                       ),
-                    ),
+                    )
+                  ],
                 ),
-              ),
-            )
-        ],
-        ),
     );
   }
 
@@ -321,8 +476,7 @@ class ReserveScreenState extends State<ReserveScreen> {
           _selectedTime = newValue!;
         });
       },
-      items: items
-          .map<DropdownMenuItem<TimeOfDay>>((TimeOfDay value) {
+      items: items.map<DropdownMenuItem<TimeOfDay>>((TimeOfDay value) {
         return DropdownMenuItem<TimeOfDay>(
           value: value,
           child: Text(value.format(context)),
@@ -334,91 +488,93 @@ class ReserveScreenState extends State<ReserveScreen> {
   Widget _buildMenuItems(List<Dish> menuItems) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: 300,
-      
+      height: MediaQuery.of(context).size.height * 0.7,
       child: ListView.builder(
-            itemCount: menuItems.length,
-            physics: const ScrollPhysics(),
-          itemBuilder: (context, index) {
-            Dish menuItem = menuItems[index];
-            return _buildDishTile(menuItem, index);
-          },
-        ),
+        itemCount: menuItems.length,
+        physics: const ScrollPhysics(),
+        itemBuilder: (context, index) {
+          Dish menuItem = menuItems[index];
+          return _buildDishTile(menuItem, index);
+        },
+      ),
     );
   }
 
   void _buildDialog(index) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        int quantity = 1;
+        context: context,
+        builder: (BuildContext context) {
+          int quantity = 1;
 
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-            title: const Text('Add to Cart'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Select quantity:'),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: const Text('Add Dish'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (quantity > 1) {
+                    const Text('Select quantity:'),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () {
                             setState(() {
-                              quantity--;
+                              if (quantity > 1) {
+                                setState(() {
+                                  quantity--;
+                                });
+                              }
                             });
-                          }
-                        });
-                      },
-                      icon: const Icon(Icons.remove),
-                    ),
-                    Text('$quantity'),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            if(quantity < 10) {
+                          },
+                          icon: const Icon(Icons.remove),
+                        ),
+                        Text('$quantity'),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (quantity < 10) {
                                 quantity++;
-                            }
-                          });
-                        },
-                        icon: const Icon(Icons.add),
-                      ),
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.add),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  for(int i = 0; i < quantity; i++) {
-                    checkout.add(dishes[index]);
-                  }
-                  Navigator.of(context).pop();
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      for (int i = 0; i < quantity; i++) {
+                        checkout.add(dishes[index]);
+                      }
+                      Navigator.of(context).pop();
 
-                  ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-                    content: Text('$quantity ${dishes[index].name} added to cart'),
-                    animation: CurvedAnimation(parent: const AlwaysStoppedAnimation(1), curve: Curves.easeInOut),
-                    duration: const Duration(seconds: 2),
-                  ));
-                },
-                child: const Text('Add to Cart'),
-              ),
-            ],
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            '$quantity ${dishes[index].name} added to cart'),
+                        animation: CurvedAnimation(
+                            parent: const AlwaysStoppedAnimation(1),
+                            curve: Curves.easeInOut),
+                        duration: const Duration(seconds: 2),
+                      ));
+                    },
+                    child: const Text('Add Dish'),
+                  ),
+                ],
+              );
+            },
           );
-        },
-      );
-    });
+        });
   }
 
   Widget _buildDishTile(Dish dish, int index) {
@@ -430,12 +586,13 @@ class ReserveScreenState extends State<ReserveScreen> {
       child: Card(
         elevation: 4,
         child: ListTile(
-        title: Text(dish.name),
-        subtitle: Text('${dish.price.toString()}€\n${dish.description}'),
-        isThreeLine: true,
-        leading: const CircleAvatar(
-          backgroundImage: AssetImage('assets/images/burger.png'),
-        ),
+          title: Text(dish.name),
+          subtitle:
+              Text('price: ${dish.price.toString()}€\n${dish.description}'),
+          isThreeLine: true,
+          leading: const CircleAvatar(
+            backgroundImage: AssetImage('assets/images/burger.png'),
+          ),
         ),
       ),
     );

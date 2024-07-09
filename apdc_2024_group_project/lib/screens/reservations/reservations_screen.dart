@@ -35,10 +35,12 @@ class ReservationsScreenState extends State<ReservationsScreen> {
 
   ListTile buildReservationTile(Reservation reservation) {
     return ListTile(
-      leading: const Icon(Icons.restaurant),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      tileColor: const Color.fromARGB(31, 61, 130, 21),
+      leading: Icon(Icons.restaurant, color: Theme.of(context).colorScheme.primary,),
       title: Text(reservation.restaurantName),
       subtitle: Text(
-          '${reservation.start.day}/${reservation.start.month}/${reservation.start.year}\n${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
+          'Date: ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}    Time: ${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
       onTap: () {
         showReservationDetails(reservation);
       },
@@ -54,19 +56,96 @@ class ReservationsScreenState extends State<ReservationsScreen> {
           title: const Text('Reservation Details', textAlign: TextAlign.center),
           content: Column(
             children: [
-              Text(
-                'Restaurant: ${reservation.restaurantName}',
-                overflow: TextOverflow.ellipsis,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  'Restaurant: ${reservation.restaurantName}',
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              const SizedBox(height: 10),
-              Text(
-                  'Date: ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
-              Text(
-                  'Time: ${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
-              const SizedBox(height: 20),
-              Text('Total Price: ${reservation.cost}€'),
-              Text('Average Emissions: ${reservation.averageEmissions} gCO2'),
-              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Text('Date:',
+                        style: Theme.of(
+                            context)
+                            .textTheme
+                            .titleSmall),
+                  ),
+                  Text(
+                      ' ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}',
+                      style: Theme.of(
+                          context)
+                          .textTheme
+                          .bodyMedium),
+                ],
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: Text('Time:',
+                        style: Theme.of(
+                            context)
+                            .textTheme
+                            .titleSmall),
+                  ),
+                  Text(
+                      ' ${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}',
+                      style: Theme.of(
+                          context)
+                          .textTheme
+                          .bodyMedium),
+                ],
+              ),
+              //Text( ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}'),
+              //Text('Time: ${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5.0),
+                      child: Text('Total Price:',
+                          style: Theme.of(
+                              context)
+                              .textTheme
+                              .titleSmall),
+                    ),
+                    Text(
+                        ' ${reservation.cost}€',
+                        style: Theme.of(
+                            context)
+                            .textTheme
+                            .bodyMedium),
+                  ],
+                ),
+              ),
+              //Text('Total Price: ${reservation.cost}€'),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5.0),
+                      child: Text('Average Emissions:',
+                          style: Theme.of(
+                              context)
+                              .textTheme
+                              .titleSmall),
+                    ),
+                    Text(
+                        ' ${reservation.averageEmissions} gCO2',
+                        style: Theme.of(
+                            context)
+                            .textTheme
+                            .bodyMedium),
+                  ],
+                ),
+              ),
+             // Text('Average Emissions: ${reservation.averageEmissions} gCO2'),
               SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,8 +153,8 @@ class ReservationsScreenState extends State<ReservationsScreen> {
                     ...constructMap(reservation.order).entries.map((entry) =>
                         ListTile(
                           title: Text('${entry.key} x${entry.value}',
-                            textAlign: TextAlign.center,),
-                          leading: const Icon(Icons.fastfood),
+                            textAlign: TextAlign.left,),
+                          leading: const Icon(Icons.fastfood_outlined),
                         ))
                   ],
                 ),
