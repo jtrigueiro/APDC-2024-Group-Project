@@ -74,7 +74,6 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
       setState(() {
         _restaurantTypeItems = types.map((type) {
           final data = type.data() as Map<String, dynamic>;
-          print("Data from Firestore: $data"); // Adicione este log
           return MultiSelectItem<String>(type.id, data['name']);
         }).toList();
       });
@@ -109,9 +108,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
             }
           }
         });
-      } else {
-        print('File selection cancelled');
-      }
+      } else {}
     } catch (e) {
       print('Error picking file: $e');
     }
@@ -166,26 +163,22 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         String? gasUrl;
         String? waterUrl;
 
-        print('Uploading electricity PDF...');
         electricityUrl = await StorageService().uploadFile(
             _electricityPdfBytes ?? await _electricityPdf!.readAsBytes(),
             'electricity_.pdf',
             widget._auth.currentUser!);
 
-        print('Uploading gas PDF...');
         gasUrl = await StorageService().uploadFile(
             _gasPdfBytes ?? await _gasPdf!.readAsBytes(),
             'gas_.pdf',
             widget._auth.currentUser!);
 
-        print('Uploading water PDF...');
         waterUrl = await StorageService().uploadFile(
             _waterPdfBytes ?? await _waterPdf!.readAsBytes(),
             'water_.pdf',
             widget._auth.currentUser!);
 
         if (electricityUrl == null || gasUrl == null || waterUrl == null) {
-          print('Failed to upload one or more files');
           setState(() {
             loading = false;
           });
@@ -204,12 +197,10 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         );
 
         if (result == null) {
-          print('Failed to submit application data');
           setState(() {
             loading = false;
           });
         } else {
-          print('Application data submitted successfully');
           widget.checkCurrentIndex();
           setState(() {
             loading = false;
@@ -471,7 +462,8 @@ Row buildDoubleTextForm(
   );
 }
 
-Padding buildTextFormFieldPhone(String label, TextEditingController controller, RegExp? regExp) {
+Padding buildTextFormFieldPhone(
+    String label, TextEditingController controller, RegExp? regExp) {
   return Padding(
     padding: const EdgeInsets.all(3),
     child: TextFormField(
@@ -481,7 +473,7 @@ Padding buildTextFormFieldPhone(String label, TextEditingController controller, 
         border: const OutlineInputBorder(),
       ),
       keyboardType: TextInputType.number,
-      inputFormatters:  <TextInputFormatter> [
+      inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         FilteringTextInputFormatter.digitsOnly,
       ],
