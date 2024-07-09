@@ -394,7 +394,7 @@ class _SearchScreenState extends State<SearchScreen> {
       return CarouselSlider(
         carouselController: carouselController,
         options: CarouselOptions(
-          height: MediaQuery.of(context).size.height*0.15,
+          height:boxheight(context),
           initialPage: 0,
           enableInfiniteScroll: false,
           scrollDirection: Axis.horizontal,
@@ -423,7 +423,7 @@ class _SearchScreenState extends State<SearchScreen> {
     child: Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 4, left: 10),
+          padding: const EdgeInsets.only(left: 10),
           child: Column(
             children: [
               Container(
@@ -477,6 +477,14 @@ class _SearchScreenState extends State<SearchScreen> {
   
   }
 
+  double boxheight(BuildContext context)
+  {
+    if(kIsWeb)
+      {return  MediaQuery.of(context).size.height*0.25;}
+    else
+      {return  MediaQuery.of(context).size.height*0.15;}
+
+  }
 
 Row textLine(String text, IconData icon, BuildContext context, Color color) {
   return Row(
