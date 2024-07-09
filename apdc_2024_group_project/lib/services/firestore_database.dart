@@ -721,7 +721,7 @@ class DatabaseService {
             .delete();
       }
       // delete restaurant doc
-      await restaurantsCollection.doc(user!.uid).delete();
+      await restaurantsCollection.doc(user.uid).delete();
       // delete restaurant documents in storage
       StorageService().deleteRestaurant(user.uid);
       return true;
