@@ -1147,6 +1147,7 @@ class DatabaseService {
           "0:0-0:0",
           "0:0-0:0",
         ],
+        'imageUrl': '',
       });
       return true;
     } catch (e) {

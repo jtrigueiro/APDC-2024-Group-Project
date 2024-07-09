@@ -760,8 +760,6 @@ class RestaurantPersonalizeScreenState
                                             pickedImageFile!.path);
                                   }
                                 }
-
-                                print(url);
                                 // Check if the data has changed, to avoid unnecessary calls to the database
                                 if (data.name != nameController.text ||
                                     data.phone != phoneController.text ||
