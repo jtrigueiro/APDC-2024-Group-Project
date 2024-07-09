@@ -338,6 +338,16 @@ class DatabaseService {
     }
   }
 
+  // get restaurant image url by restaurantId
+  Future getRestaurantImageUrlByRestaurantId(String restaurantId) async {
+    try {
+      return await StorageService().getRestaurantImageUrl(restaurantId);
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   // get restaurant image url
   Future getRestaurantImageUrl() async {
     User? user = _auth.currentUser;

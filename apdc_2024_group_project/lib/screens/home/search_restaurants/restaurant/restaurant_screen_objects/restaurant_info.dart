@@ -89,13 +89,25 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
                     ),
                   ),
 
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: Image.asset(
-                      'assets/images/restaurant1.png',
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      fit: BoxFit.cover,
-                    ),
+                  FutureBuilder(
+                    future: _restaurantService.getRestaurantImageUrlByRestaurantId(widget.info.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      else if (snapshot.hasError) {
+                          return const Center(child: Text('Error loading image'));
+                        }
+                      else {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: Image.network(snapshot.data.toString(),
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                      }
+                    }
                   ),
 
                   Row(
