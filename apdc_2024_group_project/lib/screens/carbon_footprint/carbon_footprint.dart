@@ -1,5 +1,4 @@
 import 'package:adc_group_project/services/firestore_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -14,7 +13,7 @@ class CarbonFootprintScreen extends StatefulWidget {
 
 class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
   late ScrollController scrollController;
-  List<String> emissions = [];
+  List<double> emissions = [];
 
   @override
   void initState() {
@@ -28,8 +27,8 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
 
     setState(() {
       carbonMap = {
-        'Food': double.parse(emissions[0]),
-        'Transport': 2.0,
+        'Food': emissions[0],
+        'Transport': emissions[1],
       };
     });
   }

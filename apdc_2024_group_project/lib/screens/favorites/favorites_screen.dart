@@ -165,7 +165,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                     .textTheme
                                     .displaySmall!
                                     .copyWith(fontSize: 12)),
-                            Text('${restaurant.co2EmissionEstimate}',
+                            Text(restaurant.co2EmissionEstimate.toStringAsPrecision(5),
                                 style: Theme.of(context)
                                     .textTheme
                                     .displaySmall!
