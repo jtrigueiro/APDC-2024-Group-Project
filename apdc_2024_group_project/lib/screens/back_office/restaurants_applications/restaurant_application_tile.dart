@@ -31,7 +31,6 @@ class RestaurantApplicationTile extends StatelessWidget {
 
     co2EmissionEstimate = co2EmissionEstimate / seats;
 
-    print('CO2 Emission Estimate: $co2EmissionEstimate');
     return co2EmissionEstimate;
   }
 
@@ -51,14 +50,16 @@ class RestaurantApplicationTile extends StatelessWidget {
               TextField(
                 controller: electricityController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Electricity (kWh)'),
+                decoration:
+                    const InputDecoration(labelText: 'Electricity (kWh)'),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: TextField(
                   controller: waterController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Water (liters)'),
+                  decoration:
+                      const InputDecoration(labelText: 'Water (liters)'),
                 ),
               ),
               TextField(
@@ -137,10 +138,6 @@ class RestaurantApplicationTile extends StatelessWidget {
                           gasConsumption,
                           restaurantApplication.seats);
 
-                  print('Electricity: $electricityConsumption kWh');
-                  print('Water: $waterConsumption liters');
-                  print('Gas: $gasConsumption m³');
-
                   await DatabaseService().createOrOverwriteRestaurantData(
                     restaurantApplication.uid,
                     restaurantApplication.name,
@@ -152,8 +149,7 @@ class RestaurantApplicationTile extends StatelessWidget {
                     restaurantApplication.seats,
                   );
 
-                  List<String> typeNames = restaurantApplication
-                      .types;
+                  List<String> typeNames = restaurantApplication.types;
                   await DatabaseService().addRestaurantIdToTypes(
                       typeNames, restaurantApplication.uid);
 
