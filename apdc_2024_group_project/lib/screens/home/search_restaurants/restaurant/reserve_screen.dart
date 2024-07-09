@@ -180,6 +180,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                                 return;
                               } else {
                                 showModalBottomSheet(
+                                  backgroundColor: Theme.of(context).colorScheme.tertiary,
                                     context: context,
                                     builder: (context) {
                                       return Stack(
@@ -187,48 +188,55 @@ class ReserveScreenState extends State<ReserveScreen> {
                                           SizedBox(
                                             height: 400,
                                             child: ListView.builder(
+                                              padding: EdgeInsets.only(top: 5),
                                               shrinkWrap: true,
                                               itemCount: checkout.length,
                                               itemBuilder: (context, index) {
                                                 Dish dish = checkout[index];
-                                                return ListTile(
-                                                  title: Text(dish.name),
-                                                  subtitle: Text(
-                                                      'price: ${dish.price.toString()}€'),
-                                                  leading: const CircleAvatar(
-                                                    backgroundImage: AssetImage(
-                                                        'assets/images/burger.png'),
-                                                  ),
-                                                  trailing: IconButton(
-                                                    tooltip: 'Remove Dish',
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        checkout
-                                                            .removeAt(index);
-                                                      });
+                                                return Padding(
+                                                  padding: const EdgeInsets.only(bottom: 5.0),
+                                                  child: ListTile(
+                                                    tileColor: Color.fromARGB(
+                                                        63, 61, 130, 20),
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                                                    title: Text(dish.name),
+                                                    subtitle: Text(
+                                                        'price: ${dish.price.toString()}€'),
+                                                    leading: const CircleAvatar(
+                                                      backgroundImage: AssetImage(
+                                                          'assets/images/burger.png'),
+                                                    ),
+                                                    trailing: IconButton(
+                                                      tooltip: 'Remove Dish',
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          checkout
+                                                              .removeAt(index);
+                                                        });
 
-                                                      Navigator.of(context)
-                                                          .pop();
+                                                        Navigator.of(context)
+                                                            .pop();
 
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                              SnackBar(
-                                                        content: Text(
-                                                            '${dish.name} removed from cart'),
-                                                        animation: CurvedAnimation(
-                                                            parent:
-                                                                const AlwaysStoppedAnimation(
-                                                                    1),
-                                                            curve: Curves
-                                                                .easeInOut),
-                                                        duration:
-                                                            const Duration(
-                                                                seconds: 2),
-                                                      ));
-                                                    },
-                                                    icon: const Icon(
-                                                        Icons.remove_circle),
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                SnackBar(
+                                                          content: Text(
+                                                              '${dish.name} removed from cart'),
+                                                          animation: CurvedAnimation(
+                                                              parent:
+                                                                  const AlwaysStoppedAnimation(
+                                                                      1),
+                                                              curve: Curves
+                                                                  .easeInOut),
+                                                          duration:
+                                                              const Duration(
+                                                                  seconds: 2),
+                                                        ));
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.remove_circle),
+                                                    ),
                                                   ),
                                                 );
                                               },

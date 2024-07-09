@@ -9,7 +9,6 @@ class AppSnackBarTheme {
   static final appSnackBarTheme = SnackBarThemeData(
     backgroundColor: ColorAppTheme.lightAppColorTheme.secondary,
     elevation: 0.5,
-
   );
 
 

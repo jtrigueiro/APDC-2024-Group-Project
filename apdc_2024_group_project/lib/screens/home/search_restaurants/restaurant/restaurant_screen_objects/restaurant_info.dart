@@ -88,13 +88,24 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
                       size: 23,
                     ),
                   ),
+                  widget.info.imageUrl !=''
+                  ?
                   ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
                         child: Image.network(widget.info.imageUrl,
                           height: MediaQuery.of(context).size.height * 0.3,
                           fit: BoxFit.cover,
                         ),
-                      ),
+                      )
+                      :
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: const CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey,
+                      child: Text('no image'),
+                    )
+                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

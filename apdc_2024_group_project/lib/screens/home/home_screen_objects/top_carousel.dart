@@ -111,7 +111,7 @@ class _TopCarouselState extends State<TopCarousel> {
                   child: Text(
                     type.capitalize(),
                     style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                        fontSize: MediaQuery.of(context).size.height * 0.02),
+                        fontSize: carouselletterSize(context)),
                   ),
                 )
               ],
@@ -122,6 +122,15 @@ class _TopCarouselState extends State<TopCarousel> {
     );
   }
 
+  double carouselletterSize(context)
+  {
+    if (kIsWeb) {
+      return MediaQuery.of(context).size.height * 0.02;
+    } else {
+      return MediaQuery.of(context).size.width * 0.035;
+    }
+
+  }
   double containerSize(context) {
     if (kIsWeb) {
       return MediaQuery.of(context).size.height * 0.13;

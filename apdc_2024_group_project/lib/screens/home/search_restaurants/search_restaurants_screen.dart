@@ -5,8 +5,10 @@ import 'package:adc_group_project/services/geocoding.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
 import 'package:flutter/services.dart';
@@ -418,47 +420,57 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       );
     },
-    child: Padding(
-      padding: const EdgeInsets.only(bottom: 4, left: 10),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: Theme.of(context).colorScheme.tertiary,
-        ),
-        child: Row(
-          children: [
+    child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 4, left: 10),
+          child: Column(
+            children: [
               Container(
-                  width: 100,
-                  height: MediaQuery.of(context).size.width*0.2,
-                  margin: const EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    image: DecorationImage(
-                      image: NetworkImage(restaurant.imageUrl,),
-                      fit: BoxFit.cover,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                          Container(
+                              width: MediaQuery.of(context).size.width*0.2, //100,
+                              height: MediaQuery.of(context).size.width*0.2,
+                              margin: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: restaurant.imageUrl == ''? Colors.grey : null,
+                                image: restaurant.imageUrl != '' ? DecorationImage(
+                                  image: NetworkImage(restaurant.imageUrl,),
+                                  fit: BoxFit.cover,
+                                ):null
+                              ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                overflow: TextOverflow.ellipsis,
+                                restaurant.name,
+                                style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w800),
+                                textAlign: TextAlign.center,
+                              ),
+                              textLine('N/A', Icons.star ,context, Colors.amber,),
+                              textLine('${restaurant.co2EmissionEstimate.toStringAsPrecision(5)}kg  CO2 /year', Icons.eco,context,Colors.green),
+                              //textLine('1.2 km', Icons.location_on,context, Colors.grey),
+                            ],
+                          ),
+                      ],
                     ),
-                  ),
+                  ],
+                ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25, top: 5),
-                    child: Text(
-                      overflow: TextOverflow.ellipsis,
-                      restaurant.name,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  textLine('N/A', Icons.star ,context, Colors.amber),
-                  textLine('${restaurant.co2EmissionEstimate.toStringAsPrecision(5)} kg CO2 per year', Icons.eco,context,Colors.green),
-                  //textLine('1.2 km', Icons.location_on,context, Colors.grey),
-                ],
-              ),
-          ],
+            ],
+          ),
         ),
-      ),
+      ],
     ),
   );
 }
@@ -473,7 +485,7 @@ Row textLine(String text, IconData icon, BuildContext context, Color color) {
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
         child: Icon(icon, size: 15, color: color),
       ),
-      Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 12),),
+      Text(text, style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12), overflow: TextOverflow.ellipsis,),
     ],
   );
 }

@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.tertiary,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
