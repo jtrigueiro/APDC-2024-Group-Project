@@ -565,8 +565,8 @@ class DatabaseService {
           .collection(INGREDIENTS_SUBCOLLECTION)
           .get()
           .then((snapshot) {
-        for (DocumentSnapshot ds in snapshot.docs) {
-          ds.reference.delete();
+        for (DocumentSnapshot ingredient in snapshot.docs) {
+          ingredient.reference.delete();
         }
       });
 
@@ -683,6 +683,48 @@ class DatabaseService {
           .where('visible', isEqualTo: true)
           .get();
       return doc.docs.isNotEmpty;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  //delete restaurant and all its subcollections
+  Future deleteRestaurant() async {
+    User? user = _auth.currentUser;
+    try {
+      //get restaurant dishes
+      QuerySnapshot dishesSnapshot = await restaurantsCollection
+          .doc(user!.uid)
+          .collection(DISHES_SUBCOLLECTION)
+          .get();
+      //delete all dishes
+      for (DocumentSnapshot doc in dishesSnapshot.docs) {
+        await deleteDish(doc.id);
+      }
+      //get restaurant reservations
+      QuerySnapshot reservationsSnapshot = await reservationsCollection
+          .where('restaurantId', isEqualTo: user.uid)
+          .get();
+      //delete all reservations
+      for (DocumentSnapshot doc in reservationsSnapshot.docs) {
+        await doc.reference.delete();
+      }
+      //get restaurant types docs
+      QuerySnapshot typesSnapshot = await restaurantTypesCollection.get();
+      //go through all restaurant types and delete the restaurantid from the restaurants subcollection
+      for (DocumentSnapshot doc in typesSnapshot.docs) {
+        await restaurantTypesCollection
+            .doc(doc.id)
+            .collection('restaurants')
+            .doc(user.uid)
+            .delete();
+      }
+      // delete restaurant doc
+      await restaurantsCollection.doc(user!.uid).delete();
+      // delete restaurant documents in storage
+      StorageService().deleteRestaurant(user.uid);
+      return true;
     } catch (e) {
       debugPrint(e.toString());
       return null;
@@ -942,6 +984,10 @@ class DatabaseService {
 
   Future<void> deleteUser(String userId) async {
     try {
+      // user has restaurant
+      if (await hasRestaurant() == true) {
+        await deleteRestaurant();
+      }
       await usersCollection.doc(userId).delete();
     } catch (e) {
       print("Error deleting user document: $e");

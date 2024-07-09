@@ -19,6 +19,10 @@ class StorageService {
     return 'restaurants/$uid/ProofDocuments/$fileName';
   }
 
+  String restaurantProofDocumentFolderPath(String uid) {
+    return 'restaurants/$uid/ProofDocuments';
+  }
+
   Future uploadDishImageMobile(
       String uid, String dishId, String imagePath) async {
     final path = dishImagePath(uid, dishId);
@@ -82,5 +86,20 @@ class StorageService {
     final path = restaurantProofDocumentPath(uid, fileName);
     final ref = _storage.ref().child(path);
     return await ref.getDownloadURL();
+  }
+
+  Future deleteRestaurant(String restaurantId) async {
+    //delete restaurant image
+    final path = restaurantImagePath(restaurantId);
+    final ref = _storage.ref().child(path);
+    await ref.delete();
+
+    // delete proof documents
+    final proofDocumentsPath = restaurantProofDocumentFolderPath(restaurantId);
+    final proofDocumentsRef = _storage.ref().child(proofDocumentsPath);
+    final ListResult result = await proofDocumentsRef.listAll();
+    for (final item in result.items) {
+      await item.delete();
+    }
   }
 }

@@ -61,53 +61,65 @@ class MyRestaurantSettingsScreenState
                 padding: const EdgeInsets.all(16.0),
                 children: [
                   _buildSectionTitle('Activity'),
-                  Divider(thickness: 1, color: Theme.of(context).colorScheme.primary),
+                  Divider(
+                      thickness: 1,
+                      color: Theme.of(context).colorScheme.primary),
                   SwitchListTile(
                     tileColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     title: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: Text('Visible',
-                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              fontWeight: FontWeight.normal,
-                          )),
+                          style:
+                              Theme.of(context).textTheme.titleSmall!.copyWith(
+                                    fontWeight: FontWeight.normal,
+                                  )),
                     ),
                     value: visible,
-                      activeColor:
-                      Theme.of(context).colorScheme.onBackground,
+                    activeColor: Theme.of(context).colorScheme.onBackground,
                     onChanged: (bool value) {
                       setState(() {
                         visible = value;
                       });
                     },
                   ),
-
                   Padding(
-                    padding: const EdgeInsets.only(top:50.0),
+                    padding: const EdgeInsets.only(top: 50.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Divider(thickness: 1, color: Theme.of(context).colorScheme.secondary),
-
+                        Divider(
+                            thickness: 1,
+                            color: Theme.of(context).colorScheme.secondary),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            setState(() {
+                              loading = true;
+                            });
+                            await DatabaseService().deleteRestaurant();
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            setState(() {
+                              loading = false;
+                            });
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                            Theme.of(context).colorScheme.error,
+                                Theme.of(context).colorScheme.error,
                             foregroundColor:
-                            Theme.of(context).colorScheme.onError,
+                                Theme.of(context).colorScheme.onError,
                           ),
                           child: const Text(
                             'Delete Restaurant',
                           ),
                         ),
-
-                        Divider(thickness: 1, color: Theme.of(context).colorScheme.secondary),
-
+                        Divider(
+                            thickness: 1,
+                            color: Theme.of(context).colorScheme.secondary),
                       ],
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 100.0),
                     child: Column(
@@ -116,16 +128,21 @@ class MyRestaurantSettingsScreenState
                         ElevatedButton(
                           onPressed: () async {
                             if (await DatabaseService()
-                                .getRestaurantImageUrl() ==
-                                null &&
+                                        .getRestaurantImageUrl() ==
+                                    null &&
                                 visible == true) {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: const Text('Error', textAlign: TextAlign.center),
-                                    content:  Text(
-                                        'Restaurant image is missing.', textAlign: TextAlign.center,style: Theme.of(context).textTheme.bodyMedium),
+                                    title: const Text('Error',
+                                        textAlign: TextAlign.center),
+                                    content: Text(
+                                        'Restaurant image is missing.',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium),
                                     actions: [
                                       TextButton(
                                         child: const Text('OK'),
@@ -138,19 +155,24 @@ class MyRestaurantSettingsScreenState
                                 },
                               );
                             } else if ((await DatabaseService()
-                                .hasVisibleDishes() ==
-                                false ||
-                                await DatabaseService()
-                                    .hasVisibleDishes() ==
-                                    null) &&
+                                            .hasVisibleDishes() ==
+                                        false ||
+                                    await DatabaseService()
+                                            .hasVisibleDishes() ==
+                                        null) &&
                                 visible == true) {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: const Text('Error', textAlign: TextAlign.center),
+                                    title: const Text('Error',
+                                        textAlign: TextAlign.center),
                                     content: Text(
-                                        'Restaurant is missing a visible dish.', textAlign: TextAlign.center,style: Theme.of(context).textTheme.bodyMedium),
+                                        'Restaurant is missing a visible dish.',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium),
                                     actions: [
                                       TextButton(
                                         child: const Text('OK'),
@@ -181,7 +203,6 @@ class MyRestaurantSettingsScreenState
 
   Widget _buildSectionTitle(String title) {
     return Text(title,
-        style:
-            Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 17));
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 17));
   }
 }
