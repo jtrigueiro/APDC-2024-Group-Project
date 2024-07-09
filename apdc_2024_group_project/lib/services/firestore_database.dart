@@ -1308,18 +1308,35 @@ class DatabaseService {
 
   Future<List<Restaurant>> getRestaurantsByType(String type) async {
     List<Restaurant> restaurants = [];
-
-    QuerySnapshot snapshot = await restaurantTypesCollection
-        .doc(type)
-        .collection('restaurants')
-        .get();
-
-    for (var doc in snapshot.docs) {
-      DocumentSnapshot restaurantSnapshot =
-          await restaurantsCollection.doc(doc.get('restaurantId')).get();
-      restaurants.add(restaurantSnapshot.data() as Restaurant);
+    try {
+      final typeDoc = await restaurantTypesCollection.doc(type).get();
+      if (typeDoc.exists) {
+        final data = typeDoc.data() as Map<String, dynamic>;
+        if (data.containsKey('restaurants')) {
+          final restaurantIds = data['restaurants'] as List<dynamic>;
+          for (final id in restaurantIds) {
+            final restaurantDoc = await restaurantsCollection.doc(id).get();
+            if (restaurantDoc.exists) {
+              restaurants.add(Restaurant.fromFirestore(restaurantDoc));
+            }
+          }
+        } else {
+          final subCollection =
+              restaurantTypesCollection.doc(type).collection('restaurants');
+          final snapshot = await subCollection.get();
+          for (final doc in snapshot.docs) {
+            final restaurantId = doc.id;
+            final restaurantDoc =
+                await restaurantsCollection.doc(restaurantId).get();
+            if (restaurantDoc.exists) {
+              restaurants.add(Restaurant.fromFirestore(restaurantDoc));
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching restaurants by type: $e');
     }
-
     return restaurants;
   }
 
@@ -1342,5 +1359,5 @@ class DatabaseService {
       print("Error adding emission data: $e");
       rethrow;
     }
-  } 
+  }
 }
