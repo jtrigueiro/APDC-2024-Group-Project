@@ -231,11 +231,80 @@ class RestaurantPersonalizeScreenState
                           children: [
                             pickedImageFile != null
                                 ? kIsWeb
-                                    ? Image.network(
-                                        pickedImageFile!.path,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                      )
+                                    ? Column(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 70,
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage:
+                                      pickedImageFile != null
+                                          ? NetworkImage(
+                                        pickedImageFile!.path,)
+                                          : null,
+                                      child: InkWell(
+                                        onTap: () {
+                                          if (pickedImageFile !=
+                                              null) {
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext
+                                                context) {
+                                                  return Padding(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal:
+                                                        30),
+                                                    child: Dialog(
+                                                      elevation: 3,
+                                                      backgroundColor:
+                                                      Colors
+                                                          .blueGrey,
+                                                      child:
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            20.0),
+                                                        child: pickedImageFile !=
+                                                            null
+                                                            ?  Image.file(File(pickedImageFile!
+                                                            .path))
+                                                            : null,
+                                                      ),
+                                                    ),
+                                                  );
+                                                });
+                                          }
+                                        },
+                                        child: pickedImageFile == null
+                                            ? const Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.white)
+                                            : null,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 90, left: 100),
+                                      child: CircleAvatar(
+                                          backgroundColor:
+                                          Colors.black54,
+                                          child: IconButton(
+                                            icon: const Icon(
+                                                Icons.edit),
+                                            onPressed: pickImage,
+                                          )),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            )
+
+
                                     : Column(
                                         children: [
                                           Stack(
@@ -659,13 +728,13 @@ class RestaurantPersonalizeScreenState
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 final List<bool> isOpen = [
-                                  sundayIsOpen,
                                   mondayIsOpen,
                                   tuesdayIsOpen,
                                   wednesdayIsOpen,
                                   thursdayIsOpen,
                                   fridayIsOpen,
-                                  saturdayIsOpen
+                                  saturdayIsOpen,
+                                  sundayIsOpen
                                 ];
                                 final List<String> time = [
                                   "${mondayFromTime.hour}:${mondayFromTime.minute}-${mondayToTime.hour}:${mondayToTime.minute}",

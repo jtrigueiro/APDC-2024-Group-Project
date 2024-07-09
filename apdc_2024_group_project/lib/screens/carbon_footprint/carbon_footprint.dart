@@ -1,7 +1,10 @@
+import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class CarbonFootprintScreen extends StatefulWidget {
+
   CarbonFootprintScreen({super.key});
 
   @override
@@ -10,16 +13,29 @@ class CarbonFootprintScreen extends StatefulWidget {
 
 class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
   late ScrollController scrollController;
+  List<String> emissions = [];
 
   @override
   void initState() {
+    getUserEmissions();
     scrollController = ScrollController();
     super.initState();
   }
 
+  void getUserEmissions() async {
+    emissions = await DatabaseService().getUserEmissions();
+
+    setState(() {
+      carbonMap = {
+        'Food': double.parse(emissions[0]),
+        'Transport': 2.0,
+      };
+    });
+  }
+
   Map<String, double> carbonMap = {
-    'Food': 10,
-    'Transport': 30,
+    'Food': 50,
+    'Transport': 50,
   };
 
   List<Color> colorList = [
@@ -93,7 +109,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                           Text('Food ',
                               style: Theme.of(context).textTheme.titleMedium),
                           const SizedBox(width: 60),
-                          Text(carbonMap.values.first.toString(),
+                          Text('${carbonMap.values.first.toString()} g CO2e',
                               style: Theme.of(context).textTheme.titleMedium),
                         ],
                       ),
@@ -107,7 +123,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                           Text('Transport ',
                               style: Theme.of(context).textTheme.titleMedium),
                           const SizedBox(width: 12),
-                          Text(carbonMap.values.last.toString(),
+                          Text('${carbonMap.values.last.toString()} g CO2e',
                               style: Theme.of(context).textTheme.titleMedium),
                         ],
                       ),

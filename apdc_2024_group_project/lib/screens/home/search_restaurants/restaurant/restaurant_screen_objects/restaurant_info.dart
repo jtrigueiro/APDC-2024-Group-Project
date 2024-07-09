@@ -108,7 +108,7 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
                             child: Icon(Icons.eco, color: Colors.green),
                           ),
                           Text(
-                            "${widget.info.co2EmissionEstimate} CO2e",
+                            "${widget.info.co2EmissionEstimate.toStringAsPrecision(5)} CO2e",
                             style: Theme.of(context).textTheme.titleSmall,
                             ),
                         ],

@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Colors.white,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
