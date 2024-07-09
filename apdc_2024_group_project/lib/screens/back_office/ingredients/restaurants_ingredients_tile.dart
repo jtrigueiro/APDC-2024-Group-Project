@@ -27,7 +27,7 @@ class RestaurantIngredientTile extends StatelessWidget {
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.delete_outline),
+              icon: const Icon(Icons.delete_outline, color: Colors.red),
               onPressed: () async {
                 await DatabaseService().deleteIngredient(ingredient.name);
               },

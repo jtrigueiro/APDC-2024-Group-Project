@@ -14,34 +14,51 @@ class _PromoCodesHomeScreen extends State<PromoCodesHomeScreen> {
       appBar: AppBar(
         title: const Text('Promotion Codes'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body:
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+        child: GridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AddPromoCodePage(),
-                  ),
-                );
-              },
-              child: Text('Add Promo Code'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ActivePromoCodesPage(),
-                  ),
-                );
-              },
-              child: Text('List Active Promo Codes'),
-            ),
-          ],
+            workButton('Add Promo Code',ontapAddPromo),
+            workButton('ListActivePromoCodes',ontapListPromo),
+
+            ]
+        ),),
+    );
+  }
+
+  Function ontapListPromo()
+  {
+    return  () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ActivePromoCodesPage(),
         ),
-      ),
+      );
+    };
+  }
+
+  Function ontapAddPromo()
+  {
+    return  () {
+  Navigator.of(context).push(
+  MaterialPageRoute(
+  builder: (context) => AddPromoCodePage(),
+  ),
+  );
+  };
+  }
+
+  ElevatedButton workButton(String text, Function ontap) {
+    return ElevatedButton(
+      style: const ButtonStyle(elevation: MaterialStatePropertyAll(10)),
+      onPressed: () {
+        ontap();
+      },
+      child: Text(text, textAlign: TextAlign.center),
     );
   }
 }
