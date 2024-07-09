@@ -364,7 +364,7 @@ class _SearchScreenState extends State<SearchScreen> {
           } else {
             return Builder(
               builder: (BuildContext context) {
-                return restaurantTile(context, item, null);
+                return restaurantTile(context, item, 'N/A');
               },
             );
           }
@@ -372,7 +372,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  InkWell restaurantTile(BuildContext context, Restaurant restaurant, dynamic distance) {
+  InkWell restaurantTile(BuildContext context, Restaurant restaurant, String distance) {
   return InkWell(
     onTap: () {
       Navigator.push(
@@ -417,7 +417,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   textLine('N/A', Icons.star ,context, Colors.amber),
                   textLine('${restaurant.co2EmissionEstimate.toStringAsPrecision(5)} kg CO2 per year', Icons.eco,context,Colors.green),
-                  distance != null ? textLine('$distance away', Icons.directions_walk, context, Colors.blue) : const SizedBox(),
+                  distance != '' ? textLine(distance, Icons.directions_walk, context, Colors.blue) : const SizedBox(),
                 ],
               ),
           ],
