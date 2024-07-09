@@ -148,12 +148,12 @@ class RestaurantApplicationTile extends StatelessWidget {
                     restaurantApplication.address,
                     restaurantApplication.location,
                     restaurantApplication.coordinates,
-                    co2EmissionEstimate, // Usar o valor calculado aqui
+                    co2EmissionEstimate,
                     restaurantApplication.seats,
                   );
 
                   List<String> typeNames = restaurantApplication
-                      .types; // Certifique-se de ter este campo
+                      .types;
                   await DatabaseService().addRestaurantIdToTypes(
                       typeNames, restaurantApplication.uid);
 

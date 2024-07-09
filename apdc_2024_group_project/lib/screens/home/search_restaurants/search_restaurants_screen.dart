@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
-import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/geocoding.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -429,40 +427,18 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         child: Row(
           children: [
-            FutureBuilder(
-              future: null,
-              builder: (context, snapshot) {
-                return Container(
+              Container(
                   width: 100,
                   height: MediaQuery.of(context).size.width*0.2,
                   margin: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/restaurant_1.png'),
+                    image: DecorationImage(
+                      image: AssetImage(restaurant.imageUrl),
                       fit: BoxFit.cover,
                     ),
                   ),
-                );
-                /*
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else {
-                  return Container(
-                    width: MediaQuery.of(context).size.width*0.2,
-                    height: MediaQuery.of(context).size.width*0.2,
-                    margin: const EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: DecorationImage(
-                      image: NetworkImage(snapshot.data as String),
-                      fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                }*/
-              }
-            ),
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -475,8 +451,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  textLine('4.5', Icons.star ,context, Colors.amber),
-                  textLine('10.1 kg/yr CO2', Icons.eco,context,Colors.green),
+                  textLine('N/A', Icons.star ,context, Colors.amber),
+                  textLine('${restaurant.co2EmissionEstimate.toStringAsPrecision(5)} kg CO2 per year', Icons.eco,context,Colors.green),
                   //textLine('1.2 km', Icons.location_on,context, Colors.grey),
                 ],
               ),
@@ -486,11 +462,8 @@ class _SearchScreenState extends State<SearchScreen> {
     ),
   );
 }
-Future<String> getRestaurantImageURL(String id) async {
-  String url = await StorageService().getRestaurantImageUrl(id);
-  return url;
-}
-}
+  
+  }
 
 
 Row textLine(String text, IconData icon, BuildContext context, Color color) {
