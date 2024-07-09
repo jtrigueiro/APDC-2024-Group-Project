@@ -304,7 +304,8 @@ class RestaurantPersonalizeScreenState
                                           ),
                                         ],
                                       )
-                                    : Column( //notweb
+                                    : Column(
+                                        //notweb
                                         children: [
                                           Stack(
                                             alignment: Alignment.center,
@@ -728,6 +729,9 @@ class RestaurantPersonalizeScreenState
                           child: ElevatedButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
+                                setState(() {
+                                  loading = true;
+                                });
                                 final List<bool> isOpen = [
                                   mondayIsOpen,
                                   tuesdayIsOpen,
@@ -765,15 +769,21 @@ class RestaurantPersonalizeScreenState
                                     data.phone != phoneController.text ||
                                     listEquals(isOpen, data.isOpen) == false ||
                                     listEquals(time, data.time) == false ||
-                                        url != null) {
+                                    url != null) {
                                   final databaseStatus = await DatabaseService()
-                                      .updateRestaurantData(nameController.text,
-                                          phoneController.text, isOpen, time, url);
+                                      .updateRestaurantData(
+                                          nameController.text,
+                                          phoneController.text,
+                                          isOpen,
+                                          time,
+                                          url);
                                   if (databaseStatus == null) {
                                     return;
                                   }
                                 }
-                                
+                                setState(() {
+                                  loading = false;
+                                });
                                 Navigator.pop(context);
                               }
                             },
@@ -789,8 +799,7 @@ class RestaurantPersonalizeScreenState
           );
   }
 
-  Builder imagebuild( image)
-  {
+  Builder imagebuild(image) {
     return Builder(
       builder: (context) {
         return Column(children: [
@@ -800,38 +809,23 @@ class RestaurantPersonalizeScreenState
               CircleAvatar(
                 radius: 70,
                 backgroundColor: Colors.grey,
-                backgroundImage:
-                image != null
-                    ? NetworkImage(
-                    image!)
-                    : null,
+                backgroundImage: image != null ? NetworkImage(image!) : null,
                 child: InkWell(
                   onTap: () {
                     if (image != null) {
                       showDialog(
                           context: context,
-                          builder: (BuildContext
-                          context) {
+                          builder: (BuildContext context) {
                             return Padding(
                               padding:
-                              const EdgeInsets
-                                  .symmetric(
-                                  horizontal:
-                                  30),
+                                  const EdgeInsets.symmetric(horizontal: 30),
                               child: Dialog(
                                 elevation: 3,
-                                backgroundColor:
-                                Colors
-                                    .blueGrey,
+                                backgroundColor: Colors.blueGrey,
                                 child: ClipRRect(
-                                  borderRadius:
-                                  BorderRadius
-                                      .circular(
-                                      20.0),
-                                  child: image !=
-                                      null
-                                      ? Image.network(
-                                      image!)
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  child: image != null
+                                      ? Image.network(image!)
                                       : null,
                                 ),
                               ),
@@ -840,21 +834,16 @@ class RestaurantPersonalizeScreenState
                     }
                   },
                   child: image == null
-                      ? const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white)
+                      ? const Icon(Icons.camera_alt, color: Colors.white)
                       : null,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 90, left: 100),
+                padding: const EdgeInsets.only(top: 90, left: 100),
                 child: CircleAvatar(
-                    backgroundColor:
-                    Colors.black54,
+                    backgroundColor: Colors.black54,
                     child: IconButton(
-                      icon:
-                      const Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       onPressed: pickImage,
                     )),
               )
