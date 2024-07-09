@@ -328,8 +328,8 @@ class DatabaseService {
   }
 
   // update restaurant data
-  Future updateRestaurantData(
-      String name, String phone, List<bool> isOpen, List<String> time, String? url) async {
+  Future updateRestaurantData(String name, String phone, List<bool> isOpen,
+      List<String> time, String? url) async {
     User? user = _auth.currentUser;
     try {
       await restaurantsCollection.doc(user!.uid).update({
@@ -1427,7 +1427,9 @@ class DatabaseService {
     }
   }
 
-  Future<void> updateUserDeslocatEmissions(double emissions,) async {
+  Future<void> updateUserDeslocatEmissions(
+    double emissions,
+  ) async {
     try {
       User? user = _auth.currentUser;
 
@@ -1440,6 +1442,17 @@ class DatabaseService {
       }
     } catch (e) {
       print("Error adding emission data: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> addPromoCode(String promoCode, String reward) async {
+    try {
+      await promoCodesCollection.doc(promoCode).set({
+        'reward': reward,
+      });
+    } catch (e) {
+      print("Error adding promo code: $e");
       rethrow;
     }
   }
