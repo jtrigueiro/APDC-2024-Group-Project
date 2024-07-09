@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -428,6 +429,7 @@ class _MapScreenState extends State<MapScreen> {
         if (!isModeLocked) {
           setState(() {
             isModeLocked = true;
+            DatabaseService().updateUserDeslocatEmissions(carbonFootprint);
           });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
