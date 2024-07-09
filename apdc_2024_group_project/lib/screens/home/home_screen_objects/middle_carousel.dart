@@ -62,7 +62,7 @@ class MiddleCarousel extends StatelessWidget {
                         maxLines: 1,
                       ),
                       Text(
-                        item.location,
+                        item.location.capitalize(),
                         style: Theme.of(context).textTheme.bodySmall,
                         maxLines: 1,
                         textAlign: TextAlign.center,
@@ -77,5 +77,11 @@ class MiddleCarousel extends StatelessWidget {
         );
       }).toList(),
     );
+  }
+}
+
+extension StringCasingExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1)}";
   }
 }
