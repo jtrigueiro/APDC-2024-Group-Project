@@ -1,5 +1,5 @@
-import 'package:adc_group_project/screens/back_office/restaurant_types/add_restaurats_types';
-import 'package:adc_group_project/screens/back_office/restaurant_types/list_restaurants_types';
+import 'package:adc_group_project/screens/back_office/restaurant_types/add_restaurats_types.dart';
+import 'package:adc_group_project/screens/back_office/restaurant_types/list_restaurants_types.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantTypesManagementPage extends StatelessWidget {
