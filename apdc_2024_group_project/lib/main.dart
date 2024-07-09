@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         initialData: null,
         value: AuthService().user,
         child: MaterialApp(
-            themeMode: ThemeMode.dark,
+            themeMode: ThemeMode.system,
             theme: AppThemeStyle.lightTheme,
             darkTheme: AppThemeStyle.darkTheme,
             debugShowCheckedModeBanner: false,
