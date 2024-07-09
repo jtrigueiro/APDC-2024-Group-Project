@@ -60,9 +60,9 @@ class _MapScreenState extends State<MapScreen> {
     if (permission == LocationPermission.deniedForever) return;
 
     _positionStreamSubscription = Geolocator.getPositionStream(
-      locationSettings: LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.best,
+        distanceFilter: 5,
       ),
     ).listen((Position position) {
       setState(() {
@@ -83,74 +83,32 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _getPolyline() async {
     totalDistance = 0.0;
-    if (travelMode == 'transit') {
-      final response = await http.get(Uri.parse(
-          'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=transit&key=$googleApiKey'));
+    final response = await http.get(Uri.parse(
+        'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=$travelMode&key=$googleApiKey'));
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['routes'].isNotEmpty) {
-          setState(() {
-            polylineCoordinates.clear();
-            polylines.clear();
-            polylineCoordinates.addAll(_decodePolyline(data['routes'][0]['overview_polyline']['points']));
-            totalDistance = _calculateTotalDistance(polylineCoordinates);
-            polylines.add(Polyline(
-              width: 5,
-              polylineId: const PolylineId('polyline'),
-              color: Colors.blue,
-              points: polylineCoordinates,
-            ));
-            _directions = _extractDirections(data['routes'][0]['legs'][0]['steps']);
-          });
-        } else {
-          print('No routes found');
-        }
-      } else {
-        print('Failed to fetch transit route');
-      }
-    } else {
-      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        request: PolylineRequest(
-          origin: PointLatLng(_currentPosition.latitude, _currentPosition.longitude),
-          destination: PointLatLng(widget.restaurantLocation.latitude, widget.restaurantLocation.longitude),
-          mode: travelMode == 'driving' ? TravelMode.driving : TravelMode.walking,
-        ),
-        googleApiKey: googleApiKey,
-      );
-
-      if (result.points.isNotEmpty) {
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['routes'].isNotEmpty) {
         setState(() {
           polylineCoordinates.clear();
-          polylineCoordinates.addAll(result.points.map((point) => LatLng(point.latitude, point.longitude)));
-          totalDistance = _calculateTotalDistance(polylineCoordinates);
           polylines.clear();
+          for (var step in data['routes'][0]['legs'][0]['steps']) {
+            polylineCoordinates.addAll(_decodePolyline(step['polyline']['points']));
+          }
+          totalDistance = _calculateTotalDistance(polylineCoordinates);
           polylines.add(Polyline(
             width: 5,
             polylineId: const PolylineId('polyline'),
             color: Colors.blue,
             points: polylineCoordinates,
           ));
+          _directions = _extractDirections(data['routes'][0]['legs'][0]['steps']);
         });
-
-        final response = await http.get(Uri.parse(
-            'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=$travelMode&key=$googleApiKey'));
-
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-          if (data['routes'].isNotEmpty) {
-            setState(() {
-              _directions = _extractDirections(data['routes'][0]['legs'][0]['steps']);
-            });
-          } else {
-            print('No routes found');
-          }
-        } else {
-          print('Failed to fetch route');
-        }
       } else {
-        print('Error: ${result.errorMessage}');
+        print('No routes found');
       }
+    } else {
+      print('Failed to fetch route');
     }
   }
 
@@ -247,7 +205,7 @@ class _MapScreenState extends State<MapScreen> {
           child: Column(
             children: [
               ListTile(
-                title: Text('Open on Google Maps App'),
+                title: Text('Open on Google Maps'),
                 onTap: () {
                   Navigator.pop(context);
                   _openGoogleMaps();
@@ -431,7 +389,7 @@ class _MapScreenState extends State<MapScreen> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Transit mode locked: $travelMode'),
+            content: Text('Transit mode selected: $travelMode'),
           ),
         );
       },
