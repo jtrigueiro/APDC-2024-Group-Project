@@ -183,6 +183,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         ),
                         onTap: () {
                           var restaurantDetail = Restaurant(
+                            imageUrl: restaurant.imageUrl!,
                             id: restaurant.id,
                             name: restaurant.name,
                             address: restaurant.address,

@@ -122,6 +122,7 @@ class DatabaseService {
           .get();
       return result.docs
           .map((doc) => Restaurant(
+                imageUrl: doc.get('imageUrl') ?? '',
                 id: doc.id,
                 name: doc.get('name') ?? '',
                 phone: doc.get('phone') ?? '',
@@ -153,6 +154,7 @@ class DatabaseService {
           .startAt({lowerSearch}).endAt({"$lowerSearch\uf8ff"}).get();
       return result.docs
           .map((doc) => Restaurant(
+                imageUrl: doc.get('imageUrl') ?? '',
                 id: doc.id,
                 name: doc.get('name') ?? '',
                 phone: doc.get('phone') ?? '',
@@ -178,6 +180,7 @@ class DatabaseService {
       final DocumentSnapshot doc =
           await restaurantsCollection.doc(restaurantId).get();
       return Restaurant(
+        imageUrl: doc.get('imageUrl') ?? '',
         id: doc.id,
         name: doc.get('name') ?? '',
         phone: doc.get('phone') ?? '',
@@ -193,6 +196,7 @@ class DatabaseService {
     } catch (e) {
       debugPrint(e.toString());
       return Restaurant(
+        imageUrl: '',
         id: '',
         name: '',
         phone: '',
@@ -303,6 +307,7 @@ class DatabaseService {
       final DocumentSnapshot doc =
           await restaurantsCollection.doc(user!.uid).get();
       return Restaurant(
+        imageUrl: doc.get('imageUrl') ?? '',
         id: doc.id,
         name: doc.get('name') ?? '',
         phone: doc.get('phone') ?? '',
@@ -323,7 +328,7 @@ class DatabaseService {
 
   // update restaurant data
   Future updateRestaurantData(
-      String name, String phone, List<bool> isOpen, List<String> time) async {
+      String name, String phone, List<bool> isOpen, List<String> time, String? url) async {
     User? user = _auth.currentUser;
     try {
       await restaurantsCollection.doc(user!.uid).update({
@@ -331,7 +336,8 @@ class DatabaseService {
         'lowerCaseName': name.toLowerCase(),
         'phone': phone,
         'isOpen': isOpen,
-        'time': time
+        'time': time,
+        'imageUrl': url ?? FieldValue,
       });
       return true;
     } catch (e) {
@@ -366,7 +372,7 @@ class DatabaseService {
     User? user = _auth.currentUser;
     try {
       await StorageService().uploadRestaurantImageMobile(user!.uid, imagePath);
-      return true;
+      return StorageService().getRestaurantImageUrl(user.uid);
     } catch (e) {
       debugPrint(e.toString());
       return null;
@@ -380,7 +386,7 @@ class DatabaseService {
     try {
       await StorageService()
           .uploadRestaurantImageWeb(user!.uid, imageBytes, imageExtension);
-      return true;
+      return StorageService().getRestaurantImageUrl(user.uid);
     } catch (e) {
       debugPrint(e.toString());
       return null;
@@ -421,7 +427,7 @@ class DatabaseService {
       final QuerySnapshot doc = await ingredientsCollection.get();
       return doc.docs.map((doc) {
         return Ingredient(
-          name: doc.id ?? '',
+          name: doc.id,
           grams: doc.get('grams').toInt() ?? 0,
           co2: doc.get('co2').toInt() ?? 0,
         );
@@ -636,7 +642,7 @@ class DatabaseService {
           .get();
       return doc.docs.map((doc) {
         return Ingredient(
-          name: doc.id ?? '',
+          name: doc.id,
           grams: doc.get('grams').toInt() ?? 0,
           co2: doc.get('co2').toInt() ?? 0,
         );
@@ -1154,7 +1160,7 @@ class DatabaseService {
     try {
       return snapshot.docs.map((doc) {
         return Ingredient(
-          name: doc.id ?? '',
+          name: doc.id,
           grams: doc.get('grams').toInt() ?? 0,
           co2: doc.get('co2').toInt() ?? 0,
         );

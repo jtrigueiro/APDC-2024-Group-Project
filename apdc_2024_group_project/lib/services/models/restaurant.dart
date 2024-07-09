@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Restaurant {
+  final String imageUrl;
   final String id;
   final String name;
   final String address;
@@ -14,6 +15,7 @@ class Restaurant {
   final List<String> time;
 
   Restaurant({
+    required this.imageUrl,
     required this.id,
     required this.name,
     required this.address,
@@ -30,6 +32,7 @@ class Restaurant {
   factory Restaurant.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map;
     return Restaurant(
+      imageUrl: data['imageUrl'] ?? '',
       id: doc.id,
       name: data['name'] ?? '',
       address: data['address'] ?? '',

@@ -26,8 +26,6 @@ class RestaurantPersonalizeScreenState
   late TextEditingController locationController;
   final double _weekDaysTextBoxSize = 120;
 
-  final RegExp _numeric = RegExp(r'\d');
-
   final _formKey = GlobalKey<FormState>();
   bool loading = true;
   late bool mondayIsOpen;
@@ -193,7 +191,7 @@ class RestaurantPersonalizeScreenState
           int.parse(sundaytoTime.split(":")[0]),
           int.parse(sundaytoTime.split(":")[1])));
 
-      currentImageUrl = await DatabaseService().getRestaurantImageUrl();
+      currentImageUrl = data.imageUrl;
 
       setState(() {
         loading = false;
@@ -748,31 +746,36 @@ class RestaurantPersonalizeScreenState
                                   "${saturdayFromTime.hour}:${saturdayFromTime.minute}-${saturdayToTime.hour}:${saturdayToTime.minute}",
                                   "${sundayFromTime.hour}:${sundayFromTime.minute}-${sundayToTime.hour}:${sundayToTime.minute}"
                                 ];
-                                // Check if the data has changed, to avoid unnecessary calls to the database
-                                if (data.name != nameController.text ||
-                                    data.phone != phoneController.text ||
-                                    listEquals(isOpen, data.isOpen) == false ||
-                                    listEquals(time, data.time) == false) {
-                                  final databaseStatus = await DatabaseService()
-                                      .updateRestaurantData(nameController.text,
-                                          phoneController.text, isOpen, time);
-                                  if (databaseStatus == null) {
-                                    return;
-                                  }
-                                }
+                                String? url;
                                 if (pickedImageFile != null) {
                                   if (kIsWeb) {
-                                    await DatabaseService()
+                                    url = await DatabaseService()
                                         .uploadRestaurantImageWeb(
                                             await pickedImageFile!
                                                 .readAsBytes(),
                                             p.extension(pickedImageFile!.name));
                                   } else {
-                                    await DatabaseService()
+                                    url = await DatabaseService()
                                         .uploadRestaurantImageMobile(
                                             pickedImageFile!.path);
                                   }
                                 }
+
+                                print(url);
+                                // Check if the data has changed, to avoid unnecessary calls to the database
+                                if (data.name != nameController.text ||
+                                    data.phone != phoneController.text ||
+                                    listEquals(isOpen, data.isOpen) == false ||
+                                    listEquals(time, data.time) == false ||
+                                        url != null) {
+                                  final databaseStatus = await DatabaseService()
+                                      .updateRestaurantData(nameController.text,
+                                          phoneController.text, isOpen, time, url);
+                                  if (databaseStatus == null) {
+                                    return;
+                                  }
+                                }
+                                
                                 Navigator.pop(context);
                               }
                             },
