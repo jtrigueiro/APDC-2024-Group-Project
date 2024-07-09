@@ -25,24 +25,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
-      return Padding(
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-        child: buidApp(context),
+      return Container(
+         color: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+          child: Material(elevation: 5 ,child: buidApp(context)),
+        ),
       );
     } else {
-      return StreamProvider<CustomUser?>.value(
-          catchError: (_, __) => null,
-          initialData: null,
-          value: AuthService().user,
-          child: MaterialApp(
-              themeMode: ThemeMode.system,
-              theme: AppThemeStyle.lightTheme,
-              darkTheme: AppThemeStyle.darkTheme,
-              debugShowCheckedModeBanner: false,
-              home: const Wrapper(),
-              routes: {
-                '/home': (context) => const Wrapper(),
-              }));
+      return buidApp(context);
     }
   }
 
@@ -52,7 +43,7 @@ class MyApp extends StatelessWidget {
         initialData: null,
         value: AuthService().user,
         child: MaterialApp(
-            themeMode: ThemeMode.system,
+            themeMode: ThemeMode.dark,
             theme: AppThemeStyle.lightTheme,
             darkTheme: AppThemeStyle.darkTheme,
             debugShowCheckedModeBanner: false,
