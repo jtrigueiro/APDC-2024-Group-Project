@@ -434,7 +434,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     image: DecorationImage(
-                      image: AssetImage(restaurant.imageUrl),
+                      image: NetworkImage(restaurant.imageUrl,),
                       fit: BoxFit.cover,
                     ),
                   ),
