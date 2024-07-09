@@ -861,19 +861,19 @@ class DatabaseService {
     return {'name': name, 'email': email};
   }
 
-  Future<List<double>> getUserEmissions() async {
+  Future<List<String>> getUserEmissions() async {
     User? user = _auth.currentUser;
 
     if (user != null) {
       DocumentSnapshot userData = await usersCollection.doc(user.uid).get();
       if (userData.exists) {
         return [
-          double.parse(userData['emissions'] ?? 0),
-          double.parse(userData['deslocatEmissions'] ?? 0),
+          (userData['emissions'] ?? 0).toString(),
+          (userData['deslocatEmissions'] ?? 0).toString(),
         ];
       }
     }
-    return [0, 0];
+    return ['0', '0'];
   }
 
   Future<void> updateUserData(String name, String email) async {

@@ -359,8 +359,6 @@ class _SearchScreenState extends State<SearchScreen> {
       body: Center(
         child:  Column(
           children: [
-            searchBox('Search for restaurants', searchIcon,
-                    _searchForRestaurants, searchController, false),
             Expanded(
               child: Stack(
                 children: [

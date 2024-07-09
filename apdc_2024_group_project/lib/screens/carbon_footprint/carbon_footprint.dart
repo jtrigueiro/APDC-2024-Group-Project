@@ -13,7 +13,7 @@ class CarbonFootprintScreen extends StatefulWidget {
 
 class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
   late ScrollController scrollController;
-  List<double> emissions = [];
+  List<String> emissions = [];
 
   @override
   void initState() {
@@ -27,15 +27,15 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
 
     setState(() {
       carbonMap = {
-        'Food': emissions[0],
-        'Transport': emissions[1],
+        'Food': double.parse(emissions[0]),
+        'Transport': double.parse(emissions[1]),
       };
     });
   }
 
   Map<String, double> carbonMap = {
-    'Food': 50,
-    'Transport': 50,
+    'Food': 0,
+    'Transport': 0,
   };
 
   List<Color> colorList = [
