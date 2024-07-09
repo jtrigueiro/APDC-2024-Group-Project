@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/ingredient.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:path/path.dart' as p;
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -79,13 +81,12 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? LoadingScreen()
+        ? const LoadingScreen()
         : Scaffold(
             appBar: AppBar(
               title: const Text('Dish Creator'),
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 117, 85, 18)),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -94,6 +95,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
             body: Scrollbar(
               controller: scrollController,
               child: SingleChildScrollView(
+                reverse: true,
                 controller: scrollController,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,31 +107,43 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                spaceBetweenColumns(),
-                                textForms(nameController, 'Name*',
+                                textForms(nameController, 'Dish name*',
                                     'Please enter a dish name'),
-                                spaceBetweenColumns(),
-                                textForms(descriptionController, 'Description*',
-                                    'Please enter a description of the dish'),
-                                spaceBetweenColumns(),
-                                // TODO: make this field only accept doubles - jose
-                                textForms(priceController, 'Price (in euros)*',
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10.0),
+                                  child: textForms(
+                                      descriptionController,
+                                      'Description*',
+                                      'Please enter a description of the dish'),
+                                ),
+                                textFormsDouble(
+                                    priceController,
+                                    'Price (in euros)*',
                                     'Dishes must have a price!'),
-                                spaceBetweenColumns(),
-                                const Text('Ingredients*:',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold)),
+                                Divider(
+                                  thickness: 1,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: Text('Ingredients*',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium),
+                                ),
                                 Row(
                                   children: [
-                                    Expanded(
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 5.0),
                                       child: DropdownMenu<Ingredient>(
                                         requestFocusOnTap: true,
                                         controller: ingredientNameController,
-                                        hintText: 'Select Ingredient',
+                                        hintText: 'Ingredient',
                                         enableFilter: true,
                                         leadingIcon: const Icon(Icons.search),
-                                        // inputDecorationTheme: ,
                                         onSelected: (Ingredient? value) {
                                           setState(() {
                                             selectedIngredient = value;
@@ -144,7 +158,6 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                         }).toList(),
                                       ),
                                     ),
-                                    const SizedBox(width: 50),
                                     Expanded(
                                       child: TextFormField(
                                         controller: ingredientWeightController,
@@ -157,191 +170,251 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                         ],
                                       ),
                                     ),
-                                    IconButton(
-                                      onPressed: () {
-                                        if (selectedIngredient != null &&
-                                            ingredientWeightController
-                                                .text.isNotEmpty) {
-                                          if (selectedIngredients
-                                              .contains(selectedIngredient)) {
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '*Please round up ingredients weight*',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          if (selectedIngredient != null &&
+                                              ingredientWeightController
+                                                  .text.isNotEmpty) {
+                                            if (selectedIngredients
+                                                .contains(selectedIngredient)) {
+                                              setState(() {
+                                                selectedIngredients
+                                                    .remove(selectedIngredient);
+                                              });
+                                            } // rule of three(rule of thirds) to calculate the corresponding co2
+                                            int newco2 = (int.parse(
+                                                        ingredientWeightController
+                                                            .text) *
+                                                    selectedIngredient!.co2) ~/
+                                                selectedIngredient!.grams;
+                                            selectedIngredient!.co2 = newco2;
+                                            selectedIngredient!.grams =
+                                                int.parse(
+                                                    ingredientWeightController
+                                                        .text);
                                             setState(() {
                                               selectedIngredients
-                                                  .remove(selectedIngredient);
+                                                  .add(selectedIngredient!);
                                             });
-                                          } // rule of three(rule of thirds) to calculate the corresponding co2
-                                          int newco2 = (int.parse(
-                                                      ingredientWeightController
-                                                          .text) *
-                                                  selectedIngredient!.co2) ~/
-                                              selectedIngredient!.grams;
-                                          selectedIngredient!.co2 = newco2;
-                                          selectedIngredient!.grams = int.parse(
-                                              ingredientWeightController.text);
-                                          setState(() {
-                                            selectedIngredients
-                                                .add(selectedIngredient!);
-                                          });
-                                          ingredientWeightController.clear();
-                                          ingredientNameController.clear();
-                                        }
-                                      },
-                                      icon:
-                                          const Icon(Icons.add_circle_outline),
+                                            ingredientWeightController.clear();
+                                            ingredientNameController.clear();
+                                          }
+                                        },
+                                        icon: const Icon(
+                                            Icons.add_circle_outline),
+                                      ),
                                     ),
                                   ],
                                 ),
-                                spaceBetweenColumns(),
                                 ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: selectedIngredients.length,
                                   itemBuilder: (context, index) {
-                                    return ListTile(
-                                      title:
-                                          Text(selectedIngredients[index].name),
-                                      subtitle: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                'Weight: ${selectedIngredients[index].grams} grams'),
-                                            Text(
-                                                'CO2: ${selectedIngredients[index].co2} grams'),
-                                          ]),
-                                      trailing: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            selectedIngredients.removeAt(index);
-                                          });
-                                        },
-                                        icon: const Icon(
-                                            Icons.remove_circle_outline),
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10.0),
+                                      child: ListTile(
+                                        tileColor: const Color.fromARGB(
+                                            84, 61, 130, 20),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        title: Text(
+                                          selectedIngredients[index].name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium,
+                                        ),
+                                        subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  'Weight: ${selectedIngredients[index].grams} grams',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall),
+                                              Text(
+                                                  'CO2: ${selectedIngredients[index].co2} grams',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall),
+                                            ]),
+                                        trailing: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              selectedIngredients
+                                                  .removeAt(index);
+                                            });
+                                          },
+                                          icon: const Icon(
+                                              Icons.remove_circle_outline),
+                                        ),
                                       ),
                                     );
                                   },
                                 ),
-                                spaceBetweenColumns(),
-                                const Divider(
-                                  height: 20,
-                                  thickness: 2,
-                                  indent: 20,
-                                  endIndent: 20,
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Divider(
+                                    thickness: 1,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
                                 ),
-                                spaceBetweenColumns(),
-                                Center(
-                                  child: Column(
-                                    children: [
-                                      if (pickedImageFile != null)
-                                        if (kIsWeb)
-                                          Container(
-                                            child: Image.network(
-                                              pickedImageFile!.path,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )
-                                        else
-                                          Container(
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (pickedImageFile != null)
+                                      if (kIsWeb)
+                                        Image.network(
+                                          pickedImageFile!.path,
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                        )
+                                      else
+                                        SizedBox(
+                                          width: 150,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                            BorderRadius
+                                                .circular(
+                                                20.0),
                                             child: Image.file(
                                               File(pickedImageFile!.path),
-                                              width: double.infinity,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          pickImage();
-                                        },
-                                        child: const Icon(Icons.add),
+                                        ),
+
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Column(
+                                        children: [
+
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              pickImage();
+                                            },
+                                            child: const Icon(Icons.add),
+                                          ),
+
+                                          pickedImageFile == null
+                                          ? Text('Add Photo*',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall!.copyWith(fontSize:12))
+                                          :Text('Change Photo*',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall!.copyWith(fontSize:12))
+                                        ],
                                       ),
-                                      Text('Add Photo*',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ]),
                         ),
                       ),
                       if (error)
-                        Text(
-                          errorMessage,
-                          style: TextStyle(
-                            color: Colors.red,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            errorMessage,
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: Colors.red,
+                            ),
                           ),
                         ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: Container(
                           alignment: Alignment.bottomRight,
                           child: Row(
                             children: [
                               cancelButton(context),
-                              SizedBox(width: 10),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  if (selectedIngredients.isEmpty &&
-                                      pickedImageFile == null) {
-                                    setState(() {
-                                      errorMessage =
-                                          'Please select at least one ingredient and choose an image!';
-                                      error = true;
-                                    });
-                                  } else if (selectedIngredients.isEmpty) {
-                                    setState(() {
-                                      errorMessage =
-                                          'Please select at least one ingredient!';
-                                      error = true;
-                                    });
-                                  } else if (pickedImageFile == null) {
-                                    setState(() {
-                                      errorMessage = 'Please select an image!';
-                                      error = true;
-                                    });
-                                  } else {
-                                    if (_formKey.currentState!.validate()) {
-                                      setState(() {
-                                        loading = true;
-                                      });
-                                      final dishCo2 = selectedIngredients.fold(
-                                          0,
-                                          (previousValue, element) =>
-                                              previousValue + element.co2);
-                                      if (kIsWeb) {
-                                        await DatabaseService().createDishWeb(
-                                            nameController.text,
-                                            descriptionController.text,
-                                            double.parse(priceController.text),
-                                            dishCo2,
-                                            selectedIngredients,
-                                            await pickedImageFile!
-                                                .readAsBytes(),
-                                            p.extension(pickedImageFile!.name));
-                                      } else {
-                                        await DatabaseService()
-                                            .createDishMobile(
-                                                nameController.text,
-                                                descriptionController.text,
-                                                double.parse(
-                                                    priceController.text),
-                                                dishCo2,
-                                                selectedIngredients,
-                                                pickedImageFile!.path);
-                                      }
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        loading = false;
-                                      });
-                                    } else {
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    if (selectedIngredients.isEmpty &&
+                                        pickedImageFile == null) {
                                       setState(() {
                                         errorMessage =
-                                            'Please fill in all the required fields!';
+                                            'Please select at least one ingredient and choose an image!';
                                         error = true;
                                       });
+                                    } else if (selectedIngredients.isEmpty) {
+                                      setState(() {
+                                        errorMessage =
+                                            'Please select at least one ingredient!';
+                                        error = true;
+                                      });
+                                    } else if (pickedImageFile == null) {
+                                      setState(() {
+                                        errorMessage = 'Please select an image!';
+                                        error = true;
+                                      });
+                                    } else {
+                                      if (_formKey.currentState!.validate()) {
+                                        setState(() {
+                                          loading = true;
+                                        });
+                                        final dishCo2 = selectedIngredients.fold(
+                                            0,
+                                            (previousValue, element) =>
+                                                previousValue + element.co2);
+                                        if (kIsWeb) {
+                                          await DatabaseService().createDishWeb(
+                                              nameController.text,
+                                              descriptionController.text,
+                                              double.parse(priceController.text),
+                                              dishCo2,
+                                              selectedIngredients,
+                                              await pickedImageFile!
+                                                  .readAsBytes(),
+                                              p.extension(pickedImageFile!.name));
+                                        } else {
+                                          await DatabaseService()
+                                              .createDishMobile(
+                                                  nameController.text,
+                                                  descriptionController.text,
+                                                  double.parse(
+                                                      priceController.text),
+                                                  dishCo2,
+                                                  selectedIngredients,
+                                                  pickedImageFile!.path);
+                                        }
+                                        Navigator.pop(context);
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          errorMessage =
+                                              'Please fill in all the required fields!';
+                                          error = true;
+                                        });
+                                      }
                                     }
-                                  }
-                                },
-                                child: const Text('Save'),
+                                  },
+                                  child: const Text('Save'),
+                                ),
                               ),
                             ],
                           ),

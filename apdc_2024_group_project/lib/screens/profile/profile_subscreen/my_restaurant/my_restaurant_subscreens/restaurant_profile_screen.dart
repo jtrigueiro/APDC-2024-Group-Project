@@ -204,7 +204,7 @@ class RestaurantPersonalizeScreenState
   @override
   Widget build(BuildContext context) {
     return loading
-        ? LoadingScreen()
+        ? const LoadingScreen()
         : Scaffold(
             appBar: AppBar(
               title: const Text('My Restaurant Profile'),
@@ -225,6 +225,175 @@ class RestaurantPersonalizeScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: Column(
+                          children: [
+                            pickedImageFile != null
+                                ? kIsWeb
+                                    ? Image.network(
+                                        pickedImageFile!.path,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Column( //notweb and picked a image
+                                        children: [
+                                          Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 70,
+                                                backgroundColor: Colors.grey,
+                                                backgroundImage:
+                                                    pickedImageFile != null
+                                                        ? FileImage( File(pickedImageFile!
+                                                            .path))
+                                                        : null,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    if (pickedImageFile !=
+                                                        null) {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          30),
+                                                              child: Dialog(
+                                                                elevation: 3,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .blueGrey,
+                                                                child:
+                                                                    ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20.0),
+                                                                  child: pickedImageFile !=
+                                                                          null
+                                                                      ?  Image.file(File(pickedImageFile!
+                                                                      .path))
+                                                                      : null,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
+                                                    }
+                                                  },
+                                                  child: pickedImageFile == null
+                                                      ? const Icon(
+                                                          Icons.camera_alt,
+                                                          color: Colors.white)
+                                                      : null,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 90, left: 100),
+                                                child: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.black54,
+                                                    child: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.edit),
+                                                      onPressed: pickImage,
+                                                    )),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                : Builder(
+                                    builder: (context) {
+                                      return Column(children: [
+                                        Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 70,
+                                              backgroundColor: Colors.grey,
+                                              backgroundImage:
+                                                  currentImageUrl != null
+                                                      ?  NetworkImage(
+                                                          currentImageUrl!)
+                                                      : null,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  if (currentImageUrl != null) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        30),
+                                                            child: Dialog(
+                                                              elevation: 3,
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .blueGrey,
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.0),
+                                                                child: currentImageUrl !=
+                                                                        null
+                                                                    ? Image.network(
+                                                                        currentImageUrl!)
+                                                                    : null,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        });
+                                                  }
+                                                },
+                                                child: currentImageUrl == null
+                                                    ? const Icon(
+                                                        Icons.camera_alt,
+                                                        color: Colors.white)
+                                                    : null,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 90, left: 100),
+                                              child: CircleAvatar(
+                                                  backgroundColor:
+                                                      Colors.black54,
+                                                  child: IconButton(
+                                                    icon:
+                                                        const Icon(Icons.edit),
+                                                    onPressed: pickImage,
+                                                  )),
+                                            )
+                                          ],
+                                        ),
+                                      ]);
+                                    },
+                                  ),
+                            currentImageUrl == null
+                                ? Text("Add Restaurant Photo",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(fontSize: 13))
+                                : Text("Update Restaurant Photo",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(fontSize: 13)),
+                          ],
+                        ),
+                      ),
                       Form(
                         key: _formKey,
                         child: Column(children: [
@@ -237,7 +406,8 @@ class RestaurantPersonalizeScreenState
                         ]),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -257,596 +427,230 @@ class RestaurantPersonalizeScreenState
                           ],
                         ),
                       ),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: _weekDaysTextBoxSize,
-                            child: Text("Monday",
-                                style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 20)),
-                          ),
-
-                          Switch(
-                            value: mondayIsOpen,
-                            onChanged: (value) {
+                      list(
+                          'Monday',
+                          mondayIsOpen,
+                          (value) {
+                            setState(() {
+                              mondayIsOpen = value;
+                            });
+                          },
+                          mondayFromTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: mondayFromTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
                               setState(() {
-                                mondayIsOpen = value;
+                                mondayFromTime = timeOfDay;
                               });
-                            },
-                          ),
-
-                          Container(
-                            //height: MediaQuery.of(context).size.height * 0.1,
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(225, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: mondayFromTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        mondayFromTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${mondayFromTime.hour.toString().padLeft(2, '0')}:${mondayFromTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                                const Text('to'),
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: mondayToTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        mondayToTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${mondayToTime.hour.toString().padLeft(2, '0')}:${mondayToTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      customSpaceBetweenColumns(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: _weekDaysTextBoxSize,
-                            child: Text("Tuesday",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontSize: 20)),
-                          ),
-                          Switch(
-                            value: tuesdayIsOpen,
-                            onChanged: (value) {
+                            }
+                          },
+                          mondayToTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: mondayToTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
                               setState(() {
-                                tuesdayIsOpen = value;
+                                mondayToTime = timeOfDay;
                               });
-                            },
-                            //activeTrackColor: Colors.lightGreenAccent,
-                            //activeColor: Colors.green,
-                          ),
-                          Container(
-                            //height: MediaQuery.of(context).size.height * 0.1,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(225, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: tuesdayFromTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        tuesdayFromTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${tuesdayFromTime.hour.toString().padLeft(2, '0')}:${tuesdayFromTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                                const Text('to'),
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: tuesdayToTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        tuesdayToTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${tuesdayToTime.hour.toString().padLeft(2, '0')}:${tuesdayToTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      customSpaceBetweenColumns(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: _weekDaysTextBoxSize,
-                            child: Text("Wednesday",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontSize: 20)),
-                          ),
-                          Switch(
-                            value: wednesdayIsOpen,
-                            onChanged: (value) {
+                            }
+                          }),
+                      list(
+                          'Tuesday',
+                          tuesdayIsOpen,
+                          (value) {
+                            setState(() {
+                              tuesdayIsOpen = value;
+                            });
+                          },
+                          tuesdayFromTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: tuesdayFromTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
                               setState(() {
-                                wednesdayIsOpen = value;
+                                tuesdayFromTime = timeOfDay;
                               });
-                            },
-                            //activeTrackColor: Colors.lightGreenAccent,
-                            //activeColor: Colors.green,
-                          ),
-                          Container(
-                            //height: MediaQuery.of(context).size.height * 0.1,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(225, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: wednesdayFromTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        wednesdayFromTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${wednesdayFromTime.hour.toString().padLeft(2, '0')}:${wednesdayFromTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                                const Text('to'),
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: wednesdayToTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        wednesdayToTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${wednesdayToTime.hour.toString().padLeft(2, '0')}:${wednesdayToTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      customSpaceBetweenColumns(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: _weekDaysTextBoxSize,
-                            child: Text("Thursday",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontSize: 20)),
-                          ),
-                          Switch(
-                            value: thursdayIsOpen,
-                            onChanged: (value) {
+                            }
+                          },
+                          tuesdayToTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: tuesdayToTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
                               setState(() {
-                                thursdayIsOpen = value;
+                                tuesdayToTime = timeOfDay;
                               });
-                            },
-                            //activeTrackColor: Colors.lightGreenAccent,
-                            //activeColor: Colors.green,
-                          ),
-                          Container(
-                            //height: MediaQuery.of(context).size.height * 0.1,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(225, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: thursdayFromTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        thursdayFromTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${thursdayFromTime.hour.toString().padLeft(2, '0')}:${thursdayFromTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                                const Text('to'),
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: thursdayToTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        thursdayToTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${thursdayToTime.hour.toString().padLeft(2, '0')}:${thursdayToTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      customSpaceBetweenColumns(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: _weekDaysTextBoxSize,
-                            child: Text("Friday",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontSize: 20)),
-                          ),
-                          Switch(
-                            value: fridayIsOpen,
-                            onChanged: (value) {
+                            }
+                          }),
+                      list(
+                          'Wednesday',
+                          wednesdayIsOpen,
+                          (value) {
+                            setState(() {
+                              wednesdayIsOpen = value;
+                            });
+                          },
+                          wednesdayFromTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: wednesdayFromTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
                               setState(() {
-                                fridayIsOpen = value;
+                                wednesdayFromTime = timeOfDay;
                               });
-                            },
-                            //activeTrackColor: Colors.lightGreenAccent,
-                            //activeColor: Colors.green,
-                          ),
-                          Container(
-                            //height: MediaQuery.of(context).size.height * 0.1,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(225, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: fridayFromTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        fridayFromTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${fridayFromTime.hour.toString().padLeft(2, '0')}:${fridayFromTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                                const Text('to'),
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: fridayToTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        fridayToTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${fridayToTime.hour.toString().padLeft(2, '0')}:${fridayToTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      customSpaceBetweenColumns(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: _weekDaysTextBoxSize,
-                            child: Text("Saturday",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontSize: 20)),
-                          ),
-                          Switch(
-                            value: saturdayIsOpen,
-                            onChanged: (value) {
+                            }
+                          },
+                          wednesdayToTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: wednesdayToTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
                               setState(() {
-                                saturdayIsOpen = value;
+                                wednesdayToTime = timeOfDay;
                               });
-                            },
-                            //activeTrackColor: Colors.lightGreenAccent,
-                            //activeColor: Colors.green,
-                          ),
-                          Container(
-                            //height: MediaQuery.of(context).size.height * 0.1,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(225, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: saturdayFromTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        saturdayFromTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${saturdayFromTime.hour.toString().padLeft(2, '0')}:${saturdayFromTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                                const Text('to'),
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: saturdayToTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        saturdayToTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${saturdayToTime.hour.toString().padLeft(2, '0')}:${saturdayToTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      customSpaceBetweenColumns(10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: _weekDaysTextBoxSize,
-                            child: Text("Sunday",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontSize: 20)),
-                          ),
-                          Switch(
-                            value: sundayIsOpen,
-                            onChanged: (value) {
+                            }
+                          }),
+                      list(
+                          'Thursday',
+                          thursdayIsOpen,
+                          (value) {
+                            setState(() {
+                              thursdayIsOpen = value;
+                            });
+                          },
+                          thursdayFromTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: thursdayFromTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
                               setState(() {
-                                sundayIsOpen = value;
+                                thursdayFromTime = timeOfDay;
                               });
-                            },
-                            //activeTrackColor: Colors.lightGreenAccent,
-                            //activeColor: Colors.green,
-                          ),
-                          Container(
-                            //height: MediaQuery.of(context).size.height * 0.1,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(225, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: sundayFromTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        sundayFromTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${sundayFromTime.hour.toString().padLeft(2, '0')}:${sundayFromTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                                const Text('to'),
-                                TextButton(
-                                  onPressed: () async {
-                                    final TimeOfDay? timeOfDay =
-                                        await showTimePicker(
-                                            context: context,
-                                            initialTime: sundayToTime,
-                                            initialEntryMode:
-                                                TimePickerEntryMode.dial);
-                                    if (timeOfDay != null) {
-                                      setState(() {
-                                        sundayToTime = timeOfDay;
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                      "${sundayToTime.hour.toString().padLeft(2, '0')}:${sundayToTime.minute.toString().padLeft(2, '0')}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(fontSize: 15)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      customSpaceBetweenColumns(20),
-                      Column(
-                        children: [
-                          pickedImageFile != null
-                              ? kIsWeb
-                                  ? Image.network(
-                                      pickedImageFile!.path,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.file(
-                                      File(pickedImageFile!.path),
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    )
-                              : currentImageUrl == null
-                                  ? Container()
-                                  : Builder(
-                                      builder: (context) {
-                                        return Image.network(
-                                          currentImageUrl,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  const Text(
-                                                      'Error loading image!'),
-                                        );
-                                      },
-                                    ),
-                          ElevatedButton(
-                            onPressed: () {
-                              pickImage();
-                            },
-                            child: const Icon(Icons.add),
-                          ),
-                          currentImageUrl == null
-                              ? Text("Add Restaurant Photo",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(fontSize: 15))
-                              : Text("Update Restaurant Photo",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(fontSize: 15)),
-                        ],
-                      ),
+                            }
+                          },
+                          thursdayToTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: thursdayToTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
+                              setState(() {
+                                thursdayToTime = timeOfDay;
+                              });
+                            }
+                          }),
+                      list(
+                          'Friday',
+                          fridayIsOpen,
+                          (value) {
+                            setState(() {
+                              fridayIsOpen = value;
+                            });
+                          },
+                          fridayFromTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: fridayFromTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
+                              setState(() {
+                                fridayFromTime = timeOfDay;
+                              });
+                            }
+                          },
+                          fridayToTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: fridayToTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
+                              setState(() {
+                                fridayToTime = timeOfDay;
+                              });
+                            }
+                          }),
+                      list(
+                          'Saturday',
+                          saturdayIsOpen,
+                          (value) {
+                            setState(() {
+                              saturdayIsOpen = value;
+                            });
+                          },
+                          saturdayFromTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: saturdayFromTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
+                              setState(() {
+                                saturdayFromTime = timeOfDay;
+                              });
+                            }
+                          },
+                          saturdayToTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: saturdayToTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
+                              setState(() {
+                                saturdayToTime = timeOfDay;
+                              });
+                            }
+                          }),
+                      list(
+                          'Sunday',
+                          sundayIsOpen,
+                          (value) {
+                            setState(() {
+                              sundayIsOpen = value;
+                            });
+                          },
+                          sundayFromTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: sundayFromTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
+                              setState(() {
+                                sundayFromTime = timeOfDay;
+                              });
+                            }
+                          },
+                          sundayToTime,
+                          () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: sundayToTime,
+                                initialEntryMode: TimePickerEntryMode.dial);
+                            if (timeOfDay != null) {
+                              setState(() {
+                                sundayToTime = timeOfDay;
+                              });
+                            }
+                          }),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: SizedBox(
@@ -897,7 +701,6 @@ class RestaurantPersonalizeScreenState
                                             pickedImageFile!.path);
                                   }
                                 }
-
                                 Navigator.pop(context);
                               }
                             },
@@ -911,5 +714,60 @@ class RestaurantPersonalizeScreenState
               ),
             ),
           );
+  }
+
+  Padding list(String dayName, bool day, Function(bool) onChanged, fromTime,
+      fromTimeF, toTime, toTimeF) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          SizedBox(
+            width: _weekDaysTextBoxSize,
+            child: Text(dayName,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(fontSize: 18)),
+          ),
+          Switch(value: day, onChanged: onChanged),
+          Container(
+            //height: MediaQuery.of(context).size.height * 0.1,
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(225, 255, 255, 255),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    fromTimeF();
+                  },
+                  child: Text(
+                      "${fromTime.hour.toString().padLeft(2, '0')}:${fromTime.minute.toString().padLeft(2, '0')}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(fontSize: 15)),
+                ),
+                const Text('to'),
+                TextButton(
+                  onPressed: () async {
+                    toTimeF();
+                  },
+                  child: Text(
+                      "${toTime.hour.toString().padLeft(2, '0')}:${toTime.minute.toString().padLeft(2, '0')}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(fontSize: 15)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

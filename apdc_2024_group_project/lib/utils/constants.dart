@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 //const int topMargin = 10;
@@ -22,6 +23,46 @@ Text texts(String text, double size) {
 TextFormField textForms(
     TextEditingController controller, text, String textNoValue) {
   return TextFormField(
+    controller: controller,
+    decoration: InputDecoration().copyWith(
+      labelText: '$text',
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return textNoValue;
+      }
+      return null;
+    },
+  );
+
+}
+
+TextFormField textFormsPhone(
+    TextEditingController controller, text, String textNoValue) {
+  return TextFormField(
+    minLines: 9,
+    keyboardType: TextInputType.number,
+    inputFormatters:  <TextInputFormatter> [
+      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+      FilteringTextInputFormatter.digitsOnly,
+    ],
+    controller: controller,
+    decoration: InputDecoration().copyWith(
+      labelText: '$text',
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return textNoValue;
+      }
+      return null;
+    },
+  );
+}
+
+TextFormField textFormsDouble(
+    TextEditingController controller, text, String textNoValue) {
+  return TextFormField(
+   keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
     controller: controller,
     decoration: InputDecoration().copyWith(
       labelText: '$text',
@@ -81,7 +122,7 @@ ElevatedButton cancelButton(BuildContext context) {
       Navigator.pop(context);
     },
     style: ElevatedButton.styleFrom(
-      backgroundColor: Color.fromARGB(255, 184, 136, 141),
+      backgroundColor:  Theme.of(context).colorScheme.error,
       foregroundColor: Theme.of(context).colorScheme.onError,
     ),
     child: const Text('Cancel'),

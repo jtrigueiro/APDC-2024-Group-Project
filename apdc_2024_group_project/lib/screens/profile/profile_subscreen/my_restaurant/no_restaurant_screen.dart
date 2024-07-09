@@ -471,6 +471,26 @@ Row buildDoubleTextForm(
   );
 }
 
+Padding buildTextFormFieldPhone(String label, TextEditingController controller, RegExp? regExp) {
+  return Padding(
+    padding: const EdgeInsets.all(3),
+    child: TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: "$label*",
+        border: const OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.number,
+      inputFormatters:  <TextInputFormatter> [
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+      minLines: 9,
+      validator: (value) => validateString(value, "$label is required."),
+    ),
+  );
+}
+
 Padding buildTextFormField(String label, TextEditingController controller,
     TextInputType keyboardType, RegExp? regExp, int? maxLength) {
   return Padding(

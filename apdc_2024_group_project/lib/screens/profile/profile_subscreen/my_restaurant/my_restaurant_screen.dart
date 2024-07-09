@@ -68,7 +68,7 @@ class MyRestaurantScreenState extends State<MyRestaurantScreen> {
   Future toPersonalizePage() {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => RestaurantPersonalizeScreen(),
+        builder: (context) => const RestaurantPersonalizeScreen(),
       ),
     );
   }
