@@ -54,8 +54,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void getLocations() async {
-    print('fetching locations');
-
     try {
       locations = await DatabaseService().getLocations();
     } catch (e) {
@@ -161,13 +159,11 @@ class _SearchScreenState extends State<SearchScreen> {
       setState(() {
         done = true;
         paddingNeeded = values.isEmpty ? false : true;
-        //_getDateFromUser(); //todo: date picker removed
       });
 
   }
 
   void _getDateFromUser() async {
-    print('selected date before $_selectedDate');
     _selectedDate = await showDatePicker(
     context: context,
     initialDate: DateTime.now(),
@@ -183,7 +179,6 @@ class _SearchScreenState extends State<SearchScreen> {
     );
 
     if (_selectedDate != null) {
-      print('selected date after $_selectedDate');
       enhanceResult();
       setState(() {
       });
@@ -192,11 +187,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void enhanceResult() {
     int weekday = _selectedDate!.weekday;
-    print('weekday $weekday');
 
     final values = restaurants.where((element) => element.isOpen[weekday - 1]).toList();
-
-    print('values length ${values.length}');
 
     if(values.isEmpty) {
       showDialog(
@@ -438,8 +430,21 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Row(
           children: [
             FutureBuilder(
-              future: getRestaurantImageURL(restaurant.id),
+              future: null,
               builder: (context, snapshot) {
+                return Container(
+                  width: MediaQuery.of(context).size.width*0.2,
+                  height: MediaQuery.of(context).size.width*0.2,
+                  margin: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/restaurant_1.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+                /*
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else {
@@ -455,7 +460,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                   );
-                }
+                }*/
               }
             ),
               Column(
