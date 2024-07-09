@@ -68,6 +68,8 @@ class DatabaseService {
   static const String USER_PROMOS_SUBCOLLECTION = "user_promos";
   // ignore: constant_identifier_names
   static const String RESTAURANT_TYPES_SUBCOLLECTION = "restaurant_types";
+  // ignore: constant_identifier_names
+  static const String RESTAURANTS_SUBCOLLECTION = "restaurants";
 
   // documents variables
   // ignore: constant_identifier_names
@@ -716,7 +718,7 @@ class DatabaseService {
       for (DocumentSnapshot doc in typesSnapshot.docs) {
         await restaurantTypesCollection
             .doc(doc.id)
-            .collection('restaurants')
+            .collection(RESTAURANTS_SUBCOLLECTION)
             .doc(user.uid)
             .delete();
       }
