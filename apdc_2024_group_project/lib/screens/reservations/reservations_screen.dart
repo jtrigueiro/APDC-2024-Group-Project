@@ -62,6 +62,7 @@ class ReservationsScreenState extends State<ReservationsScreen> {
                     'Time: ${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
                 const SizedBox(height: 20),
                 Text('Total Price: ${reservation.cost}€'),
+                Text('Average Emissions: ${reservation.averageEmissions} gCO2'),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                   child: Column(
