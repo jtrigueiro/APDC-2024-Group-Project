@@ -689,7 +689,7 @@ class DatabaseService {
     }
   }
 
-  //delete restaurant and all its subcollections
+  //delete all restaurant data
   Future deleteRestaurant() async {
     User? user = _auth.currentUser;
     try {
