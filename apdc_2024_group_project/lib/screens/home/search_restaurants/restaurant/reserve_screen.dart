@@ -44,9 +44,11 @@ class ReserveScreenState extends State<ReserveScreen> {
         List<String> times = widget.restaurant.time[i].split('-');
         List<String> time = times[0].split(':');
 
+        int closingHour = int.parse(times[1].split(':')[0]) == 0 ? 24 : int.parse(times[1].split(':')[0]);
+
         int currentHour = int.parse(time[0]);
         int currentMinute = int.parse(time[1]);
-        while(currentHour < int.parse(times[1].split(':')[0])) {
+        while(currentHour < closingHour) {
           openHours[i].add(TimeOfDay(hour: currentHour, minute: currentMinute));
           currentHour++;
         }
