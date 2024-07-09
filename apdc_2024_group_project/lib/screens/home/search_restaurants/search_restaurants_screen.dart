@@ -424,7 +424,7 @@ class _SearchScreenState extends State<SearchScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => RestaurantScreen(info: restaurant, day: _selectedDate),
+          builder: (context) => RestaurantScreen(info: restaurant, day: null),
         ),
       );
     },

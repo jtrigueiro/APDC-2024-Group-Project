@@ -10,7 +10,7 @@ class RestaurantScreen extends StatelessWidget {
 
   const RestaurantScreen({super.key, required this.info, required this.day});
 
-  DateTime getDay(day) {
+  DateTime getDay(DateTime? day) {
     if(day == null) {
       DateTime now = DateTime.now();
       DateTime firstDay = now;
@@ -70,16 +70,17 @@ class RestaurantScreen extends StatelessWidget {
 
             ElevatedButton(
               onPressed: () {
+                /*
                 showModalBottomSheet<void>(
                     context: context,
                     builder: (BuildContext context) {
                       return ReserveScreen(restaurant: info, day: getDay(day)) ;
-                 },);
+                 },);*/
 
-                /*Navigator.push(
+                Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ReserveScreen(restaurant: info, day: getDay(day))));*/
+                        builder: (context) => ReserveScreen(restaurant: info, day: getDay(day))));
               },
               child: const Text("Reserve"),
             ),
