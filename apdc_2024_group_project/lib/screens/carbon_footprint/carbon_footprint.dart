@@ -1,4 +1,5 @@
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -110,8 +111,10 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                           ),
 
 
-                          Text(': ${carbonMap.values.first.toString()} g CO2e',
-                              style: Theme.of(context).textTheme.titleMedium),
+                          Flexible(
+                            child: Text(': ${carbonMap.values.first.toString()} g CO2e',
+                                style: Theme.of(context).textTheme.titleMedium, overflow: TextOverflow.visible),
+                          ),
                         ],
                       ),
                       Row(
@@ -127,8 +130,10 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                                 style: Theme.of(context).textTheme.displayMedium),
                           ),
 
-                          Text(': ${carbonMap.values.last.toString()} g CO2e',
-                              style: Theme.of(context).textTheme.titleMedium),
+                          Flexible(
+                            child: Text(': ${carbonMap.values.last.toString()} g CO2e',
+                                style: Theme.of(context).textTheme.titleMedium, overflow: TextOverflow.visible,),
+                          ),
                         ],
                       ),
                     ],
