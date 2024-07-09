@@ -34,6 +34,13 @@ class _MapScreenState extends State<MapScreen> {
   int _currentDirectionIndex = 0;
   bool isModeLocked = false;
 
+  // Emission factors (kg CO2 per km)
+  final double carEmissionFactor = 0.271; // Average car emission
+  final double walkingEmissionFactor = 0.0;
+  final double publicTransitEmissionFactor = 0.104; // Average public transit emission
+
+  double carbonFootprint = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -83,6 +90,7 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _getPolyline() async {
     totalDistance = 0.0;
+    carbonFootprint = 0.0;
     final response = await http.get(Uri.parse(
         'https://maps.googleapis.com/maps/api/directions/json?origin=${_currentPosition.latitude},${_currentPosition.longitude}&destination=${widget.restaurantLocation.latitude},${widget.restaurantLocation.longitude}&mode=$travelMode&key=$googleApiKey'));
 
@@ -96,6 +104,7 @@ class _MapScreenState extends State<MapScreen> {
             polylineCoordinates.addAll(_decodePolyline(step['polyline']['points']));
           }
           totalDistance = _calculateTotalDistance(polylineCoordinates);
+          carbonFootprint = _calculateCarbonFootprint(totalDistance, travelMode);
           polylines.add(Polyline(
             width: 5,
             polylineId: const PolylineId('polyline'),
@@ -109,6 +118,23 @@ class _MapScreenState extends State<MapScreen> {
       }
     } else {
       print('Failed to fetch route');
+    }
+  }
+
+  double _calculateCarbonFootprint(double distance, String mode) {
+    switch (mode) {
+      case 'driving':
+        return distance * carEmissionFactor;
+      case 'walking':
+        return distance * walkingEmissionFactor;
+      case 'transit':
+      // Assuming 10% of the distance is covered by walking
+        double walkingDistance = distance * 0.1;
+        double transitDistance = distance * 0.9;
+        return (walkingDistance * walkingEmissionFactor) +
+            (transitDistance * publicTransitEmissionFactor);
+      default:
+        return 0.0;
     }
   }
 
@@ -306,8 +332,23 @@ class _MapScreenState extends State<MapScreen> {
                 _buildTravelModeButton('driving', Icons.directions_car),
                 _buildTravelModeButton('walking', Icons.directions_walk),
                 _buildTravelModeButton('transit', Icons.directions_transit),
-                _buildLockModeButton(),
                 _buildConfirmDestinationButton(),
+              ],
+            ),
+          ),
+          Container(
+            height: 60.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: Text(
+                    'CO2: ${carbonFootprint.toStringAsFixed(2)} kg',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+                _buildStartTripButton(),
               ],
             ),
           ),
@@ -381,29 +422,24 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _buildLockModeButton() {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          isModeLocked = true;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Transit mode selected: $travelMode'),
-          ),
-        );
+  Widget _buildStartTripButton() {
+    return TextButton(
+      onPressed: () {
+        if (!isModeLocked) {
+          setState(() {
+            isModeLocked = true;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Transit mode selected: $travelMode'),
+            ),
+          );
+        }
       },
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10.0),
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.green,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          Icons.check,
-          size: 20.0,
-          color: Colors.white,
+      child: Text(
+        'Start Trip',
+        style: TextStyle(
+          color: isModeLocked ? Colors.grey : Colors.green,
         ),
       ),
     );
