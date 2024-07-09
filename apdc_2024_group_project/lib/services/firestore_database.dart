@@ -11,7 +11,6 @@ import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/services/models/restaurant_application.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,8 +19,6 @@ class DatabaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Storage do Firebase
-  final FirebaseStorage _storage = FirebaseStorage
-      .instance; // TODO: this should not be here, do not mix db classes - jose to wilker
 
   // users collection reference
   final CollectionReference usersCollection =
@@ -175,39 +172,39 @@ class DatabaseService {
   }
 
   Future<Restaurant> getRestaurantById(String restaurantId) async {
-      try {
-        final DocumentSnapshot doc =
-            await restaurantsCollection.doc(restaurantId).get();
-        return Restaurant(
-          id: doc.id,
-          name: doc.get('name') ?? '',
-          phone: doc.get('phone') ?? '',
-          address: doc.get('address') ?? '',
-          location: doc.get('location') ?? '',
-          coordinates: doc.get('coordinates') ?? '',
-          co2EmissionEstimate: doc.get('co2EmissionEstimate').toDouble() ?? 0,
-          seats: doc.get('seats').toInt() ?? 0,
-          visible: doc.get('visible') ?? false,
-          isOpen: doc.get('isOpen').map<bool>((e) => e as bool).toList(),
-          time: doc.get('time').map<String>((e) => e as String).toList(),
-        );
-      } catch (e) {
-        debugPrint(e.toString());
-        return Restaurant(
-          id: '',
-          name: '',
-          phone: '',
-          address: '',
-          location: '',
-          coordinates: '',
-          co2EmissionEstimate: 0,
-          seats: 0,
-          visible: false,
-          isOpen: [],
-          time: [],
-        );
-      }
+    try {
+      final DocumentSnapshot doc =
+          await restaurantsCollection.doc(restaurantId).get();
+      return Restaurant(
+        id: doc.id,
+        name: doc.get('name') ?? '',
+        phone: doc.get('phone') ?? '',
+        address: doc.get('address') ?? '',
+        location: doc.get('location') ?? '',
+        coordinates: doc.get('coordinates') ?? '',
+        co2EmissionEstimate: doc.get('co2EmissionEstimate').toDouble() ?? 0,
+        seats: doc.get('seats').toInt() ?? 0,
+        visible: doc.get('visible') ?? false,
+        isOpen: doc.get('isOpen').map<bool>((e) => e as bool).toList(),
+        time: doc.get('time').map<String>((e) => e as String).toList(),
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+      return Restaurant(
+        id: '',
+        name: '',
+        phone: '',
+        address: '',
+        location: '',
+        coordinates: '',
+        co2EmissionEstimate: 0,
+        seats: 0,
+        visible: false,
+        isOpen: [],
+        time: [],
+      );
     }
+  }
 
   // ----------------- Locations -----------------
 
@@ -608,14 +605,9 @@ class DatabaseService {
   // get dish image url
   Future getDishImageUrlUsers(String restaurantUid, String dishId) async {
     try {
-      // TODO: this should not be here, do not mix db classes - jose to wilker
-      String imageUrl = await _storage
-          .ref()
-          .child('restaurants/$restaurantUid/dishes/$dishId')
-          .getDownloadURL();
-      return imageUrl;
+      return await StorageService().getDishImageUrl(restaurantUid, dishId);
     } catch (e) {
-      debugPrint("Error getting dish image URL: $e");
+      debugPrint(e.toString());
       return null;
     }
   }
