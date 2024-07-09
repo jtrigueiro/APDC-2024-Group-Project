@@ -13,9 +13,8 @@ import 'package:flutter/services.dart';
 
 class SearchScreen extends StatefulWidget {
   final LatLng userLocation;
-  final bool isSharingLocation;
 
-  const SearchScreen({ Key? key, required this.userLocation, required this.isSharingLocation}): super(key: key);
+  const SearchScreen({ Key? key, required this.userLocation }): super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -42,6 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
   bool choosingDate = true;
   String? _mapStyle;
   double _markerFont = kIsWeb ? 12 : 80;
+  DateTime? _selectedDate;
   List<String> locations = [];
 
   @override
@@ -88,20 +88,10 @@ class _SearchScreenState extends State<SearchScreen> {
           locationController.text = city;
           currentLocality = city;
           currentLocation = LatLng(value['results'][0]['geometry']['location']['lat'],
-          value['results'][0]['geometry']['location']['lng']);
-      }
-    });
-  }
-
-  Future<String> getDistance(double originLatitude, double originLongitude, double destinationLatitude, double destinationLongitude) async {
-    return await GeocodingService().getDistance(originLatitude, originLongitude, destinationLatitude, destinationLongitude).then((value) {
-      if (value['status'] == 'OK') {
-        print(value['rows'][0]['elements'][0]['distance']['text']);
-        return value['rows'][0]['elements'][0]['distance']['text'];
-      }
-      return '';
-    });
-  }
+            value['results'][0]['geometry']['location']['lng']);
+        }
+      });
+    }
 
   Future<void> _loadMapStyle() async {
     _mapStyle = await rootBundle.loadString('assets/map_style.json');
@@ -169,8 +159,64 @@ class _SearchScreenState extends State<SearchScreen> {
         done = true;
         paddingNeeded = values.isEmpty ? false : true;
       });
-  } 
-  
+
+  }
+
+  void _getDateFromUser() async {
+    _selectedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime.now(),
+    lastDate: DateTime.now().add(const Duration(days: 14)),
+    cancelText: 'Ignore',
+    confirmText: 'OK',
+    helpText: 'Reservation Date',
+    errorFormatText: 'Invalid date format',
+    errorInvalidText: 'Date must be within the next 14 days',
+    fieldLabelText: 'Reservation Date',
+    fieldHintText: 'Month/Day/Year',
+    );
+
+    if (_selectedDate != null) {
+      enhanceResult();
+      setState(() {
+      });
+    }
+  }
+
+  void enhanceResult() {
+    int weekday = _selectedDate!.weekday;
+
+    final values = restaurants.where((element) => element.isOpen[weekday - 1]).toList();
+
+    if(values.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('No restaurants available'),
+            content: const Text('There are no restaurants available on the selected date.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },);
+    }
+    else {
+      restaurants.clear();
+      markers.clear();
+
+      for (int i = 0; i < values.length; i++) {
+        handleRestaurant(values[i], i);
+      }
+    }
+  }
+
   Future<void> _searchForRestaurants(String query) async {
     restaurants.clear();
     markers.clear();
@@ -353,26 +399,16 @@ class _SearchScreenState extends State<SearchScreen> {
           onScrolled: (index) => changeCamera(index!.toInt()),
         ),
         items: info.map((item) {
-          if(widget.isSharingLocation) {
-            List<String> itemCoords = item.coordinates.split(',');
-            return FutureBuilder(
-              future: getDistance(widget.userLocation.latitude, widget.userLocation.longitude, double.parse(itemCoords[0]), double.parse(itemCoords[1])),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                return restaurantTile(context, item, snapshot.data);
-              },
-            );
-          } else {
-            return Builder(
-              builder: (BuildContext context) {
-                return restaurantTile(context, item, 'N/A');
-              },
-            );
-          }
+          return Builder(
+            builder: (BuildContext context) {
+              return restaurantTile(context, item);
+            },
+          );
         }).toList(),
     );
   }
 
-  InkWell restaurantTile(BuildContext context, Restaurant restaurant, String distance) {
+  InkWell restaurantTile(BuildContext context, Restaurant restaurant) {
   return InkWell(
     onTap: () {
       Navigator.push(
@@ -417,7 +453,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   textLine('N/A', Icons.star ,context, Colors.amber),
                   textLine('${restaurant.co2EmissionEstimate.toStringAsPrecision(5)} kg CO2 per year', Icons.eco,context,Colors.green),
-                  distance != '' ? textLine(distance, Icons.directions_walk, context, Colors.blue) : const SizedBox(),
+                  //textLine('1.2 km', Icons.location_on,context, Colors.grey),
                 ],
               ),
           ],
@@ -426,7 +462,8 @@ class _SearchScreenState extends State<SearchScreen> {
     ),
   );
 }
-}
+  
+  }
 
 
 Row textLine(String text, IconData icon, BuildContext context, Color color) {
