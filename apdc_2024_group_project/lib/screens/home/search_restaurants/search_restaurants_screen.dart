@@ -417,7 +417,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   textLine('N/A', Icons.star ,context, Colors.amber),
                   textLine('${restaurant.co2EmissionEstimate.toStringAsPrecision(5)} kg CO2 per year', Icons.eco,context,Colors.green),
-                  distance != null ? textLine('${(distance/1000).toStringAsFixed(2)} km away', Icons.directions_walk, context, Colors.blue) : const SizedBox(),
+                  distance != null ? textLine('$distance away', Icons.directions_walk, context, Colors.blue) : const SizedBox(),
                 ],
               ),
           ],
