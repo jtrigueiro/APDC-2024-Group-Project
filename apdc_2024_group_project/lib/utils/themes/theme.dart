@@ -1,3 +1,4 @@
+import 'package:adc_group_project/utils/themes/AppTabBarTheme.dart';
 import 'package:adc_group_project/utils/themes/InputTheme.dart';
 import 'package:adc_group_project/utils/themes/card_theme.dart';
 import 'package:adc_group_project/utils/themes/color_scheme.dart';
@@ -14,31 +15,32 @@ class AppThemeStyle {
   AppThemeStyle._();
 
   static ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-    primaryColor: const Color.fromARGB(255, 122, 143, 122),
-    scaffoldBackgroundColor: ColorAppTheme.lightAppColorTheme.background,
-    textTheme: TextThemeApp.lightTextTheme,
-    elevatedButtonTheme: ElButtonThemeApp.lightElButtonTheme,
-    inputDecorationTheme: InputTheme.lightInputTheme,
-    appBarTheme: AppBarAppTheme.lightAppBarTheme,
-    bottomNavigationBarTheme: AppNavBarTheme.lightAppNavBarTheme,
-    cardTheme: AppCardTheme.lightCardTheme,
-    colorScheme: ColorAppTheme.lightAppColorTheme,
-    snackBarTheme: AppSnackBarTheme.lightAppSnackBarTheme
-  );
+      useMaterial3: true,
+      brightness: Brightness.light,
+      primaryColor: const Color.fromARGB(255, 122, 143, 122),
+      scaffoldBackgroundColor: ColorAppTheme.lightAppColorTheme.background,
+      textTheme: TextThemeApp.appTextTheme,
+      elevatedButtonTheme: ElButtonThemeApp.lightElButtonTheme,
+      inputDecorationTheme: InputTheme.lightInputTheme,
+      appBarTheme: AppBarAppTheme.lightAppBarTheme,
+      bottomNavigationBarTheme: AppNavBarTheme.lightAppNavBarTheme,
+      cardTheme: AppCardTheme.lightCardTheme,
+      colorScheme: ColorAppTheme.lightAppColorTheme,
+      snackBarTheme: AppSnackBarTheme.appSnackBarTheme,
+      tabBarTheme: AppTabBarTheme.lightAppBarTheme);
 
   static ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    primaryColor: Color.fromARGB(255, 18, 38, 32),
-    scaffoldBackgroundColor: Color.fromARGB(255, 18, 38, 32),
-    textTheme: TextThemeApp.darkTextTheme,
-    elevatedButtonTheme: ElButtonThemeApp.DarkElButtonTheme,
-    inputDecorationTheme: InputTheme.DarkInputTheme,
-    appBarTheme: AppBarAppTheme.DarkAppBarTheme,
-    bottomNavigationBarTheme: AppNavBarTheme.darkAppNavBarTheme,
-    cardTheme: AppCardTheme.lightCardTheme,
-      colorScheme: ColorAppTheme.darkAppColorTheme
-  );
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      primaryColor: const Color.fromARGB(255, 122, 143, 122),
+      scaffoldBackgroundColor: ColorAppTheme.darkAppColorTheme.background,
+      textTheme: TextThemeApp.appTextTheme,
+      elevatedButtonTheme: ElButtonThemeApp.darkElButtonTheme,
+      inputDecorationTheme: InputTheme.darkInputTheme,
+      appBarTheme: AppBarAppTheme.darkAppBarTheme,
+      bottomNavigationBarTheme: AppNavBarTheme.darkAppNavBarTheme,
+      cardTheme: AppCardTheme.darkCardTheme,
+      colorScheme: ColorAppTheme.darkAppColorTheme,
+      snackBarTheme: AppSnackBarTheme.appSnackBarTheme,
+      tabBarTheme: AppTabBarTheme.darkAppBarTheme);
 }

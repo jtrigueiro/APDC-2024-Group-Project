@@ -94,7 +94,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 50, 10, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 50, 10, 0),
                   child: Column(
                     children: [
                       Row(
@@ -103,11 +103,15 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                             Icons.food_bank_outlined,
                             color: colorList[0],
                           ),
-                          const SizedBox(width: 5),
-                          Text('Food ',
-                              style: Theme.of(context).textTheme.titleMedium),
-                          const SizedBox(width: 60),
-                          Text('${carbonMap.values.first.toString()} g CO2e',
+
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5, right: 58),
+                            child: Text('Food ',
+                                style: Theme.of(context).textTheme.displayMedium),
+                          ),
+
+
+                          Text(': ${carbonMap.values.first.toString()} g CO2e',
                               style: Theme.of(context).textTheme.titleMedium),
                         ],
                       ),
@@ -117,11 +121,14 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                             Icons.emoji_transportation,
                             color: colorList[0],
                           ),
-                          const SizedBox(width: 5),
-                          Text('Transport ',
-                              style: Theme.of(context).textTheme.titleMedium),
-                          const SizedBox(width: 12),
-                          Text('${carbonMap.values.last.toString()} g CO2e',
+
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5, right: 13.0),
+                            child: Text('Transport ',
+                                style: Theme.of(context).textTheme.displayMedium),
+                          ),
+
+                          Text(': ${carbonMap.values.last.toString()} g CO2e',
                               style: Theme.of(context).textTheme.titleMedium),
                         ],
                       ),

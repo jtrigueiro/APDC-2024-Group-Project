@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 class ColorAppTheme {
   ColorAppTheme._(); //to avoid creation instances
 
-  static const lightAppColorTheme =   ColorScheme.light(
+  static const lightAppColorTheme = ColorScheme.light(
     brightness: Brightness.light,
     background: Color.fromARGB(255, 245, 245, 245),
-    onBackground:  Color.fromARGB(255, 0, 36, 0),
+    onBackground: Color.fromARGB(255, 0, 36, 0),
 
-    //primary: Color.fromARGB(255, 122, 143, 122),
     primary: Color.fromARGB(255, 61, 130, 20),
     onPrimary: Color.fromARGB(255, 227, 230, 227),
 
@@ -16,24 +15,28 @@ class ColorAppTheme {
     onError: Color.fromARGB(255, 234, 232, 232),
 
     secondary: Color.fromARGB(255, 209, 123, 48),
-    //secondary: Color.fromARGB(255, 122, 143, 122),
 
-    tertiary:  Color.fromARGB(255, 122, 143, 122),
-    inversePrimary: Color.fromARGB(255, 230, 228, 228),//para o form em promoCodes todo: rever
-
+    tertiary: Colors.white,
+    inversePrimary: Color.fromARGB(
+        255, 230, 228, 228), //para o form em promoCodes todo: rever
   );
 
-  static const darkAppColorTheme =  ColorScheme.dark(
-      background: Color.fromARGB(255, 250, 248, 223),
-      brightness: Brightness.dark,
-      error: Color.fromARGB(255, 158, 54, 60),
-      onError: Color.fromARGB(255, 234, 232, 232),
-      primary: Color.fromARGB(255, 18, 38, 32),
-      secondary: Color.fromARGB(255, 182, 141, 64),
-      tertiary: Color.fromARGB(255, 208, 182, 136),
+  static const darkAppColorTheme = ColorScheme.dark(
+    brightness: Brightness.dark,
+    background: Color.fromARGB(255, 18, 38, 32),
 
-      inversePrimary: Color.fromARGB(255, 126, 126, 126), //para o form em promoCodes todo: rever
+    primary: Color.fromARGB(255, 61, 130, 20),
+    onPrimary: Color.fromARGB(255, 227, 230, 227),
 
+
+    error: Color.fromARGB(255, 223, 45, 51),
+    onError: Color.fromARGB(255, 234, 232, 232),
+
+    secondary: Color.fromARGB(255, 209, 123, 48),
+    tertiary: Color.fromARGB(255, 18, 38, 32) ,
+
+
+    inversePrimary: Color.fromARGB(
+        255, 126, 126, 126), //para o form em promoCodes todo: rever
   );
-
 }

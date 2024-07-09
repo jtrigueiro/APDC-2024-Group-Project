@@ -6,10 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 class AppSnackBarTheme {
   AppSnackBarTheme._(); //to avoid creation instances
 
-  static final lightAppSnackBarTheme = SnackBarThemeData(
+  static final appSnackBarTheme = SnackBarThemeData(
     backgroundColor: ColorAppTheme.lightAppColorTheme.secondary,
     elevation: 0.5,
 
   );
+
 
 }

@@ -16,6 +16,7 @@ class AppCardTheme {
     shadowColor: Colors.black,
     elevation: 3,
     clipBehavior: Clip.hardEdge,
+      surfaceTintColor: Colors.white //idk
   );
 
 }

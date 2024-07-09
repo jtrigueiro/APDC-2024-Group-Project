@@ -350,7 +350,7 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: EdgeInsets.only(right: 10.0),
               child: Icon(Icons.restaurant),
             ),
-            Text('Restaurants  •  $currentLocality'),
+            Text('Restaurants  •  $currentLocality', overflow:TextOverflow.ellipsis),
           ],
         ),
       ),
@@ -423,7 +423,7 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.tertiary,
         ),
         child: Row(
           children: [

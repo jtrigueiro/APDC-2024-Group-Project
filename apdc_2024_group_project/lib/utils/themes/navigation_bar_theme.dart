@@ -10,10 +10,10 @@ class AppNavBarTheme {
     unselectedItemColor: const Color.fromARGB(255, 188, 185, 185)
   );
 
-  static const darkAppNavBarTheme =  BottomNavigationBarThemeData(
-    backgroundColor:  Color.fromARGB(255, 32, 67, 55),
-    selectedItemColor: Color.fromARGB(255, 133, 98, 22),
-    unselectedItemColor: Color.fromARGB(255, 250, 248, 223),
+  static final darkAppNavBarTheme =  BottomNavigationBarThemeData(
+      backgroundColor: ColorAppTheme.darkAppColorTheme.background,
+      selectedItemColor: ColorAppTheme.darkAppColorTheme.primary,
+      unselectedItemColor: const Color.fromARGB(255, 104, 104, 104)
   );
 
 

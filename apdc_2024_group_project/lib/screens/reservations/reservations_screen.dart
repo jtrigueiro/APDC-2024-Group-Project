@@ -33,17 +33,20 @@ class ReservationsScreenState extends State<ReservationsScreen> {
     });
   }
 
-  ListTile buildReservationTile(Reservation reservation) {
-    return ListTile(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      tileColor: const Color.fromARGB(31, 61, 130, 21),
-      leading: Icon(Icons.restaurant, color: Theme.of(context).colorScheme.primary,),
-      title: Text(reservation.restaurantName),
-      subtitle: Text(
-          'Date: ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}    Time: ${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
-      onTap: () {
-        showReservationDetails(reservation);
-      },
+  Padding buildReservationTile(Reservation reservation) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        tileColor: const Color.fromARGB(18, 60, 130, 21),
+        leading: Icon(Icons.restaurant, color: Theme.of(context).colorScheme.primary,),
+        title: Text(reservation.restaurantName),
+        subtitle: Text(
+            'Date: ${reservation.start.day}/${reservation.start.month}/${reservation.start.year}    Time: ${reservation.start.hour}:${reservation.start.minute == 0 ? '00' : reservation.start.minute}'),
+        onTap: () {
+          showReservationDetails(reservation);
+        },
+      ),
     );
   }
 
