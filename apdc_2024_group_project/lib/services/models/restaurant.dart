@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Restaurant {
   final String id;
   final String name;
@@ -24,4 +26,21 @@ class Restaurant {
     required this.isOpen,
     required this.time,
   });
+
+  factory Restaurant.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map;
+    return Restaurant(
+      id: doc.id,
+      name: data['name'] ?? '',
+      address: data['address'] ?? '',
+      phone: data['phone'] ?? '',
+      location: data['location'] ?? '',
+      coordinates: data['coordinates'] ?? '',
+      co2EmissionEstimate: data['co2EmissionEstimate'] ?? 0.0,
+      seats: data['seats'] ?? 0,
+      visible: data['visible'] ?? false,
+      time: List<String>.from(data['time'] ?? []),
+      isOpen: List<bool>.from(data['isOpen'] ?? []),
+    );
+  }
 }
