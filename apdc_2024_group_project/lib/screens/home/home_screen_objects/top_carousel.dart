@@ -71,6 +71,13 @@ class _TopCarouselState extends State<TopCarousel> {
                     width: containerSize(context),
                     height: containerSize(context),
                     decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: isSelected
+                          ? Border.all(
+                              color: const Color.fromARGB(214, 20, 20, 72),
+                              width: 3.0,
+                            )
+                          : null,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
@@ -79,14 +86,23 @@ class _TopCarouselState extends State<TopCarousel> {
                           offset: const Offset(0, 3),
                         ),
                       ],
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage(item),
-                        fit: BoxFit.cover,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: Container(
+                          width: containerSize(context),
+                          height: containerSize(context),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage(item),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                       ),
-                      border: isSelected
-                          ? Border.all(color: Colors.blue, width: 3.0)
-                          : null,
                     ),
                   ),
                 ),
@@ -94,7 +110,8 @@ class _TopCarouselState extends State<TopCarousel> {
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
                     type.capitalize(),
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: MediaQuery.of(context).size.height *0.02),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                        fontSize: MediaQuery.of(context).size.height * 0.02),
                   ),
                 )
               ],
