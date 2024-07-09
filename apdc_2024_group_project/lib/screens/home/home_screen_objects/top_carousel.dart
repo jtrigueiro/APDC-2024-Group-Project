@@ -94,7 +94,7 @@ class _TopCarouselState extends State<TopCarousel> {
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
                     type.capitalize(),
-                    style: Theme.of(context).textTheme.labelSmall,
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: MediaQuery.of(context).size.height *0.02),
                   ),
                 )
               ],
@@ -107,7 +107,7 @@ class _TopCarouselState extends State<TopCarousel> {
 
   double containerSize(context) {
     if (kIsWeb) {
-      return MediaQuery.of(context).size.width * 0.1;
+      return MediaQuery.of(context).size.height * 0.13;
     } else {
       return MediaQuery.of(context).size.width * 0.2;
     }
