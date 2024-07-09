@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/services/models/dish.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:adc_group_project/utils/co2_color.dart';
 
 class RestaurantMenu extends StatelessWidget {
   final Restaurant info;
@@ -58,7 +59,18 @@ class RestaurantMenu extends StatelessWidget {
                           trailing: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("${dish.co2} CO2e"),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("${dish.co2} CO2e"),
+                                  const SizedBox(width: 4),
+                                  Icon(
+                                    Icons.eco,
+                                    color: CO2ColorCalculator.getColorForCO2(
+                                        dish.co2),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         );
@@ -75,14 +87,19 @@ class RestaurantMenu extends StatelessWidget {
                                     return Dialog(
                                       backgroundColor: Colors.blueGrey,
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20.0),
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
                                         child: Image.network(
                                           imageSnapshot.data as String,
                                           fit: BoxFit.cover,
-                                          width:
-                                          MediaQuery.of(context).size.width * 0.5,
-                                          height:
-                                          MediaQuery.of(context).size.height * 0.3,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.5,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.3,
                                         ),
                                       ),
                                     );
@@ -110,7 +127,18 @@ class RestaurantMenu extends StatelessWidget {
                           trailing: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("${dish.co2} CO2e"),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("${dish.co2} CO2e"),
+                                  const SizedBox(width: 4),
+                                  Icon(
+                                    Icons.eco,
+                                    color: CO2ColorCalculator.getColorForCO2(
+                                        dish.co2),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         );
