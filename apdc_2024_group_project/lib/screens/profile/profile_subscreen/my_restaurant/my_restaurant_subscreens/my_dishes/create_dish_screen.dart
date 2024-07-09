@@ -284,7 +284,7 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                       if (kIsWeb)
                                         Image.network(
                                           pickedImageFile!.path,
-                                          width: double.infinity,
+                                          width:MediaQuery.of(context).size.width*0.2,
                                           fit: BoxFit.cover,
                                         )
                                       else
