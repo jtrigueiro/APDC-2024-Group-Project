@@ -28,7 +28,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
     setState(() {
       carbonMap = {
         'Food': double.parse(emissions[0]),
-        'Transport': double.parse(emissions[1]),
+        'Transport': double.parse(double.parse(emissions[1]).toStringAsPrecision(5)),
       };
     });
   }
