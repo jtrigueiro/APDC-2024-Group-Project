@@ -1,3 +1,4 @@
+import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 
 class AddPromoCodePage extends StatefulWidget {
@@ -18,6 +19,17 @@ class _AddPromoCodePageState extends State<AddPromoCodePage> {
         SnackBar(content: Text('Please enter both a promo code and a reward')),
       );
       return;
+    }
+
+    try {
+      await DatabaseService().addPromoCode(promoCode, reward);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Promo code added successfully')),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add promo code: $error')),
+      );
     }
   }
 
