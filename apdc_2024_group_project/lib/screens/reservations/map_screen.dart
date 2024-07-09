@@ -424,7 +424,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Widget _buildStartTripButton() {
-    return TextButton(
+    return ElevatedButton(
       onPressed: () {
         if (!isModeLocked) {
           setState(() {
@@ -438,11 +438,21 @@ class _MapScreenState extends State<MapScreen> {
           );
         }
       },
-      child: Text(
-        'Start Trip',
-        style: TextStyle(
-          color: isModeLocked ? Colors.grey : Colors.green,
-        ),
+      child: Row(
+        children: [
+
+          Text(
+            'Start Route',
+            style: TextStyle(
+              color: isModeLocked ? Colors.grey :null,
+            ),
+          ),
+
+         const Padding(
+            padding: const EdgeInsets.only(left: 5.0),
+            child: Icon(Icons.play_arrow),
+          ),
+        ],
       ),
     );
   }
