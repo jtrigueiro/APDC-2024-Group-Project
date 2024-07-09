@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool gettingLocation = true;
   bool gettingRestaurants = true;
   LatLng userLocation = const LatLng(.736946, -9.142685);
+  bool isSharingLocation = false;
   List<Restaurant> items = [];
 
   @override
@@ -84,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
+        isSharingLocation = false;
         gettingLocation = false;
       });
       return false;
@@ -94,6 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         setState(() {
+          isSharingLocation = false;
           gettingLocation = false;
         });
         return false;
@@ -102,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (permission == LocationPermission.deniedForever) {
       setState(() {
+        isSharingLocation = false;
         gettingLocation = false;
       });
       return false;
@@ -111,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
         desiredAccuracy: LocationAccuracy.high);
 
     setState(() {
+      isSharingLocation = true;
       userLocation = LatLng(position.latitude, position.longitude);
       gettingLocation = false;
     });
@@ -123,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       MaterialPageRoute(
           builder: (context) => SearchScreen(
-                userLocation: userLocation,
+                userLocation: userLocation, isSharingLocation: isSharingLocation,
               )),
     );
   }

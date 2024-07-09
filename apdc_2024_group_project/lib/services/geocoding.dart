@@ -30,4 +30,17 @@ class GeocodingService {
       throw Exception('Failed to reverse geocode coordinates');
     }
   }
+
+  Future<Map<String, dynamic>> getDistance(double originLatitude, double originLongitude, double destinationLatitude, double destinationLongitude) async {
+    final url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins=$originLatitude,$originLongitude&destinations=$destinationLatitude,$destinationLongitude&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+    final decodedResponse = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      return decodedResponse;
+    } else {
+      throw Exception('Failed to get distance between coordinates');
+    }
+  }
 }
