@@ -15,7 +15,8 @@ class HiddenDishTile extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              icon: const Icon(Icons.delete_outline),
+              icon: const Icon(Icons.delete_outline, color: Colors.red),
+              tooltip:'Delete dish' ,
               onPressed: () async {
                 showDialog(
                   context: context,
@@ -57,7 +58,8 @@ class HiddenDishTile extends StatelessWidget {
               ),
             ),
             IconButton(
-                icon: const Icon(Icons.restaurant),
+                tooltip: 'View dish description',
+                icon: const Icon(Icons.restaurant,color: Colors.blueGrey),
                 onPressed: () async {
                   await DatabaseService()
                       .getDishListOfIngredients(dish.id)
@@ -94,7 +96,8 @@ class HiddenDishTile extends StatelessWidget {
                   });
                 }),
             IconButton(
-                icon: const Icon(Icons.image_outlined),
+                tooltip: 'View dish image',
+                icon: const Icon(Icons.image_outlined,color: Colors.blueAccent),
                 onPressed: () async {
                   await DatabaseService()
                       .getDishImageUrl(dish.id)
@@ -114,7 +117,8 @@ class HiddenDishTile extends StatelessWidget {
                   });
                 }),
             IconButton(
-              icon: const Icon(Icons.visibility),
+              tooltip: 'Display dish ',
+              icon:  Icon(Icons.visibility, color:Theme.of(context).colorScheme.primary),
               onPressed: () async {
                 await DatabaseService()
                     .updateDishVisibility(dish.id, dish.visible);

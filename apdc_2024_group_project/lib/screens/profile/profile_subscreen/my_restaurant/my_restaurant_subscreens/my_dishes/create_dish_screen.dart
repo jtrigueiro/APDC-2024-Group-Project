@@ -276,53 +276,54 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                         Theme.of(context).colorScheme.secondary,
                                   ),
                                 ),
-
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     if (pickedImageFile != null)
                                       if (kIsWeb)
-                                        Image.network(
-                                          pickedImageFile!.path,
-                                          width:MediaQuery.of(context).size.width*0.2,
-                                          fit: BoxFit.cover,
+                                        SizedBox(
+                                          width: 150,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                            child: Image.network(
+                                                pickedImageFile!.path),
+                                          ),
                                         )
                                       else
                                         SizedBox(
                                           width: 150,
                                           child: ClipRRect(
                                             borderRadius:
-                                            BorderRadius
-                                                .circular(
-                                                20.0),
+                                                BorderRadius.circular(20.0),
                                             child: Image.file(
                                               File(pickedImageFile!.path),
                                               fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),
-
                                     Align(
                                       alignment: Alignment.bottomRight,
                                       child: Column(
                                         children: [
-
                                           ElevatedButton(
                                             onPressed: () {
                                               pickImage();
                                             },
                                             child: const Icon(Icons.add),
                                           ),
-
                                           pickedImageFile == null
-                                          ? Text('Add Photo*',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall!.copyWith(fontSize:12))
-                                          :Text('Change Photo*',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall!.copyWith(fontSize:12))
+                                              ? Text('Add Photo*',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall!
+                                                      .copyWith(fontSize: 12))
+                                              : Text('Change Photo*',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall!
+                                                      .copyWith(fontSize: 12))
                                         ],
                                       ),
                                     ),
@@ -336,13 +337,17 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                           padding: const EdgeInsets.only(left: 20),
                           child: Text(
                             errorMessage,
-                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: Colors.red,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                  color: Colors.red,
+                                ),
                           ),
                         ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
                         child: Container(
                           alignment: Alignment.bottomRight,
                           child: Row(
@@ -367,7 +372,8 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                       });
                                     } else if (pickedImageFile == null) {
                                       setState(() {
-                                        errorMessage = 'Please select an image!';
+                                        errorMessage =
+                                            'Please select an image!';
                                         error = true;
                                       });
                                     } else {
@@ -375,20 +381,24 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                         setState(() {
                                           loading = true;
                                         });
-                                        final dishCo2 = selectedIngredients.fold(
-                                            0,
-                                            (previousValue, element) =>
-                                                previousValue + element.co2);
+                                        final dishCo2 = selectedIngredients
+                                            .fold(
+                                                0,
+                                                (previousValue, element) =>
+                                                    previousValue +
+                                                    element.co2);
                                         if (kIsWeb) {
                                           await DatabaseService().createDishWeb(
                                               nameController.text,
                                               descriptionController.text,
-                                              double.parse(priceController.text),
+                                              double.parse(
+                                                  priceController.text),
                                               dishCo2,
                                               selectedIngredients,
                                               await pickedImageFile!
                                                   .readAsBytes(),
-                                              p.extension(pickedImageFile!.name));
+                                              p.extension(
+                                                  pickedImageFile!.name));
                                         } else {
                                           await DatabaseService()
                                               .createDishMobile(

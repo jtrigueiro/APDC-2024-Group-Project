@@ -22,7 +22,8 @@ class VisibleDishTile extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              icon: const Icon(Icons.delete_outline),
+              icon: const Icon(Icons.delete_outline, color: Colors.red),
+              tooltip:'Delete dish' ,
               onPressed: () async {
                 showDialog(
                   context: context,
@@ -104,7 +105,8 @@ class VisibleDishTile extends StatelessWidget {
               ),
             ),
             IconButton(
-                icon: const Icon(Icons.restaurant),
+              tooltip: 'View dish description',
+                icon: const Icon(Icons.restaurant, color: Colors.blueGrey),
                 onPressed: () async {
                   await DatabaseService()
                       .getDishListOfIngredients(dish.id)
@@ -118,14 +120,15 @@ class VisibleDishTile extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Description: ${dish.description}',
+                                   Text( "'${dish.description}' description:" ,
                                       textAlign: TextAlign.left),
                                   ...value.map((e) => ListTile(
-                                        title: Text(e.name),
+                                        title: Text(e.name, style: Theme.of(context).textTheme.displaySmall,),
                                         subtitle: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+
                                             Text('Weight: ${e.grams} grams'),
                                             Text('CO2: ${e.co2} grams'),
                                           ],
@@ -141,7 +144,8 @@ class VisibleDishTile extends StatelessWidget {
                   });
                 }),
             IconButton(
-                icon: const Icon(Icons.image_outlined),
+              tooltip: 'View dish image',
+                icon: const Icon(Icons.image_outlined, color: Colors.blueAccent),
                 onPressed: () async {
                   await DatabaseService()
                       .getDishImageUrl(dish.id)
@@ -161,7 +165,8 @@ class VisibleDishTile extends StatelessWidget {
                   });
                 }),
             IconButton(
-              icon: const Icon(Icons.visibility_off),
+              tooltip: 'Hide dish ',
+              icon: const Icon(Icons.visibility_off, color: Colors.red,),
               onPressed: () async {
                 if (hasOnlyOneVisibleDish) {
                   final bool isRestaurantVisible =

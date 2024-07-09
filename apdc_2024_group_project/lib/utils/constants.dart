@@ -67,10 +67,15 @@ TextFormField textFormsDouble(
     decoration: InputDecoration().copyWith(
       labelText: '$text',
     ),
+    inputFormatters: <TextInputFormatter>[
+      FilteringTextInputFormatter.digitsOnly
+    ],
     validator: (value) {
-      if (value == null || value.isEmpty) {
+      //final RegExp regex = RegExp("^[0-9]");
+      if (value == null || value.isEmpty ) {
         return textNoValue;
       }
+
       return null;
     },
   );

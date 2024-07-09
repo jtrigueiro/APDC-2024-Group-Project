@@ -6,6 +6,7 @@ import 'package:adc_group_project/services/geocoding.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -420,9 +421,8 @@ class _SearchScreenState extends State<SearchScreen> {
       );
     },
     child: Padding(
-      padding: const EdgeInsets.only(bottom: 10, left: 10),
+      padding: const EdgeInsets.only(bottom: 4, left: 10),
       child: Container(
-        //width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           color: Colors.white,
@@ -433,7 +433,7 @@ class _SearchScreenState extends State<SearchScreen> {
               future: null,
               builder: (context, snapshot) {
                 return Container(
-                  width: MediaQuery.of(context).size.width*0.2,
+                  width: 100,
                   height: MediaQuery.of(context).size.width*0.2,
                   margin: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
@@ -469,14 +469,15 @@ class _SearchScreenState extends State<SearchScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 25, top: 5),
                     child: Text(
+                      overflow: TextOverflow.ellipsis,
                       restaurant.name,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   textLine('4.5', Icons.star ,context, Colors.amber),
                   textLine('10.1 kg/yr CO2', Icons.eco,context,Colors.green),
-                  textLine('1.2 km', Icons.location_on,context, Colors.grey),
+                  //textLine('1.2 km', Icons.location_on,context, Colors.grey),
                 ],
               ),
           ],
@@ -497,9 +498,9 @@ Row textLine(String text, IconData icon, BuildContext context, Color color) {
     children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        child: Icon(icon, size: 17, color: color),
+        child: Icon(icon, size: 15, color: color),
       ),
-      Text(text, style: Theme.of(context).textTheme.bodyMedium,),
+      Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 12),),
     ],
   );
 }

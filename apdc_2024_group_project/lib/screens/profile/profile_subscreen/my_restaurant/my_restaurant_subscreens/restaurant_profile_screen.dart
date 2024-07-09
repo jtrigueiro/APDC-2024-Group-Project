@@ -232,80 +232,6 @@ class RestaurantPersonalizeScreenState
                             pickedImageFile != null
                                 ? kIsWeb
                                     ? Column(
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 70,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage:
-                                      pickedImageFile != null
-                                          ? NetworkImage(
-                                        pickedImageFile!.path,)
-                                          : null,
-                                      child: InkWell(
-                                        onTap: () {
-                                          if (pickedImageFile !=
-                                              null) {
-                                            showDialog(
-                                                context: context,
-                                                builder: (BuildContext
-                                                context) {
-                                                  return Padding(
-                                                    padding:
-                                                    const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal:
-                                                        30),
-                                                    child: Dialog(
-                                                      elevation: 3,
-                                                      backgroundColor:
-                                                      Colors
-                                                          .blueGrey,
-                                                      child:
-                                                      ClipRRect(
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                            20.0),
-                                                        child: pickedImageFile !=
-                                                            null
-                                                            ?  Image.file(File(pickedImageFile!
-                                                            .path))
-                                                            : null,
-                                                      ),
-                                                    ),
-                                                  );
-                                                });
-                                          }
-                                        },
-                                        child: pickedImageFile == null
-                                            ? const Icon(
-                                            Icons.camera_alt,
-                                            color: Colors.white)
-                                            : null,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 90, left: 100),
-                                      child: CircleAvatar(
-                                          backgroundColor:
-                                          Colors.black54,
-                                          child: IconButton(
-                                            icon: const Icon(
-                                                Icons.edit),
-                                            onPressed: pickImage,
-                                          )),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )
-
-
-                                    : Column(
                                         children: [
                                           Stack(
                                             alignment: Alignment.center,
@@ -315,8 +241,10 @@ class RestaurantPersonalizeScreenState
                                                 backgroundColor: Colors.grey,
                                                 backgroundImage:
                                                     pickedImageFile != null
-                                                        ? FileImage( File(pickedImageFile!
-                                                            .path))
+                                                        ? NetworkImage(
+                                                            pickedImageFile!
+                                                                .path,
+                                                          )
                                                         : null,
                                                 child: InkWell(
                                                   onTap: () {
@@ -345,8 +273,83 @@ class RestaurantPersonalizeScreenState
                                                                               20.0),
                                                                   child: pickedImageFile !=
                                                                           null
-                                                                      ?  Image.file(File(pickedImageFile!
-                                                                      .path))
+                                                                      ? Image.network(
+                                                                          pickedImageFile!
+                                                                              .path)
+                                                                      : null,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
+                                                    }
+                                                  },
+                                                  child: pickedImageFile == null
+                                                      ? const Icon(
+                                                          Icons.camera_alt,
+                                                          color: Colors.white)
+                                                      : null,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 90, left: 100),
+                                                child: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.black54,
+                                                    child: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.edit),
+                                                      onPressed: pickImage,
+                                                    )),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    : Column( //notweb
+                                        children: [
+                                          Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 70,
+                                                backgroundColor: Colors.grey,
+                                                backgroundImage:
+                                                    pickedImageFile != null
+                                                        ? FileImage(File(
+                                                            pickedImageFile!
+                                                                .path))
+                                                        : null,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    if (pickedImageFile !=
+                                                        null) {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          30),
+                                                              child: Dialog(
+                                                                elevation: 3,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .blueGrey,
+                                                                child:
+                                                                    ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20.0),
+                                                                  child: pickedImageFile !=
+                                                                          null
+                                                                      ? Image.file(File(
+                                                                          pickedImageFile!
+                                                                              .path))
                                                                       : null,
                                                                 ),
                                                               ),
@@ -388,7 +391,7 @@ class RestaurantPersonalizeScreenState
                                               backgroundColor: Colors.grey,
                                               backgroundImage:
                                                   currentImageUrl != null
-                                                      ?  NetworkImage(
+                                                      ? NetworkImage(
                                                           currentImageUrl!)
                                                       : null,
                                               child: InkWell(
@@ -783,6 +786,82 @@ class RestaurantPersonalizeScreenState
               ),
             ),
           );
+  }
+
+  Builder imagebuild( image)
+  {
+    return Builder(
+      builder: (context) {
+        return Column(children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              CircleAvatar(
+                radius: 70,
+                backgroundColor: Colors.grey,
+                backgroundImage:
+                image != null
+                    ? NetworkImage(
+                    image!)
+                    : null,
+                child: InkWell(
+                  onTap: () {
+                    if (image != null) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext
+                          context) {
+                            return Padding(
+                              padding:
+                              const EdgeInsets
+                                  .symmetric(
+                                  horizontal:
+                                  30),
+                              child: Dialog(
+                                elevation: 3,
+                                backgroundColor:
+                                Colors
+                                    .blueGrey,
+                                child: ClipRRect(
+                                  borderRadius:
+                                  BorderRadius
+                                      .circular(
+                                      20.0),
+                                  child: image !=
+                                      null
+                                      ? Image.network(
+                                      image!)
+                                      : null,
+                                ),
+                              ),
+                            );
+                          });
+                    }
+                  },
+                  child: image == null
+                      ? const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white)
+                      : null,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 90, left: 100),
+                child: CircleAvatar(
+                    backgroundColor:
+                    Colors.black54,
+                    child: IconButton(
+                      icon:
+                      const Icon(Icons.edit),
+                      onPressed: pickImage,
+                    )),
+              )
+            ],
+          ),
+        ]);
+      },
+    );
   }
 
   Padding list(String dayName, bool day, Function(bool) onChanged, fromTime,
