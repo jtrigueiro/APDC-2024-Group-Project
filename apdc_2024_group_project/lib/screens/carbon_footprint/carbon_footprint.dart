@@ -1,5 +1,6 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
@@ -55,17 +56,14 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+                  padding: const EdgeInsets.only(top:50),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text('My Carbon Footprint',
-                            style: Theme.of(context).textTheme.titleMedium),
-                      ),
-                      const Icon(Icons.eco,
-                        color: Color.fromARGB(255, 122, 143, 122),
+                      Text('My Carbon Footprint',
+                          style: Theme.of(context).textTheme.titleMedium),
+                      Icon(Icons.eco,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ],
                   ),
@@ -77,7 +75,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                     colorList: colorList,
                     chartType: ChartType.ring,
                     ringStrokeWidth: 70,
-                    chartRadius: MediaQuery.of(context).size.width * 0.6,
+                    chartRadius: pieSize(),
                     centerText: 'CO2',
                     centerTextStyle: Theme.of(context).textTheme.bodySmall,
                     legendOptions: const LegendOptions(
@@ -96,7 +94,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 50, 10, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 50, 10, 0),
                   child: Column(
                     children: [
                       Row(
@@ -134,5 +132,19 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
         ),
       ),
     );
+  }
+
+  double pieSize()
+  {
+    if(kIsWeb)
+      {
+        return 250;
+      }
+    else {
+      return MediaQuery
+          .of(context)
+          .size
+          .width * 0.6;
+    }
   }
 }
