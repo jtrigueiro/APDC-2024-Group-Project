@@ -157,7 +157,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                     ),
                   ),
                 ])
-              : Stack(
+              : Column(
                   children: [
                     _buildMenuItems(dishes),
                     Expanded(
@@ -447,8 +447,8 @@ class ReserveScreenState extends State<ReserveScreen> {
                                     });
                               }
                             },
-                            child: const Positioned(
-                              bottom: 0.1,
+                            child: const SizedBox(
+                              width: 150.0,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,

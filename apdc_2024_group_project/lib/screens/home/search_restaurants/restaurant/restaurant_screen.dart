@@ -28,7 +28,6 @@ class RestaurantScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(day.toString());
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
