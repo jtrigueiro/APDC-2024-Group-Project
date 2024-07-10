@@ -65,7 +65,7 @@ class MyRestaurantSettingsScreenState
                       thickness: 1,
                       color: Theme.of(context).colorScheme.primary),
                   SwitchListTile(
-                    tileColor: Colors.white,
+                    tileColor: Theme.of(context).colorScheme.tertiary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     title: Padding(
