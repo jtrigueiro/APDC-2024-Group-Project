@@ -134,11 +134,15 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                           .titleMedium),
                                 ),
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(right: 5.0),
                                       child: DropdownMenu<Ingredient>(
+                                        width: MediaQuery.of(context).size.width *
+                                            0.4,
                                         requestFocusOnTap: true,
                                         controller: ingredientNameController,
                                         hintText: 'Ingredient',
@@ -176,12 +180,6 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      '*Please round up ingredients weight*',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall,
-                                    ),
                                     Align(
                                       alignment: Alignment.bottomRight,
                                       child: IconButton(
