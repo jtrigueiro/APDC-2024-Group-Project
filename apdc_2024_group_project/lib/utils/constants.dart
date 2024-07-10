@@ -24,9 +24,11 @@ TextFormField textForms(
     TextEditingController controller, text, String textNoValue) {
   return TextFormField(
     controller: controller,
-    decoration: InputDecoration().copyWith(
+    decoration: const InputDecoration().copyWith(
       labelText: '$text',
     ),
+    inputFormatters:  <TextInputFormatter> [
+      LengthLimitingTextInputFormatter(40),],
     validator: (value) {
       if (value == null || value.isEmpty) {
         return textNoValue;
@@ -47,7 +49,7 @@ TextFormField textFormsPhone(
       FilteringTextInputFormatter.digitsOnly,
     ],
     controller: controller,
-    decoration: InputDecoration().copyWith(
+    decoration: const InputDecoration().copyWith(
       labelText: '$text',
     ),
     validator: (value) {

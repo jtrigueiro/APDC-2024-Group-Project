@@ -1,6 +1,9 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:math' as math;
 
 class PromoCodesPage extends StatefulWidget {
   PromoCodesPage({Key? key}) : super(key: key);
@@ -13,14 +16,51 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
   final TextEditingController _promoCodeController = TextEditingController();
   final DatabaseService _dbService = DatabaseService();
 
+  bool redeeming = false;
+  DateTime? lastRedeemed;
+  int redeemTimeOut = 1;
+
+  @override
+  initState() {
+    SharedPreferences.getInstance().then((prefs) {
+      lastRedeemed = prefs.getString('lastRedeemed') != null ? DateTime.parse(prefs.getString('lastRedeemed')!) : null;
+      if(lastRedeemed != null){
+        Duration difference = DateTime.now().difference(lastRedeemed!);
+        redeemTimeOut = (difference < const Duration(seconds: 3600) ? prefs.getInt('redeemTimeOut')! : 1);
+      }
+      else{
+        redeemTimeOut = 1;
+      }
+    });
+    super.initState();
+  }
+
   Future<void> _redeemPromoCode() async {
+    setState(() {
+      redeeming = true;
+    });
+
     String promoCode = _promoCodeController.text.trim();
 
     if (promoCode.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a promotional code')),
+        const SnackBar(content: Text('Please enter a promotional code')),
       );
       return;
+    }
+
+    if(lastRedeemed != null){
+      Duration difference = DateTime.now().difference(lastRedeemed!);
+      if(difference < Duration(seconds: redeemTimeOut)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('You can try redeeming a promo code again in ${Duration(seconds: redeemTimeOut).inSeconds - difference.inSeconds} seconds'),
+          duration: const Duration(seconds: 1),),
+        );
+        setState(() {
+          redeeming = false;
+        });
+        return;
+      }
     }
 
     try {
@@ -37,15 +77,31 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
           SnackBar(content: Text('Promo code redeemed! Reward: $reward')),
         );
       } else {
+        redeemTimeOut = math.min(redeemTimeOut * 2, 3600);
+        lastRedeemed = DateTime.now();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid promotional code')),
+          const SnackBar(content: Text('Invalid promotional code')),
         );
       }
     } catch (e) {
       print('Error redeeming promo code: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error redeeming promo code')),
+        const SnackBar(content: Text('Error redeeming promo code')),
       );
+    } finally {print('before shared pref');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('redeemTimeOut', redeemTimeOut);
+      await prefs.setString('lastRedeemed', lastRedeemed.toString());
+
+      print('after shared pref');
+
+      print(redeeming);
+
+      setState(() {
+        redeeming = false;
+      });
+
+      print(redeeming);
     }
   }
 
@@ -70,6 +126,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
+                inputFormatters: [LengthLimitingTextInputFormatter(10),],
                 controller: _promoCodeController,
                 decoration:
                     const InputDecoration().copyWith(labelText: 'Enter a promotion code*'),
@@ -80,17 +137,10 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
                   return null;
                 },
               ),
-              /*Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: Text(
-                  'Enter a promotion code to redeem rewards!',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey[600], fontSize: 13.5)),
-                ),*/
 
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
-                child: ElevatedButton.icon(
+                child: redeeming ? const CircularProgressIndicator() : ElevatedButton.icon(
                     onPressed: _redeemPromoCode,
                     icon: const Icon(Icons.add),
                     label:  const Text('Redeem Code')),
@@ -98,7 +148,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
               SizedBox(
                   height: MediaQuery.of(context)
                       .viewInsets
-                      .bottom), // Espaço para evitar que o teclado cubra o botão
+                      .bottom),
 
             ],
           ),

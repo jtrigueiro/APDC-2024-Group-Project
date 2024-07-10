@@ -1,5 +1,6 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HelpAndSupportScreen extends StatefulWidget {
   const HelpAndSupportScreen({Key? key}) : super(key: key);
@@ -112,7 +113,9 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: TextField(
                     controller: _controller,
-                    maxLines: 5,
+                    inputFormatters:  <TextInputFormatter> [
+                      LengthLimitingTextInputFormatter(300),],
+                    maxLength: 300,
                     decoration: InputDecoration(
                       hintText: 'Describe your issue here...',
                       border: OutlineInputBorder(

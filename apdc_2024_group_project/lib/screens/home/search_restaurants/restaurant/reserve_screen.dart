@@ -188,7 +188,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                                           SizedBox(
                                             height: 400,
                                             child: ListView.builder(
-                                              padding: EdgeInsets.only(top: 5),
+                                              padding: const EdgeInsets.only(top: 5),
                                               shrinkWrap: true,
                                               itemCount: checkout.length,
                                               itemBuilder: (context, index) {
@@ -196,7 +196,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                                                 return Padding(
                                                   padding: const EdgeInsets.only(bottom: 5.0),
                                                   child: ListTile(
-                                                    tileColor: Color.fromARGB(
+                                                    tileColor: const Color.fromARGB(
                                                         63, 61, 130, 20),
                                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                                                     title: Text(dish.name),
@@ -542,8 +542,17 @@ class ReserveScreenState extends State<ReserveScreen> {
                         IconButton(
                           onPressed: () {
                             setState(() {
-                              if (quantity < 10) {
+                              if (quantity + checkout.length < 10 ) {
                                 quantity++;
+                              }
+                              else {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: const Text('You can only add up to 10 dishes to your cart!'),
+                                  animation: CurvedAnimation(
+                                      parent: const AlwaysStoppedAnimation(1),
+                                      curve: Curves.easeInOut),
+                                  duration: const Duration(seconds: 1),
+                                ));
                               }
                             });
                           },
@@ -562,6 +571,19 @@ class ReserveScreenState extends State<ReserveScreen> {
                   ),
                   TextButton(
                     onPressed: () {
+                      if(quantity + checkout.length > 10)
+                      {
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text('You can only add up to 10 dishes to your cart!'),
+                          animation: CurvedAnimation(
+                              parent: const AlwaysStoppedAnimation(1),
+                              curve: Curves.easeInOut),
+                          duration: const Duration(seconds: 1),
+                        ));
+                        return;
+                      }
+
                       for (int i = 0; i < quantity; i++) {
                         checkout.add(dishes[index]);
                       }
