@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       return Container(
          color: Colors.white,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0),
           child: Material(elevation: 5 ,child: buidApp(context)),
         ),
       );
