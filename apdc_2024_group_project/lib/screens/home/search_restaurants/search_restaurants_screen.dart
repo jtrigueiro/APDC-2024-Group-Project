@@ -302,10 +302,7 @@ class SearchScreenState extends State<SearchScreen> {
                   ) : const LoadingScreen(),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: paddingNeeded ? Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: carouselSlider(carouselController, restaurants),
-                    ) : null,
+                    child: paddingNeeded ? carouselSlider(carouselController, restaurants) : null,
                   ),
                 ],
               ),

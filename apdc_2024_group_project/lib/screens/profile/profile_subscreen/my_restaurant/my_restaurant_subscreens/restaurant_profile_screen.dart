@@ -873,7 +873,7 @@ class RestaurantPersonalizeScreenState
           Container(
             //height: MediaQuery.of(context).size.height * 0.1,
             decoration: BoxDecoration(
-              color: const Color.fromARGB(225, 90, 21, 21),
+              color: const Color.fromARGB(179, 225, 224, 224),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
