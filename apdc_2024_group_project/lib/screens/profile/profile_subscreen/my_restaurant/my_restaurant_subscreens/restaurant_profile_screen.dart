@@ -51,7 +51,7 @@ class RestaurantPersonalizeScreenState
   late TimeOfDay sundayToTime;
   late final dynamic data;
   XFile? pickedImageFile;
-  late final dynamic currentImageUrl;
+  late final dynamic currentImageUrl; 
 
   @override
   void initState() {
@@ -776,7 +776,7 @@ class RestaurantPersonalizeScreenState
                                           phoneController.text,
                                           isOpen,
                                           time,
-                                          url);
+                                          url ?? currentImageUrl.toString());
                                   if (databaseStatus == null) {
                                     return;
                                   }

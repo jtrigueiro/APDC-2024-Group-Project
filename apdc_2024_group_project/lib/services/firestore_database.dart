@@ -338,7 +338,7 @@ class DatabaseService {
         'phone': phone,
         'isOpen': isOpen,
         'time': time,
-        'imageUrl': url ?? FieldValue,
+        'imageUrl': url,
       });
       return true;
     } catch (e) {
@@ -1446,7 +1446,7 @@ class DatabaseService {
     }
   }
 
-  Future<void> addPromoCode(String promoCode, String reward) async {
+  Future<void> addPromoCode(String promoCode, int reward) async {
     try {
       await promoCodesCollection.doc(promoCode).set({
         'reward': reward,
