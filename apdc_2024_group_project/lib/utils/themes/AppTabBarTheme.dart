@@ -13,7 +13,9 @@ class AppTabBarTheme {
   static const darkAppBarTheme = TabBarTheme(
     unselectedLabelColor: Color.fromARGB(255, 188, 185, 185),
     indicatorColor: Colors.black,
-    labelColor: Colors.black
+    labelColor: Colors.black,
+    dividerHeight: 2,
+    dividerColor: Colors.black
 
   );
 }

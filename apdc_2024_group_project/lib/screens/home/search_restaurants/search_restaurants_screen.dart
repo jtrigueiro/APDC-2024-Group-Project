@@ -377,7 +377,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   ) : const LoadingScreen(),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: paddingNeeded ? carouselSlider(carouselController, restaurants) : null,
+                    child: paddingNeeded ? Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: carouselSlider(carouselController, restaurants),
+                    ) : null,
                   ),
                 ],
               ),
@@ -435,7 +438,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       children: [
                           Container(
                               width: MediaQuery.of(context).size.width*0.2, //100,
-                              height: MediaQuery.of(context).size.width*0.2,
+                              height: MediaQuery.of(context).size.height*0.2,
                               margin: const EdgeInsets.all(10.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -478,7 +481,7 @@ class _SearchScreenState extends State<SearchScreen> {
   double boxheight(BuildContext context)
   {
     if(kIsWeb)
-      {return  MediaQuery.of(context).size.height*0.25;}
+      {return  150;}
     else
       {return  MediaQuery.of(context).size.height*0.15;}
 

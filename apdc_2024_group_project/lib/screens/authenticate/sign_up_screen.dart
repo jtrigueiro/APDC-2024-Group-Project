@@ -40,7 +40,7 @@ class SignUpScreenState extends State<SignUpScreen> {
     return loading
         ? const LoadingScreen()
         : Scaffold(
-            appBar: AppBar(
+            appBar: kIsWeb ? null: AppBar(
               title: const Text('Sign Up'),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),
