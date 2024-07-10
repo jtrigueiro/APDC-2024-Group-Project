@@ -7,36 +7,50 @@ class RestaurantTypesManagementPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Restaurant Types Management'),
+        title: const Text('Restaurant Types'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddRestaurantTypePage()),
-                );
-              },
-              child: Text('Add Restaurant Type'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ListRestaurantTypesPage()),
-                );
-              },
-              child: Text('List Restaurant Types'),
-            ),
-          ],
-        ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+        child: GridView.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            children: [
+              workButton('Add Restaurant Type', ontapAddType(context)),
+              workButton('List Restaurant Types', ontapListType(context)),
+            ]),
       ),
     );
   }
+
+  Function ontapAddType(context) {
+    return () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AddRestaurantTypePage(),
+        ),
+      );
+    };
+  }
+
+  Function ontapListType(context) {
+    return () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ListRestaurantTypesPage(),
+        ),
+      );
+    };
+  }
+
+  ElevatedButton workButton(String text, Function ontap) {
+    return ElevatedButton(
+      style: const ButtonStyle(elevation: MaterialStatePropertyAll(10)),
+      onPressed: () {
+        ontap();
+      },
+      child: Text(text, textAlign: TextAlign.center),
+    );
+  }
 }
+

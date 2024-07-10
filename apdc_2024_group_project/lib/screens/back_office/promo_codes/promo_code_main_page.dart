@@ -14,25 +14,22 @@ class _PromoCodesHomeScreen extends State<PromoCodesHomeScreen> {
       appBar: AppBar(
         title: const Text('Promotion Codes'),
       ),
-      body:
-      Padding(
+      body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
         child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          children: [
-            workButton('Add Promo Code',ontapAddPromo),
-            workButton('ListActivePromoCodes',ontapListPromo),
-
-            ]
-        ),),
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            children: [
+              workButton('Add Promo Code', ontapAddPromo()),
+              workButton('List Active Promotion Codes', ontapListPromo()),
+            ]),
+      ),
     );
   }
 
-  Function ontapListPromo()
-  {
-    return  () {
+  Function ontapListPromo() {
+    return () {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ActivePromoCodesPage(),
@@ -41,15 +38,14 @@ class _PromoCodesHomeScreen extends State<PromoCodesHomeScreen> {
     };
   }
 
-  Function ontapAddPromo()
-  {
-    return  () {
-  Navigator.of(context).push(
-  MaterialPageRoute(
-  builder: (context) => AddPromoCodePage(),
-  ),
-  );
-  };
+  Function ontapAddPromo() {
+    return () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AddPromoCodePage(),
+        ),
+      );
+    };
   }
 
   ElevatedButton workButton(String text, Function ontap) {
