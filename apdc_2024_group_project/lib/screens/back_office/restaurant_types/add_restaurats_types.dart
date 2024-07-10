@@ -15,8 +15,9 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
 
     if (typeName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a restaurant type')),
-      );
+        const SnackBar(content: Text('Please enter a restaurant type'),
+        duration: Duration(seconds: 1),
+      ));
       return;
     }
 
@@ -27,13 +28,15 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
     try {
       await _dbService.addRestaurantType(typeName);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Restaurant type added successfully!')),
-      );
+        const SnackBar(content: Text('Restaurant type added successfully!'),
+        duration: Duration(seconds: 1),
+      ));
       _typeController.clear();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add restaurant type')),
-      );
+        const SnackBar(content: Text('Failed to add restaurant type'),
+        duration: Duration(seconds: 1),
+      ));
     } finally {
       setState(() {
         _isLoading = false;

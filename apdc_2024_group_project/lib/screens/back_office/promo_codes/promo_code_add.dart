@@ -17,27 +17,31 @@ class _AddPromoCodePageState extends State<AddPromoCodePage> {
 
     if (promoCode.isEmpty || reward.isNaN) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter both a promo code and a reward')),
-      );
+        const SnackBar(content: Text('Please enter both a promo code and a reward'),
+        duration: Duration(seconds: 1),
+      ));
       return;
     }
 
     if(reward < 0 || reward > 100){
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a reward between 0 and 100%.')),
-      );
+        const SnackBar(content: Text('Please enter a reward between 0 and 100%.'),
+        duration: Duration(seconds: 1),
+      ));
       return;
     }
 
     try {
       await DatabaseService().addPromoCode(promoCode, reward);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Promo code added successfully')),
-      );
+        const SnackBar(content: Text('Promo code added successfully'),
+        duration: Duration(seconds: 1),
+      ));
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add promo code: $error')),
-      );
+        SnackBar(content: Text('Failed to add promo code: $error'),
+        duration: const Duration(seconds: 1),
+      ));
     }
   }
 

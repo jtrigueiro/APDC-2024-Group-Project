@@ -66,12 +66,14 @@ class _ActivePromoCodesPageState extends State<ActivePromoCodesPage> {
         _promoCodes.removeWhere((promoCode) => promoCode.id == promoCodeId);
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Promoção excluída com sucesso!')),
-      );
+        const SnackBar(content: Text('Promo code deleted successfully!'),
+        duration: Duration(seconds: 1),
+      ));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao excluir promoção: $e')),
-      );
+        SnackBar(content: Text('Erroe deleting promo code: $e'),
+        duration: const Duration(seconds: 1),
+      ));
     }
   }
 

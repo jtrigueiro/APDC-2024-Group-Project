@@ -36,7 +36,8 @@ class _ListRestaurantTypesPageState extends State<ListRestaurantTypesPage> {
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading restaurant types')),
+        const SnackBar(content: Text('Error loading restaurant types'),
+        duration: Duration(seconds: 1),),
       );
     }
   }
@@ -48,12 +49,14 @@ class _ListRestaurantTypesPageState extends State<ListRestaurantTypesPage> {
         _restaurantTypes.removeWhere((type) => type.id == typeId);
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Restaurant type deleted successfully!')),
+        const SnackBar(content: Text('Restaurant type deleted successfully!'),
+        duration: Duration(seconds: 1),),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete restaurant type')),
-      );
+        const SnackBar(content: Text('Failed to delete restaurant type'),
+        duration: Duration(seconds: 1),
+      ));
     }
   }
 

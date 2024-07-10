@@ -44,8 +44,9 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
 
     if (promoCode.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a promotional code')),
-      );
+        const SnackBar(content: Text('Please enter a promotional code'),
+        duration: Duration(seconds: 1),
+      ));
       return;
     }
 
@@ -74,35 +75,33 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
         await _dbService.redeemPromoCode(promoCode, reward);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Promo code redeemed! Reward: $reward')),
+          SnackBar(content: Text('Promo code redeemed! Reward: $reward'),
+          duration: const Duration(seconds: 1),),
         );
       } else {
         redeemTimeOut = math.min(redeemTimeOut * 2, 3600);
         lastRedeemed = DateTime.now();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Invalid promotional code')),
+          const SnackBar(content: Text('Invalid promotional code'),
+          duration: Duration(seconds: 1),),
         );
       }
     } catch (e) {
       print('Error redeeming promo code: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error redeeming promo code')),
+        const SnackBar(content: Text('Error redeeming promo code',),
+        duration: Duration(seconds: 1),),
       );
     } finally {print('before shared pref');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setInt('redeemTimeOut', redeemTimeOut);
       await prefs.setString('lastRedeemed', lastRedeemed.toString());
 
-      print('after shared pref');
-
-      print(redeeming);
-
       setState(() {
         redeeming = false;
       });
-
-      print(redeeming);
     }
+
   }
 
   @override

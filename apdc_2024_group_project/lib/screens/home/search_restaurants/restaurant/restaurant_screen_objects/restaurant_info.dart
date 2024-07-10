@@ -37,7 +37,8 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
         isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load favorites: $e')),
+        SnackBar(content: Text('Failed to load favorites: $e'),
+        duration: const Duration(seconds: 1),),
       );
     }
   }
@@ -52,11 +53,13 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
         SnackBar(
             content: Text(isFavorite
                 ? 'Added to favorites!'
-                : 'Removed from favorites!')),
+                : 'Removed from favorites!'),
+                duration: const Duration(seconds: 1)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update favorites: $e')),
+        SnackBar(content: Text('Failed to update favorites: $e'),
+        duration: const Duration(seconds: 1),),
       );
     }
   }

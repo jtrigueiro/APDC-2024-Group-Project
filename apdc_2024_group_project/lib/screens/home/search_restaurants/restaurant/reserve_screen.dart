@@ -149,7 +149,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                             animation: CurvedAnimation(
                                 parent: const AlwaysStoppedAnimation(1),
                                 curve: Curves.easeInOut),
-                            duration: const Duration(seconds: 2),
+                            duration: const Duration(seconds: 1),
                           ));
                         }
                       },
@@ -175,7 +175,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                                   animation: CurvedAnimation(
                                       parent: const AlwaysStoppedAnimation(1),
                                       curve: Curves.easeInOut),
-                                  duration: const Duration(seconds: 2),
+                                  duration: const Duration(seconds: 1),
                                 ));
                                 return;
                               } else {
@@ -231,7 +231,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                                                                   .easeInOut),
                                                           duration:
                                                               const Duration(
-                                                                  seconds: 2),
+                                                                  seconds: 1),
                                                         ));
                                                       },
                                                       icon: const Icon(
@@ -595,7 +595,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                         animation: CurvedAnimation(
                             parent: const AlwaysStoppedAnimation(1),
                             curve: Curves.easeInOut),
-                        duration: const Duration(seconds: 2),
+                        duration: const Duration(seconds: 1),
                       ));
                     },
                     child: const Text('Add Dish'),

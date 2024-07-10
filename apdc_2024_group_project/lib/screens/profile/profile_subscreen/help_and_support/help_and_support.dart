@@ -21,14 +21,16 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
       await _supportService.sendEmailAndAddToFirestore(body);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mensagem enviada com sucesso!')),
+        const SnackBar(content: Text('Message sent successfully! We will get back to you soon!'),
+        duration: Duration(seconds: 1),),
       );
 
       Navigator.of(context).pop();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao enviar mensagem: $e')),
-      );
+        SnackBar(content: Text('Error while sending the message: $e'),
+        duration: const Duration(seconds: 1),
+      ));
     }
   }
 

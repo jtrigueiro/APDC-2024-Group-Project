@@ -76,12 +76,14 @@ class _SupportMessagesListScreenState extends State<SupportMessagesListScreen> {
         _messages.removeWhere((message) => message.id == messageId);
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Mensagem excluída com sucesso!')),
-      );
+        const SnackBar(content: Text('Message deleted successfully!'),
+          duration: Duration(seconds: 1),
+      ));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao excluir mensagem: $e')),
-      );
+        SnackBar(content: Text('Error while removing message: $e'),
+          duration: const Duration(seconds: 1),
+      ));
     }
   }
 

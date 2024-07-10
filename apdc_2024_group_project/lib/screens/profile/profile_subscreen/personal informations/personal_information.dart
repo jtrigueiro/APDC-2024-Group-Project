@@ -52,13 +52,15 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Informações atualizadas com sucesso')),
+          const SnackBar(content: Text('User information updated successfully'),
+          duration: Duration(seconds: 1),),
         );
       } catch (e) {
         print("Erro ao atualizar os dados do usuário: $e");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao atualizar informações: $e')),
-        );
+          SnackBar(content: Text('Error updating user information: $e'),
+          duration: const Duration(seconds: 1),
+        ));
       }
     }
   }
