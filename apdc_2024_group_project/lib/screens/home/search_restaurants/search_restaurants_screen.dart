@@ -359,8 +359,8 @@ class SearchScreenState extends State<SearchScreen> {
                     Row(
                       children: [
                           Container(
-                              width: MediaQuery.of(context).size.width*0.2, //100,
-                              height: MediaQuery.of(context).size.height*0.2,
+                              width: 100, //100,
+                              height: 100,
                               margin: const EdgeInsets.all(10.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
