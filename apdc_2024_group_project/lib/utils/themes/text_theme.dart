@@ -6,6 +6,12 @@ class TextThemeApp {
 
   static TextTheme appTextTheme = TextTheme(
 
+    headlineLarge: GoogleFonts.getFont(
+      'Poppins',
+      fontWeight: FontWeight.w600,
+      fontSize: 45,
+      color: Color.fromARGB(255, 61, 130, 20)
+    ),
     //used
     titleLarge: GoogleFonts.getFont(
       'Open Sans',

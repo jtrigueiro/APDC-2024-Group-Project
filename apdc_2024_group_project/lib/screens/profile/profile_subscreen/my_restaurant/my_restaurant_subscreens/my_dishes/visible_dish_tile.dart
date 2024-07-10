@@ -120,7 +120,7 @@ class VisibleDishTile extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                   Text( "'${dish.description}' description:" ,
+                                   Text( "Description: ${dish.description}" ,
                                       textAlign: TextAlign.left),
                                   ...value.map((e) => ListTile(
                                         title: Text(e.name, style: Theme.of(context).textTheme.displaySmall,),

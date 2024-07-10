@@ -1,6 +1,7 @@
 import 'package:adc_group_project/services/auth.dart';
 import 'package:adc_group_project/utils/constants.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -52,147 +53,311 @@ class SignUpScreenState extends State<SignUpScreen> {
               controller: scrollController,
               child: SingleChildScrollView(
                 controller: scrollController,
-                child: Container(
-                  decoration: kIsWeb
-                      ? BoxDecoration(
-                          //color: Colors.white,
-                          image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                              Colors.black.withOpacity(0.2),
-                              BlendMode.dstIn,
+                child: kIsWeb
+                    ? Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                        colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(0.2),
+                          BlendMode.dstIn,
+                        ),
+                        image: const AssetImage(
+                          'assets/images/f2.jpg',
+                        ),
+                        fit: BoxFit.fill,
+                      )),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Row(
+                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Align(
+                                    alignment: Alignment.topLeft,
+                                    child: logoSize()),
+                                Padding(
+                                  padding:  EdgeInsets.only(left:MediaQuery.of(context).size.width*0.25),
+                                  child: Text('Sign Up!', style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: MediaQuery.of(context).size.width*0.06),),
+                                )
+                              ],
                             ),
-                            image: const AssetImage(
-                              'assets/images/f2.jpg',
-                            ),
-                            fit: BoxFit.fill,
-                          ),
-                        )
-                      : null,
-                  child: Center(
-                    heightFactor: 1.1,
-                    child: Column(
-                      children: [
-                        logoSize(),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                          child: Text(
-                            'Welcome to EcoDine',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
+                            Container(
+                                constraints:
+                                    const BoxConstraints(minWidth: 100, maxWidth: 700),
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: Material(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20)),
+                                    elevation: 4,
+                                    child: buildSignUpWeb()),
+                              ),
+                          ],
+                        ),
+                      ),
+                    )
+                    : //buildweb
+                    Container(
+                        decoration: kIsWeb
+                            ? BoxDecoration(
+                                //color: Colors.white,
+                                image: DecorationImage(
+                                  colorFilter: ColorFilter.mode(
+                                    Colors.black.withOpacity(0.2),
+                                    BlendMode.dstIn,
+                                  ),
+                                  image: const AssetImage(
+                                    'assets/images/f2.jpg',
+                                  ),
+                                  fit: BoxFit.fill,
+                                ),
+                              )
+                            : null,
+                        child: Center(
+                          heightFactor: 1.1,
+                          child: Column(
+                            children: [
+                              logoSize(),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                child: Text(
+                                  'Welcome to EcoDine',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                          color: const Color.fromARGB(
+                                              255, 61, 130, 20)),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(children: [
+                                    textForms(nameController, 'Name*',
+                                        'Enter your Name'),
+                                    spaceBetweenColumns(),
+                                    textForms(emailController, 'Email*',
+                                        'Enter a Email'),
+                                    spaceBetweenColumns(),
+                                    TextFormField(
+                                      validator: (val) => val!.isEmpty
+                                          ? 'Enter a password'
+                                          : (val.length < 6
+                                              ? 'Enter a password with 6 or more characters'
+                                              : null),
+                                      obscureText: true,
+                                      controller: passwordController,
+                                      decoration:
+                                          const InputDecoration().copyWith(
+                                        labelText: 'Password*',
+                                      ),
+                                    ),
+                                    spaceBetweenColumns(),
+                                    TextFormField(
+                                      validator: (val) => val!.isEmpty
+                                          ? 'Confirm your password'
+                                          : (val != passwordController.text
+                                              ? 'Wrong confirmation password'
+                                              : null),
+                                      obscureText: true,
+                                      controller: confirmPasswordController,
+                                      decoration:
+                                          const InputDecoration().copyWith(
+                                        labelText: 'Confirm Password*',
+                                      ),
+                                    ),
+                                  ]),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(30, 5, 0, 15),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '* Required Fields',
+                                  textAlign: TextAlign.start,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                        color: const Color.fromARGB(
+                                            255, 61, 130, 20),
+                                      ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => {
+                                  Navigator.pop(context),
+                                },
+                                style: ButtonStyle(
+                                  foregroundColor: MaterialStateProperty.all<
+                                          Color>(
+                                      Theme.of(context).colorScheme.secondary),
+                                  overlayColor: MaterialStateProperty.all(
+                                      const Color.fromARGB(255, 227, 237, 220)),
+                                ),
+                                child: const Text(
+                                    'Already have an account? Login!'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  {
+                                    if (_formKey.currentState!.validate()) {
+                                      setState(() => loading = true);
+                                      dynamic result = await _auth
+                                          .registerWithEmailAndPassword(
+                                              emailController.text,
+                                              passwordController.text,
+                                              nameController.text);
+                                      if (result == null) {
+                                        setState(() {
+                                          loading = false;
+                                          error =
+                                              'Email not valid or already in use.';
+                                        });
+                                      } else {
+                                        Navigator.pop(context);
+                                      }
+                                    }
+                                  }
+                                },
+                                child: const Text('Sign Up'),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                child: Text(
+                                  error,
+                                  style: GoogleFonts.getFont(
+                                    'Nunito',
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
                                     color:
-                                        const Color.fromARGB(255, 61, 130, 20)),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(children: [
-                              textForms(
-                                  nameController, 'Name*', 'Enter your Name'),
-                              spaceBetweenColumns(),
-                              textForms(
-                                  emailController, 'Email*', 'Enter a Email'),
-                              spaceBetweenColumns(),
-                              TextFormField(
-                                validator: (val) => val!.isEmpty
-                                    ? 'Enter a password'
-                                    : (val.length < 6
-                                        ? 'Enter a password with 6 or more characters'
-                                        : null),
-                                obscureText: true,
-                                controller: passwordController,
-                                decoration: const InputDecoration().copyWith(
-                                  labelText: 'Password*',
+                                        const Color.fromARGB(255, 202, 52, 76),
+                                  ),
                                 ),
                               ),
-                              spaceBetweenColumns(),
-                              TextFormField(
-                                validator: (val) => val!.isEmpty
-                                    ? 'Confirm your password'
-                                    : (val != passwordController.text
-                                        ? 'Wrong confirmation password'
-                                        : null),
-                                obscureText: true,
-                                controller: confirmPasswordController,
-                                decoration: const InputDecoration().copyWith(
-                                  labelText: 'Confirm Password*',
-                                ),
-                              ),
-                            ]),
+                            ],
                           ),
                         ),
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(30, 5, 0, 15),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            '* Required Fields',
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(
-                                  color: const Color.fromARGB(255, 61, 130, 20),
-                                ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => {
-                            Navigator.pop(context),
-                          },
-                          style: ButtonStyle(
-                            foregroundColor: MaterialStateProperty.all<Color>(
-                                Theme.of(context).colorScheme.secondary),
-                            overlayColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 227, 237, 220)),
-                          ),
-                          child: const Text('Already have an account? Login!'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            {
-                              if (_formKey.currentState!.validate()) {
-                                setState(() => loading = true);
-                                dynamic result =
-                                    await _auth.registerWithEmailAndPassword(
-                                        emailController.text,
-                                        passwordController.text,
-                                        nameController.text);
-                                if (result == null) {
-                                  setState(() {
-                                    loading = false;
-                                    error =
-                                        'Email not valid or already in use.';
-                                  });
-                                } else {
-                                  Navigator.pop(context);
-                                }
-                              }
-                            }
-                          },
-                          child: const Text('Sign Up'),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          child: Text(
-                            error,
-                            style: GoogleFonts.getFont(
-                              'Nunito',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                              color: const Color.fromARGB(255, 202, 52, 76),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ),
             ),
           );
+  }
+
+  Center buildSignUpWeb() {
+    return Center(
+      heightFactor: 1.1,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Text(
+              'Welcome to EcoDine',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(color: const Color.fromARGB(255, 61, 130, 20)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+            child: Form(
+              key: _formKey,
+              child: Column(children: [
+                textForms(nameController, 'Name*', 'Enter your Name'),
+                spaceBetweenColumns(),
+                textForms(emailController, 'Email*', 'Enter a Email'),
+                spaceBetweenColumns(),
+                TextFormField(
+                  validator: (val) => val!.isEmpty
+                      ? 'Enter a password'
+                      : (val.length < 6
+                          ? 'Enter a password with 6 or more characters'
+                          : null),
+                  obscureText: true,
+                  controller: passwordController,
+                  decoration: const InputDecoration().copyWith(
+                    labelText: 'Password*',
+                  ),
+                ),
+                spaceBetweenColumns(),
+                TextFormField(
+                  validator: (val) => val!.isEmpty
+                      ? 'Confirm your password'
+                      : (val != passwordController.text
+                          ? 'Wrong confirmation password'
+                          : null),
+                  obscureText: true,
+                  controller: confirmPasswordController,
+                  decoration: const InputDecoration().copyWith(
+                    labelText: 'Confirm Password*',
+                  ),
+                ),
+              ]),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(30, 5, 0, 15),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '* Required Fields',
+              textAlign: TextAlign.start,
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: const Color.fromARGB(255, 61, 130, 20),
+                  ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => {
+              Navigator.pop(context),
+            },
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).colorScheme.secondary),
+              overlayColor: MaterialStateProperty.all(
+                  const Color.fromARGB(255, 227, 237, 220)),
+            ),
+            child: const Text('Already have an account? Login!'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              {
+                if (_formKey.currentState!.validate()) {
+                  setState(() => loading = true);
+                  dynamic result = await _auth.registerWithEmailAndPassword(
+                      emailController.text,
+                      passwordController.text,
+                      nameController.text);
+                  if (result == null) {
+                    setState(() {
+                      loading = false;
+                      error = 'Email not valid or already in use.';
+                    });
+                  } else {
+                    Navigator.pop(context);
+                  }
+                }
+              }
+            },
+            child: const Text('Sign Up'),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child: Text(
+              error,
+              style: GoogleFonts.getFont(
+                'Nunito',
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                color: const Color.fromARGB(255, 202, 52, 76),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Padding logoSize() {

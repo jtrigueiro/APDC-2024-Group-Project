@@ -61,7 +61,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               Align(
                                   alignment: Alignment.topLeft,
                                   child: logoSize()),
-                              SizedBox(
+                              Container(
+                                  constraints: const BoxConstraints(minWidth: 100, maxWidth: 700),
                                   width:
                                       MediaQuery.of(context).size.width * 0.9,
                                   child: Material(
@@ -274,7 +275,7 @@ class _SignInScreenState extends State<SignInScreen> {
         controller: scrollController,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 6.0, top: 15),
+            padding: const EdgeInsets.only(bottom: 6.0, top: 30),
             child:
                 Text('Log In', style: Theme.of(context).textTheme.titleLarge),
           ),
