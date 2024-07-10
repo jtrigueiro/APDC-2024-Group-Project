@@ -5,10 +5,8 @@ import 'package:adc_group_project/services/geocoding.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:label_marker/label_marker.dart';
 import 'package:flutter/services.dart';
@@ -16,13 +14,13 @@ import 'package:flutter/services.dart';
 class SearchScreen extends StatefulWidget {
   final LatLng userLocation;
 
-  const SearchScreen({ Key? key, required this.userLocation }): super(key: key);
+  const SearchScreen({ super.key, required this.userLocation });
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  SearchScreenState createState() => SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class SearchScreenState extends State<SearchScreen> {
 
   List<Restaurant> restaurants = [];
   Set<Marker> markers = {};
@@ -43,7 +41,6 @@ class _SearchScreenState extends State<SearchScreen> {
   bool choosingDate = true;
   String? _mapStyle;
   double _markerFont = kIsWeb ? 12 : 80;
-  DateTime? _selectedDate;
   List<String> locations = [];
 
   @override
@@ -162,78 +159,6 @@ class _SearchScreenState extends State<SearchScreen> {
         paddingNeeded = values.isEmpty ? false : true;
       });
 
-  }
-
-  void _getDateFromUser() async {
-    _selectedDate = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime.now(),
-    lastDate: DateTime.now().add(const Duration(days: 14)),
-    cancelText: 'Ignore',
-    confirmText: 'OK',
-    helpText: 'Reservation Date',
-    errorFormatText: 'Invalid date format',
-    errorInvalidText: 'Date must be within the next 14 days',
-    fieldLabelText: 'Reservation Date',
-    fieldHintText: 'Month/Day/Year',
-    );
-
-    if (_selectedDate != null) {
-      enhanceResult();
-      setState(() {
-      });
-    }
-  }
-
-  void enhanceResult() {
-    int weekday = _selectedDate!.weekday;
-
-    final values = restaurants.where((element) => element.isOpen[weekday - 1]).toList();
-
-    if(values.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('No restaurants available'),
-            content: const Text('There are no restaurants available on the selected date.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },);
-    }
-    else {
-      restaurants.clear();
-      markers.clear();
-
-      for (int i = 0; i < values.length; i++) {
-        handleRestaurant(values[i], i);
-      }
-    }
-  }
-
-  Future<void> _searchForRestaurants(String query) async {
-    restaurants.clear();
-    markers.clear();
-
-    final databaseService = DatabaseService();
-    final values = await databaseService.searchRestaurants(query);
-
-    for (int i = 0; i < values.length; i++) {
-      handleRestaurant(values[i], i);
-    }
-
-    setState(() {
-      done = true;
-      paddingNeeded = values.isEmpty ? false : true;
-    });
   }
 
   void changeCamera(int index) async {
