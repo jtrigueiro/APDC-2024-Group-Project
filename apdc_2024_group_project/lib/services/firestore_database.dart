@@ -1328,9 +1328,7 @@ class DatabaseService {
 
   Future<void> addRestaurantType(String typeName) async {
     try {
-      await restaurantTypesCollection.doc(typeName).set({
-        'name': typeName,
-      });
+      await restaurantTypesCollection.doc(typeName).set({});
     } catch (e) {
       print("Error adding restaurant type: $e");
       rethrow;
@@ -1375,7 +1373,7 @@ class DatabaseService {
             .doc(typeName)
             .collection('restaurants')
             .doc(restaurantId)
-            .set({'restaurantId': restaurantId});
+            .set({});
       }
     } catch (e) {
       print("Error adding restaurant ID to types: $e");
