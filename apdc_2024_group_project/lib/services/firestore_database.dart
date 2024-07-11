@@ -290,9 +290,7 @@ class DatabaseService {
           .doc(user.uid)
           .collection(RESTAURANT_TYPES_SUBCOLLECTION);
       for (String type in restaurantTypes) {
-        final typeData = {'name': type};
-
-        await typesCollection.doc(type).set(typeData);
+        await typesCollection.doc(type).set({});
       }
       return true;
     } catch (e) {
@@ -1048,7 +1046,7 @@ class DatabaseService {
       return snapshot.docs.map((doc) {
         // Referência para a subcoleção restaurant_types
         CollectionReference typesCollection =
-            doc.reference.collection('restaurant_types');
+            doc.reference.collection(RESTAURANT_TYPES_SUBCOLLECTION);
 
         // Obter os tipos de restaurante
         List<String> restaurantTypes = [];
@@ -1335,7 +1333,7 @@ class DatabaseService {
     }
   }
 
-  Future<bool> restaurantTypeExists (String typeName) async {
+  Future<bool> restaurantTypeExists(String typeName) async {
     try {
       return await restaurantTypesCollection.doc(typeName).get().then((doc) {
         return doc.exists;
