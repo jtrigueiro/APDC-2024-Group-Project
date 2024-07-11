@@ -282,7 +282,7 @@ class NoRestaurantScreenState extends State<NoRestaurantScreen> {
         return false;
       }
     } catch (e) {
-      _showErrorDialog("Error validating address: $e");
+      _showErrorDialog("Error validating address. Please try again later.");
       return false;
     }
   }

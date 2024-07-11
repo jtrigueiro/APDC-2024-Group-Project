@@ -37,7 +37,7 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
       }
 
     } catch (e) {
-      constants.showSnackBar(context, 'Failed to add restaurant type: $e');
+      constants.showSnackBar(context, 'Failed to add restaurant type. Please try again.');
     } finally {
       _typeController.clear();
       setState(() {

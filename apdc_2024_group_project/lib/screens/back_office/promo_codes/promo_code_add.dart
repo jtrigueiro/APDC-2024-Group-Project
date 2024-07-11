@@ -41,7 +41,7 @@ class _AddPromoCodePageState extends State<AddPromoCodePage> {
       return;
 
     } catch (error) {
-      constants.showSnackBar(context, 'Failed to add promo code: $error');
+      constants.showSnackBar(context, 'Failed to add promo code. Please try again.');
     }
   }
 

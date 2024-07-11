@@ -78,7 +78,7 @@ class _SupportMessagesListScreenState extends State<SupportMessagesListScreen> {
       });
       constants.showSnackBar(context, 'Message deleted successfully!');
     } catch (e) {
-      constants.showSnackBar(context, 'Error while removing message: $e');
+      constants.showSnackBar(context, 'Error while removing message. Please try again later.');
     }
   }
 

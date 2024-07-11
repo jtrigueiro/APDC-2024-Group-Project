@@ -68,7 +68,7 @@ class _ActivePromoCodesPageState extends State<ActivePromoCodesPage> {
       });
       constants.showSnackBar(context, 'Promo code deleted successfully!');
     } catch (e) {
-      constants.showSnackBar(context, 'Error deleting promo code: $e');
+      constants.showSnackBar(context, 'Error deleting promo code. Please try again later.');
     }
   }
 

@@ -53,7 +53,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         );
         constants.showSnackBar(context, 'User information updated successfully');
       } catch (e) {
-        constants.showSnackBar(context, 'Error updating user information: $e');
+        constants.showSnackBar(context, 'Error updating user information. Please try again.');
       }
     }
   }

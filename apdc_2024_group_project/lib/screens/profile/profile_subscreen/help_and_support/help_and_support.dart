@@ -24,7 +24,7 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
       constants.showSnackBar(context, 'Message sent successfully! We will get back to you soon!');
       Navigator.of(context).pop();
     } catch (e) {
-      constants.showSnackBar(context, 'Error while sending the message: $e');
+      constants.showSnackBar(context, 'Error while sending the message. Please try again.');
     }
   }
 

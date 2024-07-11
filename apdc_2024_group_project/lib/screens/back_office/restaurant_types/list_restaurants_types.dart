@@ -48,7 +48,7 @@ class _ListRestaurantTypesPageState extends State<ListRestaurantTypesPage> {
       });
       constants.showSnackBar(context, 'Restaurant type deleted successfully!');
     } catch (e) {
-      constants.showSnackBar(context, 'Failed to delete restaurant type: $e');
+      constants.showSnackBar(context, 'Failed to delete restaurant type. Please try again.');
     }
   }
 
