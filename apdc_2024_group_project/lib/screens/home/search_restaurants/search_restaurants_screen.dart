@@ -97,9 +97,13 @@ class SearchScreenState extends State<SearchScreen> {
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-    if (_mapStyle != null) {
-      controller.setMapStyle(_mapStyle);
+    try {
+      _controller.complete(controller);
+      if (_mapStyle != null) {
+        controller.setMapStyle(_mapStyle);
+      }
+    } catch (e) {
+      print('Error creating map');
     }
   }
 
@@ -162,17 +166,22 @@ class SearchScreenState extends State<SearchScreen> {
   }
 
   void changeCamera(int index) async {
-    List<String> coords = restaurants[index].coordinates.split(',');
+    try {
+      List<String> coords = restaurants[index].coordinates.split(',');
 
-    double lat = double.parse(coords[0]);
-    double lng = double.parse(coords[1]);
+      double lat = double.parse(coords[0]);
+      double lng = double.parse(coords[1]);
 
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
 
-    setState(() {
-      currentLocation = LatLng(lat, lng);
-    });
+      setState(() {
+        currentLocation = LatLng(lat, lng);
+      });
+      
+    } catch (e) {
+      print('Error changing camera.');
+    }
   }
 
   Row searchBox(String label, IconData icon, Function function,
@@ -233,9 +242,9 @@ class SearchScreenState extends State<SearchScreen> {
                 title: const Text('Current Location'),
                 leading: const Icon(Icons.my_location),
                 onTap: () {
-                  setState(() async {
-                    currentLocation = widget.userLocation;
-                    getCityByCoords(currentLocation).then((value) { getRestaurants(currentLocality); });
+                  currentLocation = widget.userLocation;
+                  getCityByCoords(currentLocation).then((value) { getRestaurants(currentLocality); });
+                  setState(() {
                     choosingDate = false;
                   });
                 },
@@ -248,9 +257,9 @@ class SearchScreenState extends State<SearchScreen> {
                   title: Text(locations[index]),
                   leading: const Icon(Icons.location_on),
                   onTap: () {
-                    setState(() async {
-                      getCityByAddress(locations[index]);
-                      getRestaurants(locations[index]);
+                    getCityByAddress(locations[index]);
+                    getRestaurants(locations[index]);
+                    setState(() {
                       choosingDate = false;
                     });
                   },
