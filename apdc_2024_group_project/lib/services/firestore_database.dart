@@ -1382,18 +1382,6 @@ class DatabaseService {
   Future<List<Restaurant>> getRestaurantsByType(String type) async {
     List<Restaurant> restaurants = [];
     try {
-      final typeDoc = await restaurantTypesCollection.doc(type).get();
-      if (typeDoc.exists) {
-        final data = typeDoc.data() as Map<String, dynamic>;
-        if (data.containsKey('restaurants')) {
-          final restaurantIds = data['restaurants'] as List<dynamic>;
-          for (final id in restaurantIds) {
-            final restaurantDoc = await restaurantsCollection.doc(id).get();
-            if (restaurantDoc.exists && restaurantDoc.get('visible') == true) {
-              restaurants.add(Restaurant.fromFirestore(restaurantDoc));
-            }
-          }
-        } else {
           final subCollection =
               restaurantTypesCollection.doc(type).collection('restaurants');
           final snapshot = await subCollection.get();
@@ -1405,8 +1393,6 @@ class DatabaseService {
               restaurants.add(Restaurant.fromFirestore(restaurantDoc));
             }
           }
-        }
-      }
     } catch (e) {
       print('Error fetching restaurants by type: $e');
     }

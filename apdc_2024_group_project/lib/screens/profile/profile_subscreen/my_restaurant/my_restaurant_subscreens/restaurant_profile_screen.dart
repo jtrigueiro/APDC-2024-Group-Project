@@ -451,7 +451,7 @@ class RestaurantPersonalizeScreenState
                                       ]);
                                     },
                                   ),
-                            currentImageUrl == null
+                            currentImageUrl == ''
                                 ? Text("Add Restaurant Photo",
                                     style: Theme.of(context)
                                         .textTheme
