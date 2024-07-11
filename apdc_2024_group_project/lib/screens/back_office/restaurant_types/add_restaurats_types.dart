@@ -11,7 +11,7 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
   bool _isLoading = false;
 
   Future<void> _addRestaurantType() async {
-    String typeName = _typeController.text.trim();
+    String typeName = _typeController.text.trim().toLowerCase();
 
     if (typeName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -26,18 +26,31 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
     });
 
     try {
-      await _dbService.addRestaurantType(typeName);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Restaurant type added successfully!'),
-        duration: Duration(seconds: 1),
-      ));
-      _typeController.clear();
+      bool typeExists = await _dbService.restaurantTypeExists(typeName);
+      if (typeExists) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Restaurant type already exists'),
+          duration: Duration(seconds: 1),
+        ));
+        _typeController.clear();
+        return;
+      }
+      else {
+        await _dbService.addRestaurantType(typeName);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Restaurant type added successfully!'),
+          duration: Duration(seconds: 1),
+        ));
+      }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to add restaurant type'),
         duration: Duration(seconds: 1),
       ));
+
     } finally {
+      _typeController.clear();
       setState(() {
         _isLoading = false;
       });

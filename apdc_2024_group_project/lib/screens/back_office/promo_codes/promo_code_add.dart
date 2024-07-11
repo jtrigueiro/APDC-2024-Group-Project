@@ -32,11 +32,25 @@ class _AddPromoCodePageState extends State<AddPromoCodePage> {
     }
 
     try {
+      final result = await DatabaseService().getPromoCode(promoCode);
+      if (result.exists) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Promo code already exists'),
+          duration: Duration(seconds: 1),
+        ));
+      }
+      else {
       await DatabaseService().addPromoCode(promoCode, reward);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Promo code added successfully'),
         duration: Duration(seconds: 1),
       ));
+      }
+
+      _promoCodeController.clear();
+      _rewardController.clear();
+      return;
+
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to add promo code: $error'),

@@ -1337,6 +1337,17 @@ class DatabaseService {
     }
   }
 
+  Future<bool> restaurantTypeExists (String typeName) async {
+    try {
+      return await restaurantTypesCollection.doc(typeName).get().then((doc) {
+        return doc.exists;
+      });
+    } catch (e) {
+      print("Error getting restaurant type: $e");
+      rethrow;
+    }
+  }
+
   Future<List<DocumentSnapshot>> getRestaurantTypes() async {
     try {
       QuerySnapshot querySnapshot = await restaurantTypesCollection.get();
