@@ -451,17 +451,6 @@ class RestaurantPersonalizeScreenState
                                       ]);
                                     },
                                   ),
-                            currentImageUrl == ''
-                                ? Text("Add Restaurant Photo",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(fontSize: 13))
-                                : Text("Update Restaurant Photo",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(fontSize: 13)),
                           ],
                         ),
                       ),
