@@ -1382,13 +1382,9 @@ class DatabaseService {
   Future<List<Restaurant>> getRestaurantsByType(String type) async {
     List<Restaurant> restaurants = [];
     try {
-          final subCollection =
-              restaurantTypesCollection.doc(type).collection('restaurants');
-          final snapshot = await subCollection.get();
+          final snapshot = await restaurantTypesCollection.doc(type).collection('restaurants').get();
           for (final doc in snapshot.docs) {
-            final restaurantId = doc.id;
-            final restaurantDoc =
-                await restaurantsCollection.doc(restaurantId).get();
+            final restaurantDoc = await restaurantsCollection.doc(doc.id).get();
             if (restaurantDoc.exists && restaurantDoc.get('visible') == true) {
               restaurants.add(Restaurant.fromFirestore(restaurantDoc));
             }
