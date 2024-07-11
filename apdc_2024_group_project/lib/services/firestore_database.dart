@@ -1405,7 +1405,7 @@ class DatabaseService {
 
       if (user != null) {
         await usersCollection.doc(user.uid).update({
-          'emissions': FieldValue.increment(emissions),
+          'emissions': FieldValue.increment(emissions/1000),
         });
       } else {
         throw Exception("User not logged in");
