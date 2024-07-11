@@ -125,7 +125,7 @@ class _ActivePromoCodesPageState extends State<ActivePromoCodesPage> {
                         ),
                         SizedBox(height: 5),
                         Text(
-                          promoCode['reward'],
+                          promoCode['reward'].toString(),
                           style: TextStyle(
                             fontSize: 14,
                           ),
