@@ -1389,7 +1389,7 @@ class DatabaseService {
           final restaurantIds = data['restaurants'] as List<dynamic>;
           for (final id in restaurantIds) {
             final restaurantDoc = await restaurantsCollection.doc(id).get();
-            if (restaurantDoc.exists) {
+            if (restaurantDoc.exists && restaurantDoc.get('visible') == true) {
               restaurants.add(Restaurant.fromFirestore(restaurantDoc));
             }
           }
@@ -1401,7 +1401,7 @@ class DatabaseService {
             final restaurantId = doc.id;
             final restaurantDoc =
                 await restaurantsCollection.doc(restaurantId).get();
-            if (restaurantDoc.exists) {
+            if (restaurantDoc.exists && restaurantDoc.get('visible') == true) {
               restaurants.add(Restaurant.fromFirestore(restaurantDoc));
             }
           }
