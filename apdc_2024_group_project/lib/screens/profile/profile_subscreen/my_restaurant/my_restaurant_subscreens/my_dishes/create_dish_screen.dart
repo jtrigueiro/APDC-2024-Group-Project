@@ -137,29 +137,31 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 5.0),
-                                      child: DropdownMenu<Ingredient>(
-                                        width: MediaQuery.of(context).size.width *
-                                            0.4,
-                                        requestFocusOnTap: true,
-                                        controller: ingredientNameController,
-                                        hintText: 'Ingredient',
-                                        enableFilter: true,
-                                        leadingIcon: const Icon(Icons.search),
-                                        onSelected: (Ingredient? value) {
-                                          setState(() {
-                                            selectedIngredient = value;
-                                          });
-                                        },
-                                        dropdownMenuEntries: ingredients
-                                            .map((Ingredient ingredient) {
-                                          return DropdownMenuEntry<Ingredient>(
-                                            value: ingredient,
-                                            label: ingredient.name,
-                                          );
-                                        }).toList(),
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 5.0),
+                                        child: DropdownMenu<Ingredient>(
+                                          width: MediaQuery.of(context).size.width *
+                                              0.4,
+                                          requestFocusOnTap: true,
+                                          controller: ingredientNameController,
+                                          hintText: 'Ingredient',
+                                          enableFilter: true,
+                                          leadingIcon: const Icon(Icons.search),
+                                          onSelected: (Ingredient? value) {
+                                            setState(() {
+                                              selectedIngredient = value;
+                                            });
+                                          },
+                                          dropdownMenuEntries: ingredients
+                                              .map((Ingredient ingredient) {
+                                            return DropdownMenuEntry<Ingredient>(
+                                              value: ingredient,
+                                              label: ingredient.name,
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
                                     ),
                                     Expanded(
