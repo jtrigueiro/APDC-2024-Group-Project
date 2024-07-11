@@ -68,7 +68,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
       if (promoCodeDoc.exists) {
         Map<String, dynamic> promoData =
             promoCodeDoc.data() as Map<String, dynamic>;
-        String reward = promoData['reward'];
+        String reward = promoData['reward'].toString();
 
         await _dbService.redeemPromoCode(promoCode, reward);
 
@@ -79,7 +79,7 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
         constants.showSnackBar(context, 'Invalid promotional code');
       }
     } catch (e) {
-      constants.showSnackBar(context, 'Error redeeming promo code: $e');
+      constants.showSnackBar(context, 'Error redeeming promo code. Please try again later.');
     } finally {
       
       SharedPreferences prefs = await SharedPreferences.getInstance();
