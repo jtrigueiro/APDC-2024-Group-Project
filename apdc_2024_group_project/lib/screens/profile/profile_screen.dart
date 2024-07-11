@@ -17,8 +17,6 @@ import 'profile_service.dart';
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
 
-
-
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -247,11 +245,11 @@ Function ontapPromo(context) {
 
 Function ontapAchivements(context) {
   return () {
-    Navigator.of(context).push(
+    /*Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => AchievementsScreen(),
       ),
-    );
+    );*/
   };
 }
 
@@ -317,6 +315,4 @@ class ProfileMenuItem extends StatelessWidget {
       return MediaQuery.of(context).size.width * 0.055;
     }
   }
-
-
 }
