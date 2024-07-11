@@ -1,6 +1,7 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class HelpAndSupportScreen extends StatefulWidget {
   const HelpAndSupportScreen({Key? key}) : super(key: key);
@@ -20,17 +21,10 @@ class _HelpAndSupportScreenState extends State<HelpAndSupportScreen> {
     try {
       await _supportService.sendEmailAndAddToFirestore(body);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Message sent successfully! We will get back to you soon!'),
-        duration: Duration(seconds: 1),),
-      );
-
+      constants.showSnackBar(context, 'Message sent successfully! We will get back to you soon!');
       Navigator.of(context).pop();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error while sending the message: $e'),
-        duration: const Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Error while sending the message: $e');
     }
   }
 

@@ -6,7 +6,6 @@ import 'package:adc_group_project/utils/themes/elevated_button_theme.dart';
 import 'package:adc_group_project/utils/themes/snack_bar_theme.dart';
 import 'package:adc_group_project/utils/themes/text_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'AppBarTheme.dart';
 import 'navigation_bar_theme.dart';

@@ -1,6 +1,7 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class ActivePromoCodesPage extends StatefulWidget {
   @override
@@ -65,15 +66,9 @@ class _ActivePromoCodesPageState extends State<ActivePromoCodesPage> {
       setState(() {
         _promoCodes.removeWhere((promoCode) => promoCode.id == promoCodeId);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Promo code deleted successfully!'),
-        duration: Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Promo code deleted successfully!');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erroe deleting promo code: $e'),
-        duration: const Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Error deleting promo code: $e');
     }
   }
 

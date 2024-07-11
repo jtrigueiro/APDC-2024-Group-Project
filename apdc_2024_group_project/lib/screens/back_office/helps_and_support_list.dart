@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class SupportMessagesListScreen extends StatefulWidget {
   @override
@@ -75,15 +76,9 @@ class _SupportMessagesListScreenState extends State<SupportMessagesListScreen> {
       setState(() {
         _messages.removeWhere((message) => message.id == messageId);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Message deleted successfully!'),
-          duration: Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Message deleted successfully!');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error while removing message: $e'),
-          duration: const Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Error while removing message: $e');
     }
   }
 

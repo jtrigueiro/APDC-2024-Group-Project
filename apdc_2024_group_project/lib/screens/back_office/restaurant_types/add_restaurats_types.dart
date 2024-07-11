@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
+
 class AddRestaurantTypePage extends StatefulWidget {
   @override
   _AddRestaurantTypePageState createState() => _AddRestaurantTypePageState();
@@ -14,10 +16,7 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
     String typeName = _typeController.text.trim().toLowerCase();
 
     if (typeName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a restaurant type'),
-        duration: Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Please enter a restaurant type');
       return;
     }
 
@@ -28,27 +27,17 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
     try {
       bool typeExists = await _dbService.restaurantTypeExists(typeName);
       if (typeExists) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Restaurant type already exists'),
-          duration: Duration(seconds: 1),
-        ));
+        constants.showSnackBar(context, 'Restaurant type already exists');
         _typeController.clear();
         return;
       }
       else {
         await _dbService.addRestaurantType(typeName);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Restaurant type added successfully!'),
-          duration: Duration(seconds: 1),
-        ));
+        constants.showSnackBar(context, 'Restaurant type added successfully');
       }
 
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to add restaurant type'),
-        duration: Duration(seconds: 1),
-      ));
-
+      constants.showSnackBar(context, 'Failed to add restaurant type: $e');
     } finally {
       _typeController.clear();
       setState(() {
@@ -61,16 +50,16 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Restaurant Type'),
+        title: const Text('Add Restaurant Type'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
               controller: _typeController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Restaurant Type',
               ),
               validator: (value) {
@@ -80,14 +69,14 @@ class _AddRestaurantTypePageState extends State<AddRestaurantTypePage> {
                 return null;
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _isLoading ? null : _addRestaurantType,
               child: _isLoading
-                  ? CircularProgressIndicator(
+                  ? const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     )
-                  : Text('Add Type'),
+                  : const Text('Add Type'),
             ),
           ],
         ),

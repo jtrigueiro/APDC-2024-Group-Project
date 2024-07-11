@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class PromoCodesPage extends StatefulWidget {
   PromoCodesPage({Key? key}) : super(key: key);
@@ -43,20 +44,17 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
     String promoCode = _promoCodeController.text.trim();
 
     if (promoCode.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a promotional code'),
-        duration: Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Please enter a promotional code');
       return;
     }
 
     if(lastRedeemed != null){
       Duration difference = DateTime.now().difference(lastRedeemed!);
       if(difference < Duration(seconds: redeemTimeOut)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('You can try redeeming a promo code again in ${Duration(seconds: redeemTimeOut).inSeconds - difference.inSeconds} seconds'),
-          duration: const Duration(seconds: 1),),
-        );
+        Duration remainingTime = Duration(seconds: redeemTimeOut) - difference;
+        bool moreThanMinute = remainingTime.inMinutes > 0;
+        
+        constants.showSnackBar(context, 'You can try redeeming a promo code again in ${(moreThanMinute ? remainingTime.inMinutes : remainingTime.inSeconds)} ${moreThanMinute ? 'minutes' : 'seconds'}.');
         setState(() {
           redeeming = false;
         });
@@ -74,25 +72,16 @@ class _PromoCodesPageState extends State<PromoCodesPage> {
 
         await _dbService.redeemPromoCode(promoCode, reward);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Promo code redeemed! Reward: $reward'),
-          duration: const Duration(seconds: 1),),
-        );
+        constants.showSnackBar(context, 'Promo code redeemed! Reward: $reward% off in your next purchase!');
       } else {
         redeemTimeOut = math.min(redeemTimeOut * 2, 3600);
         lastRedeemed = DateTime.now();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Invalid promotional code'),
-          duration: Duration(seconds: 1),),
-        );
+        constants.showSnackBar(context, 'Invalid promotional code');
       }
     } catch (e) {
-      print('Error redeeming promo code: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error redeeming promo code',),
-        duration: Duration(seconds: 1),),
-      );
-    } finally {print('before shared pref');
+      constants.showSnackBar(context, 'Error redeeming promo code: $e');
+    } finally {
+      
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setInt('redeemTimeOut', redeemTimeOut);
       await prefs.setString('lastRedeemed', lastRedeemed.toString());

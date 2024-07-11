@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class MapScreen extends StatefulWidget {
   final LatLng restaurantLocation;
@@ -431,11 +432,7 @@ class _MapScreenState extends State<MapScreen> {
             isModeLocked = true;
             DatabaseService().updateUserDeslocatEmissions(carbonFootprint);
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Transit mode selected: $travelMode'),
-            ),
-          );
+          constants.showSnackBar(context, 'Transit mode selected: $travelMode');
         }
       },
       child: Row(

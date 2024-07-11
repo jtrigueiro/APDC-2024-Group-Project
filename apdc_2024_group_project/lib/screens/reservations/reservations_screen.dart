@@ -4,9 +4,9 @@ import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'map_screen.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class ReservationsScreen extends StatefulWidget {
   const ReservationsScreen({super.key});
@@ -176,10 +176,7 @@ class ReservationsScreenState extends State<ReservationsScreen> {
                     ),
                   ));
                 } else {
-                  // Handle error
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Failed to get restaurant location.'),
-                  ));
+                  constants.showSnackBar(context, 'Failed to get restaurant location.');
                 }
               },
               child: const Text('Get Directions'),

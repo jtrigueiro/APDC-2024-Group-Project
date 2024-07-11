@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settingsSubPages/privacy_police.dart';
 import 'package:adc_group_project/screens/profile/profile_subscreen/settings/settingsSubPages/terms_of_use_page.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -12,7 +13,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final DatabaseService _dbService = DatabaseService();
 
   late User _user;
@@ -96,28 +96,14 @@ class _SettingsPageState extends State<SettingsPage> {
       await _dbService.deleteUserFavoriteRestaurants(_user.uid);
       await _dbService.deleteUser(_user.uid);
 
-      // Deletar usuário do Firebase Authentication
       await _user.delete();
 
-      // Redirecionar para a página de login
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
 
-      // Mostrar SnackBar com a mensagem
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Account deleted successfully.'),
-          duration: Duration(seconds: 3), // Duração do SnackBar
-        ),
-      );
+      constants.showSnackBar(context, 'Account deleted successfully.');
     } catch (e) {
-      print("Error deleting account: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to delete account. Please try again.'),
-          duration: Duration(seconds: 3), // Duração do SnackBar
-        ),
-      );
+      constants.showSnackBar(context, 'Failed to delete account. Please try again.');
     }
   }
 

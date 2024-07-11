@@ -3,6 +3,7 @@ import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/themes/elevated_button_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class PersonalInformationScreen extends StatefulWidget {
   @override
@@ -50,17 +51,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
           _nameController.text,
           _emailController.text,
         );
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User information updated successfully'),
-          duration: Duration(seconds: 1),),
-        );
+        constants.showSnackBar(context, 'User information updated successfully');
       } catch (e) {
-        print("Erro ao atualizar os dados do usuário: $e");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating user information: $e'),
-          duration: const Duration(seconds: 1),
-        ));
+        constants.showSnackBar(context, 'Error updating user information: $e');
       }
     }
   }
@@ -69,44 +62,44 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Personal Information'),
+        title: const Text('Personal Information'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
+          icon: const Icon(Icons.arrow_back_ios,
               color: Color.fromARGB(255, 117, 85, 18)),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.grey,
                   backgroundImage:
                       _imageBytes != null ? MemoryImage(_imageBytes!) : null,
                   child: _imageBytes == null
-                      ? Icon(Icons.person, color: Colors.white, size: 40)
+                      ? const Icon(Icons.person, color: Colors.white, size: 40)
                       : null,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   _nameController.text,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   _emailController.text,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
@@ -122,7 +115,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -141,7 +134,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
@@ -152,7 +145,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   ),
                   obscureText: true,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _updateUserData,
                   style: ElButtonThemeApp.lightElButtonTheme.style,

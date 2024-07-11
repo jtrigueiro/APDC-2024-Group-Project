@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class ListRestaurantTypesPage extends StatefulWidget {
   @override
@@ -35,10 +36,7 @@ class _ListRestaurantTypesPageState extends State<ListRestaurantTypesPage> {
       setState(() {
         _isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error loading restaurant types'),
-        duration: Duration(seconds: 1),),
-      );
+      constants.showSnackBar(context, 'Error loading restaurant types');
     }
   }
 
@@ -48,15 +46,9 @@ class _ListRestaurantTypesPageState extends State<ListRestaurantTypesPage> {
       setState(() {
         _restaurantTypes.removeWhere((type) => type.id == typeId);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Restaurant type deleted successfully!'),
-        duration: Duration(seconds: 1),),
-      );
+      constants.showSnackBar(context, 'Restaurant type deleted successfully!');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete restaurant type'),
-        duration: Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Failed to delete restaurant type: $e');
     }
   }
 
@@ -64,10 +56,10 @@ class _ListRestaurantTypesPageState extends State<ListRestaurantTypesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Restaurant Types'),
+        title: const Text('Restaurant Types'),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
               itemCount: _restaurantTypes.length,
               itemBuilder: (context, index) {
@@ -75,15 +67,15 @@ class _ListRestaurantTypesPageState extends State<ListRestaurantTypesPage> {
                 return ListTile(
                   title: Text(restaurantType['name']),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () => _deleteRestaurantType(restaurantType.id),
                   ),
                 );
               },
             ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh),
         onPressed: _loadRestaurantTypes,
+        child: const Icon(Icons.refresh),
       ),
     );
   }

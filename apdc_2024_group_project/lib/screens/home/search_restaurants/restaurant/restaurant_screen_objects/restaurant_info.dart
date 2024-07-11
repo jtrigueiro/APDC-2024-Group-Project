@@ -1,7 +1,7 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class RestaurantInfo extends StatefulWidget {
   const RestaurantInfo({required this.info, Key? key}) : super(key: key);
@@ -36,10 +36,7 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load favorites: $e'),
-        duration: const Duration(seconds: 1),),
-      );
+      constants.showSnackBar(context, 'Failed to load favorites: $e');
     }
   }
 
@@ -49,18 +46,11 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
       setState(() {
         isFavorite = !isFavorite;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(isFavorite
-                ? 'Added to favorites!'
-                : 'Removed from favorites!'),
-                duration: const Duration(seconds: 1)),
-      );
+      constants.showSnackBar(context, isFavorite
+          ? 'Added to favorites!'
+          : 'Removed from favorites!');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update favorites: $e'),
-        duration: const Duration(seconds: 1),),
-      );
+      constants.showSnackBar(context, 'Failed to update favorites: $e');
     }
   }
 

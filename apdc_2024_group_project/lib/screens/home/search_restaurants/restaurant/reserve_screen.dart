@@ -3,6 +3,7 @@ import 'package:adc_group_project/services/models/dish.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class ReserveScreen extends StatefulWidget {
   Restaurant restaurant;
@@ -144,13 +145,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                             _selectedIndex = 1;
                           });
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: const Text('Please select a time first!'),
-                            animation: CurvedAnimation(
-                                parent: const AlwaysStoppedAnimation(1),
-                                curve: Curves.easeInOut),
-                            duration: const Duration(seconds: 1),
-                          ));
+                          constants.showSnackBar(context, 'Please select a time first!');
                         }
                       },
                       child: const Text('Next'),
@@ -168,15 +163,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (checkout.isEmpty) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                  content:
-                                      const Text('Choose at least one dish!'),
-                                  animation: CurvedAnimation(
-                                      parent: const AlwaysStoppedAnimation(1),
-                                      curve: Curves.easeInOut),
-                                  duration: const Duration(seconds: 1),
-                                ));
+                                constants.showSnackBar(context, 'Choose at least one dish!');
                                 return;
                               } else {
                                 showModalBottomSheet(
@@ -217,22 +204,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                                                         Navigator.of(context)
                                                             .pop();
 
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                                SnackBar(
-                                                          content: Text(
-                                                              '${dish.name} removed from cart'),
-                                                          animation: CurvedAnimation(
-                                                              parent:
-                                                                  const AlwaysStoppedAnimation(
-                                                                      1),
-                                                              curve: Curves
-                                                                  .easeInOut),
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 1),
-                                                        ));
+                                                        constants.showSnackBar(context, '${dish.name} removed from cart');
                                                       },
                                                       icon: const Icon(
                                                           Icons.remove_circle),
@@ -251,7 +223,6 @@ class ReserveScreenState extends State<ReserveScreen> {
                                                     context: context,
                                                     builder: (context) {
                                                       return AlertDialog(
-                                                        //reservation confirmation
                                                         scrollable: true,
                                                         title: const Text(
                                                           'Reservation Confirmation',
@@ -546,13 +517,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                                 quantity++;
                               }
                               else {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: const Text('You can only add up to 10 dishes to your cart!'),
-                                  animation: CurvedAnimation(
-                                      parent: const AlwaysStoppedAnimation(1),
-                                      curve: Curves.easeInOut),
-                                  duration: const Duration(seconds: 1),
-                                ));
+                                constants.showSnackBar(context, 'You can only add up to 10 dishes to your cart!');
                               }
                             });
                           },
@@ -574,13 +539,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                       if(quantity + checkout.length > 10)
                       {
                         Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Text('You can only add up to 10 dishes to your cart!'),
-                          animation: CurvedAnimation(
-                              parent: const AlwaysStoppedAnimation(1),
-                              curve: Curves.easeInOut),
-                          duration: const Duration(seconds: 1),
-                        ));
+                        constants.showSnackBar(context, 'You can only add up to 10 dishes to your cart!');
                         return;
                       }
 
@@ -589,14 +548,7 @@ class ReserveScreenState extends State<ReserveScreen> {
                       }
                       Navigator.of(context).pop();
 
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            '$quantity ${dishes[index].name} added to cart'),
-                        animation: CurvedAnimation(
-                            parent: const AlwaysStoppedAnimation(1),
-                            curve: Curves.easeInOut),
-                        duration: const Duration(seconds: 1),
-                      ));
+                      constants.showSnackBar(context, '$quantity ${dishes[index].name} added to cart');
                     },
                     child: const Text('Add Dish'),
                   ),

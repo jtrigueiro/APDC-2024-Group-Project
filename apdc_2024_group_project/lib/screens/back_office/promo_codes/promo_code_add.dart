@@ -1,6 +1,7 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:adc_group_project/utils/constants.dart' as constants;
 
 class AddPromoCodePage extends StatefulWidget {
   @override
@@ -16,35 +17,23 @@ class _AddPromoCodePageState extends State<AddPromoCodePage> {
     int reward = int.parse(_rewardController.text.trim());
 
     if (promoCode.isEmpty || reward.isNaN) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter both a promo code and a reward'),
-        duration: Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Please enter both a promo code and a reward');
       return;
     }
 
     if(reward < 0 || reward > 100){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a reward between 0 and 100%.'),
-        duration: Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Please enter a reward between 0 and 100%.');
       return;
     }
 
     try {
       final result = await DatabaseService().getPromoCode(promoCode);
       if (result.exists) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Promo code already exists'),
-          duration: Duration(seconds: 1),
-        ));
+        constants.showSnackBar(context, 'Promo code already exists');
       }
       else {
       await DatabaseService().addPromoCode(promoCode, reward);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Promo code added successfully'),
-        duration: Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Promo code added successfully');
       }
 
       _promoCodeController.clear();
@@ -52,10 +41,7 @@ class _AddPromoCodePageState extends State<AddPromoCodePage> {
       return;
 
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add promo code: $error'),
-        duration: const Duration(seconds: 1),
-      ));
+      constants.showSnackBar(context, 'Failed to add promo code: $error');
     }
   }
 
