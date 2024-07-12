@@ -6,7 +6,7 @@ class CO2ColorCalculator {
   static Color getColorForCO2(int co2) {
     // Define the CO2 value range
     double minCO2 = 0.0;
-    double maxCO2 = 50.0;
+    double maxCO2 = 50000.0;
 
     // Define the colors for the gradient
     Color lowCO2Color = Colors.green;
