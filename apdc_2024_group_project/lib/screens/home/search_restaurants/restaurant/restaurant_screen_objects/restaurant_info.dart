@@ -46,9 +46,8 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
       setState(() {
         isFavorite = !isFavorite;
       });
-      constants.showSnackBar(context, isFavorite
-          ? 'Added to favorites!'
-          : 'Removed from favorites!');
+      constants.showSnackBar(context,
+          isFavorite ? 'Added to favorites!' : 'Removed from favorites!');
     } catch (e) {
       constants.showSnackBar(context, 'Failed to update favorites: $e');
     }
@@ -60,45 +59,39 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
         ? const Center(child: CircularProgressIndicator())
         : SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  Text(
-                      widget.info.name,
-                      style: Theme.of(context).textTheme.titleLarge
-                  ),
-                  Text(
-                      widget.info.address,
-                      style: Theme.of(context).textTheme.titleSmall
-                  ),
+                  Text(widget.info.name,
+                      style: Theme.of(context).textTheme.titleLarge),
+                  Text(widget.info.address,
+                      style: Theme.of(context).textTheme.titleSmall),
                   const Padding(
-                    padding:  EdgeInsets.fromLTRB(0, 5, 0, 10),
-                    child:  Icon(
+                    padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
+                    child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,
                       size: 23,
                     ),
                   ),
-                  widget.info.imageUrl !=''
-                  ?
-                  ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
-                        child: Image.network(widget.info.imageUrl,
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                      :
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: const CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.grey,
-                      child: Text('no image'),
-                    )
-                    ),
+                  widget.info.imageUrl != ''
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: Image.network(
+                            widget.info.imageUrl,
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: const CircleAvatar(
+                            radius: 60,
+                            backgroundColor: Colors.grey,
+                            child: Text('no image'),
+                          )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -111,23 +104,25 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
                           Text(
                             "${widget.info.co2EmissionEstimate.toStringAsPrecision(5)} CO2e",
                             style: Theme.of(context).textTheme.titleSmall,
-                            ),
+                          ),
                         ],
                       ),
-
                       IconButton(
-                        icon: Icon(isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border,color: const Color.fromARGB( 255, 227, 57, 57),),
+                        icon: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: const Color.fromARGB(255, 227, 57, 57),
+                        ),
                         iconSize: 30,
                         onPressed: _toggleFavorite,
                       ),
                     ],
                   ),
-
-                   Text(
-                    "*average per dish",
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 8.5),
+                  Text(
+                    "*restaurant average CO2 emissions per month",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontSize: 8.5),
                   ),
                 ],
               ),
