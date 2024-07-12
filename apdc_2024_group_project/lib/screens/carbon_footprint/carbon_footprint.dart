@@ -112,7 +112,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
 
 
                           Flexible(
-                            child: Text(': ${carbonMap.values.first.toString()} g CO2e',
+                            child: Text(': ${carbonMap.values.first.toString()} kg CO2e',
                                 style: Theme.of(context).textTheme.titleMedium, overflow: TextOverflow.visible),
                           ),
                         ],
@@ -131,7 +131,7 @@ class CarbonFootprintScreenState extends State<CarbonFootprintScreen> {
                           ),
 
                           Flexible(
-                            child: Text(': ${carbonMap.values.last.toString()} g CO2e',
+                            child: Text(': ${carbonMap.values.last.toString()} kg CO2e',
                                 style: Theme.of(context).textTheme.titleMedium, overflow: TextOverflow.visible,),
                           ),
                         ],
