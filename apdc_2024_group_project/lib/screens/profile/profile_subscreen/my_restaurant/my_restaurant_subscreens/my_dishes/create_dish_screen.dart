@@ -134,15 +134,20 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                           .titleMedium),
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: Padding(
                                         padding:
                                             const EdgeInsets.only(right: 5.0),
                                         child: DropdownMenu<Ingredient>(
-                                          width: MediaQuery.of(context).size.width *
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.4,
+                                          menuHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
                                               0.4,
                                           requestFocusOnTap: true,
                                           controller: ingredientNameController,
@@ -156,7 +161,8 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                           },
                                           dropdownMenuEntries: ingredients
                                               .map((Ingredient ingredient) {
-                                            return DropdownMenuEntry<Ingredient>(
+                                            return DropdownMenuEntry<
+                                                Ingredient>(
                                               value: ingredient,
                                               label: ingredient.name,
                                             );
@@ -176,47 +182,52 @@ class CreateDishesScreenState extends State<CreateDishesScreen> {
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          if (selectedIngredient != null &&
-                                              ingredientWeightController
-                                                  .text.isNotEmpty) {
-                                            if (selectedIngredients
-                                                .contains(selectedIngredient)) {
-                                              setState(() {
-                                                selectedIngredients
-                                                    .remove(selectedIngredient);
-                                              });
-                                            } // rule of three(rule of thirds) to calculate the corresponding co2
-                                            int newco2 = (int.parse(
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: IconButton(
+                                            onPressed: () {
+                                              if (selectedIngredient != null &&
+                                                  ingredientWeightController
+                                                      .text.isNotEmpty) {
+                                                if (selectedIngredients
+                                                    .contains(
+                                                        selectedIngredient)) {
+                                                  setState(() {
+                                                    selectedIngredients.remove(
+                                                        selectedIngredient);
+                                                  });
+                                                } // rule of three(rule of thirds) to calculate the corresponding co2
+                                                int newco2 = (int.parse(
+                                                            ingredientWeightController
+                                                                .text) *
+                                                        selectedIngredient!
+                                                            .co2) ~/
+                                                    selectedIngredient!.grams;
+                                                selectedIngredient!.co2 =
+                                                    newco2;
+                                                selectedIngredient!.grams =
+                                                    int.parse(
                                                         ingredientWeightController
-                                                            .text) *
-                                                    selectedIngredient!.co2) ~/
-                                                selectedIngredient!.grams;
-                                            selectedIngredient!.co2 = newco2;
-                                            selectedIngredient!.grams =
-                                                int.parse(
-                                                    ingredientWeightController
-                                                        .text);
-                                            setState(() {
-                                              selectedIngredients
-                                                  .add(selectedIngredient!);
-                                            });
-                                            ingredientWeightController.clear();
-                                            ingredientNameController.clear();
-                                          }
-                                        },
-                                        icon: const Icon(
-                                            Icons.add_circle_outline),
-                                      ),
+                                                            .text);
+                                                setState(() {
+                                                  selectedIngredients
+                                                      .add(selectedIngredient!);
+                                                });
+                                                ingredientWeightController
+                                                    .clear();
+                                                ingredientNameController
+                                                    .clear();
+                                              }
+                                            },
+                                            icon: const Icon(
+                                                Icons.add_circle_outline),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
