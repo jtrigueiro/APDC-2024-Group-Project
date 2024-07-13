@@ -89,7 +89,7 @@ class MiddleCarousel extends StatelessWidget {
                                   width: 50,
                                   child: Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.star_half,
                                         color: Colors.amberAccent,
                                       ),

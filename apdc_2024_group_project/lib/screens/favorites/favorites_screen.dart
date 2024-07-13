@@ -2,6 +2,7 @@ import 'package:adc_group_project/screens/home/search_restaurants/restaurant/res
 import 'package:adc_group_project/services/firebase_storage.dart';
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/favoriterestaurant.dart';
+import 'package:adc_group_project/utils/co2_color.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -160,16 +161,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Average CO2:',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(fontSize: 12)),
-                            Text(restaurant.co2EmissionEstimate.toStringAsPrecision(5),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displaySmall!
-                                    .copyWith(fontSize: 12)),
+                            Icon(Icons.eco,
+                                color:
+                                    CO2ColorCalculator.getColorForRestaurantCO2(
+                                        restaurant.co2EmissionEstimate)),
                           ],
                         ),
                         trailing: IconButton(
