@@ -4,6 +4,7 @@ import 'package:adc_group_project/utils/co2_color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/widgets.dart';
 
 class MiddleCarousel extends StatelessWidget {
   final List<Restaurant> items;
@@ -62,32 +63,63 @@ class MiddleCarousel extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Row(
+                          const Column(
+                              children: [SizedBox(height: 25, width: 25)]),
+                          Column(
                             children: [
-                              Icon(
-                                Icons.star_half,
-                                color: Colors.amberAccent,
+                              Text(
+                                item.name,
+                                style: Theme.of(context).textTheme.titleMedium,
+                                maxLines: 1,
                               ),
                             ],
                           ),
-                          Text(
-                            item.name,
-                            style: Theme.of(context).textTheme.titleMedium,
-                            maxLines: 1,
-                          ),
-                          Icon(
-                            Icons.eco,
-                            color: CO2ColorCalculator.getColorForRestaurantCO2(
-                                item.co2EmissionEstimate),
+                          Column(
+                            children: [
+                              SizedBox(
+                                height: 25,
+                                width: 25,
+                                child: Icon(
+                                  Icons.eco,
+                                  color: CO2ColorCalculator
+                                      .getColorForRestaurantCO2(
+                                          item.co2EmissionEstimate),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      Text(
-                        item.location.capitalize(),
-                        style: Theme.of(context).textTheme.bodySmall,
-                        maxLines: 1,
-                        textAlign: TextAlign.center,
-                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Column(
+                              children: [SizedBox(height: 25, width: 25)],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  item.location.capitalize(),
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                            const Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  SizedBox(
+                                    height: 25,
+                                    width: 25,
+                                    child: Icon(
+                                      Icons.star_half,
+                                      color: Colors.amberAccent,
+                                    ),
+                                  ),
+                                ])
+                          ]),
                     ],
                   ),
                 ),
