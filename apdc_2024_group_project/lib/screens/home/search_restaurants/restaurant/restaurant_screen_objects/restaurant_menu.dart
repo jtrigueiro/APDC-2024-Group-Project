@@ -66,8 +66,9 @@ class RestaurantMenu extends StatelessWidget {
                                   const SizedBox(width: 4),
                                   Icon(
                                     Icons.eco,
-                                    color: CO2ColorCalculator.getColorForCO2(
-                                        dish.co2),
+                                    color:
+                                        CO2ColorCalculator.getColorForDishCO2(
+                                            dish.co2),
                                   ),
                                 ],
                               ),
@@ -134,8 +135,9 @@ class RestaurantMenu extends StatelessWidget {
                                   const SizedBox(width: 4),
                                   Icon(
                                     Icons.eco,
-                                    color: CO2ColorCalculator.getColorForCO2(
-                                        dish.co2),
+                                    color:
+                                        CO2ColorCalculator.getColorForDishCO2(
+                                            dish.co2),
                                   ),
                                 ],
                               ),

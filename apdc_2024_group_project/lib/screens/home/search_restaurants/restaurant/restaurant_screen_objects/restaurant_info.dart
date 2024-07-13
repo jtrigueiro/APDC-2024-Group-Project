@@ -1,5 +1,6 @@
 import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
+import 'package:adc_group_project/utils/co2_color.dart';
 import 'package:flutter/material.dart';
 import 'package:adc_group_project/utils/constants.dart' as constants;
 
@@ -97,12 +98,15 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
                     children: [
                       Row(
                         children: [
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.only(right: 5.0),
-                            child: Icon(Icons.eco, color: Colors.green),
+                            child: Icon(Icons.eco,
+                                color:
+                                    CO2ColorCalculator.getColorForRestaurantCO2(
+                                        widget.info.co2EmissionEstimate)),
                           ),
                           Text(
-                            "${widget.info.co2EmissionEstimate.toStringAsPrecision(5)} CO2e",
+                            "${widget.info.co2EmissionEstimate.toStringAsPrecision(5)}kg CO2 /month*",
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                         ],
@@ -118,7 +122,7 @@ class _RestaurantInfoState extends State<RestaurantInfo> {
                     ],
                   ),
                   Text(
-                    "*restaurant average CO2 emissions per month",
+                    "*restaurant average kg of CO2 emissions per month",
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall!

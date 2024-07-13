@@ -1,5 +1,6 @@
 import 'package:adc_group_project/screens/home/search_restaurants/restaurant/restaurant_screen.dart';
 import 'package:adc_group_project/services/models/restaurant.dart';
+import 'package:adc_group_project/utils/co2_color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -17,7 +18,11 @@ class MiddleCarousel extends StatelessWidget {
   void itemClicked(context, Restaurant item) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RestaurantScreen(info: item, day: null,)),
+      MaterialPageRoute(
+          builder: (context) => RestaurantScreen(
+                info: item,
+                day: null,
+              )),
     );
   }
 
@@ -49,16 +54,33 @@ class MiddleCarousel extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        item.name,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        maxLines: 1,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Row(
+                            children: [
+                              Icon(
+                                Icons.star_half,
+                                color: Colors.amberAccent,
+                              ),
+                            ],
+                          ),
+                          Text(
+                            item.name,
+                            style: Theme.of(context).textTheme.titleMedium,
+                            maxLines: 1,
+                          ),
+                          Icon(
+                            Icons.eco,
+                            color: CO2ColorCalculator.getColorForRestaurantCO2(
+                                item.co2EmissionEstimate),
+                          ),
+                        ],
                       ),
                       Text(
                         item.location.capitalize(),
