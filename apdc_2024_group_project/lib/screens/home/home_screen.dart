@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (kIsWeb) {
       return Container(
-          height: MediaQuery.of(context).size.height * 0.1,
+          //height: MediaQuery.of(context).size.height * 0.2,
           color: Theme.of(context).colorScheme.background,
           child: web(context));
     } else {
