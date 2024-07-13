@@ -60,42 +60,16 @@ class MiddleCarousel extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Column(
-                              children: [SizedBox(height: 25, width: 25)]),
-                          Column(
-                            children: [
-                              Text(
-                                item.name,
-                                style: Theme.of(context).textTheme.titleMedium,
-                                maxLines: 1,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 25,
-                                width: 25,
-                                child: Icon(
-                                  Icons.eco,
-                                  color: CO2ColorCalculator
-                                      .getColorForRestaurantCO2(
-                                          item.co2EmissionEstimate),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Text(
+                        item.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Column(
-                              children: [SizedBox(height: 25, width: 25)],
-                            ),
+                                children: [SizedBox(height: 25, width: 50)]),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -107,18 +81,29 @@ class MiddleCarousel extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  SizedBox(
-                                    height: 25,
-                                    width: 25,
-                                    child: Icon(
-                                      Icons.star_half,
-                                      color: Colors.amberAccent,
-                                    ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(
+                                  height: 25,
+                                  width: 50,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.star_half,
+                                        color: Colors.amberAccent,
+                                      ),
+                                      Icon(
+                                        Icons.eco,
+                                        color: CO2ColorCalculator
+                                            .getColorForRestaurantCO2(
+                                                item.co2EmissionEstimate),
+                                      ),
+                                    ],
                                   ),
-                                ])
+                                ),
+                              ],
+                            ),
                           ]),
                     ],
                   ),
