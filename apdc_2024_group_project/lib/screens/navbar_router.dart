@@ -264,51 +264,70 @@ class _HomeRouterState extends State<HomeRouter> {
 
   Widget buildTopBar() {
     var screenSize = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Expanded(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(width: screenSize.width / 4),
-            Text(
-              'EcoDine',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineLarge!
-                  .copyWith(fontSize: 30),
-            ),
-            SizedBox(
-              width: screenSize.width / 10,
-            ),
-            buildTop('Home', 0, () {
-              changeScreen(0);
-            }),
-            SizedBox(
-              width: screenSize.width / 15,
-            ),
-            buildTop('Reservation', 1, () {
-              changeScreen(1);
-            }),
-            SizedBox(
-              width: screenSize.width / 15,
-            ),
-            buildTop('CO2', 2, () {
-              changeScreen(2);
-            }),
-            SizedBox(
-              width: screenSize.width / 15,
-            ),
-            buildTop('Favorites', 3, () {
-              changeScreen(3);
-            }),
-            SizedBox(
-              width: screenSize.width / 15,
-            ),
-            buildTop('Profile', 4, () {
-              changeScreen(4);
-            })
-          ],
+    return Container(
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        child: Expanded(
+          child: Row(
+            children: [
+              SizedBox(width: screenSize.width / 10),
+              Text(
+                'EcoDine',
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineLarge!
+                    .copyWith(fontSize: 30),
+              ),
+              SizedBox(
+                width: screenSize.width / 5,
+              ),
+              buildTop('Home', 0, () {
+                changeScreen(0);
+              }),
+              SizedBox(
+                width: screenSize.width / 30,
+              ),
+              const VerticalDivider(color: Colors.grey,
+              endIndent: 10, indent: 10,),
+              SizedBox(
+                width: screenSize.width / 30,
+              ),
+              buildTop('Reservation', 1, () {
+                changeScreen(1);
+              }),
+              SizedBox(
+                width: screenSize.width / 30,
+              ),
+              const VerticalDivider(color: Colors.grey,endIndent: 10, indent: 10,),
+              SizedBox(
+                width: screenSize.width / 30,
+              ),
+              buildTop('CO2', 2, () {
+                changeScreen(2);
+              }),
+              SizedBox(
+                width: screenSize.width / 30,
+              ),
+              VerticalDivider(color:Colors.grey,endIndent: 10, indent: 10,),
+              SizedBox(
+                width: screenSize.width / 30,
+              ),
+              buildTop('Favorites', 3, () {
+                changeScreen(3);
+              }),
+              SizedBox(
+                width: screenSize.width / 30,
+              ),
+              VerticalDivider(color: Colors.grey,endIndent: 10, indent: 10,),
+              SizedBox(
+                width: screenSize.width / 30,
+              ),
+              buildTop('Profile', 4, () {
+                changeScreen(4);
+              })
+            ],
+          ),
         ),
       ),
     );
@@ -325,12 +344,13 @@ class _HomeRouterState extends State<HomeRouter> {
         ontap();
       },
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(name,
               style: _currentIndex == index
                   ? Theme.of(context).textTheme.bodyMedium
                   : Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: 5),
+         const SizedBox(height: 5),
           Visibility(
               maintainAnimation: true,
               maintainState: true,
@@ -341,6 +361,7 @@ class _HomeRouterState extends State<HomeRouter> {
                 color: Theme.of(context).colorScheme.onBackground,
                 width: 20,
               ))
+
         ],
       ),
     );
