@@ -22,7 +22,7 @@ class _HomeRouterState extends State<HomeRouter> {
   bool loading = true;
   bool isAdmin = false;
 
-  final List _isHovering =[
+  final List _isHovering = [
     false,
     false,
     false,
@@ -81,66 +81,36 @@ class _HomeRouterState extends State<HomeRouter> {
         : isAdmin
             ? BackOfficeHomeScreen()
             : Scaffold(
-                appBar: ResponsiveWidget.isSmallScreen(context) ||  ResponsiveWidget.isMediumScreen(context)
+                appBar: ResponsiveWidget.isSmallScreen(context) ||
+                        ResponsiveWidget.isMediumScreen(context)
                     ? AppBar(
-                        backgroundColor: Theme.of(context).colorScheme.background,
-                        title: Text('EcoDine', style: Theme.of(context).textTheme.titleLarge,),
+                        backgroundColor:
+                            Theme.of(context).colorScheme.background,
+                        title: Text(
+                          'EcoDine',
+                          style: Theme.of(context).textTheme.headlineLarge,
+                        ),
                       )
                     : PreferredSize(
                         preferredSize:
                             Size(MediaQuery.of(context).size.width, 70),
-                        child: buildTopBar (),
+                        child: buildTopBar(),
                       ),
                 drawer: appDrawer(),
-                /*AppBar(
-                        title: texts[_currentIndex],
-                        bottom:TabBar(
-                          tabs: const <Tab>[
-            Tab(
-              icon: Icon(Icons.home),
-            ),
-            Tab(
-              icon: Icon(Icons.book),
-            ),
-            Tab(
-              icon: Icon(Icons.eco),
-            ),
-            Tab(
-              icon: Icon(Icons.favorite),
-            ),
-            Tab(
-              icon: Icon(Icons.person),
-            ),
-                          ],
-                          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-                          },
-                        ),
-                      ),*/
                 body: screens[_currentIndex],
-                /* TabBarView(
-                  children: [
-                    const HomeScreen(),
-                    const ReservationsScreen(),
-                    CarbonFootprintScreen(),
-                    FavoritesScreen(),
-                    ProfileScreen(),
-                  ],
-                ),*/
+
               );
   }
-  void changeScreen (int index)
-  {
-     setState(() {
+
+  void changeScreen(int index) {
+    setState(() {
       _currentIndex = index;
     });
-
   }
 
   Drawer appDrawer() {
     return Drawer(
+
       width: 200,
       elevation: 5,
       backgroundColor: Theme.of(context).colorScheme.tertiary,
@@ -150,9 +120,11 @@ class _HomeRouterState extends State<HomeRouter> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            drawerItems('Home', () {changeScreen(0);}),
-             Padding(
-              padding: EdgeInsets.only(
+            drawerItems('Home',0, () {
+              changeScreen(0);
+            }),
+            Padding(
+              padding: const EdgeInsets.only(
                 top: 5.0,
                 bottom: 5,
               ),
@@ -160,9 +132,47 @@ class _HomeRouterState extends State<HomeRouter> {
                 color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
-            drawerItems('Reservations', () {changeScreen(1);}),
-             Padding(
-              padding: EdgeInsets.only(
+            drawerItems('Reservations',1, () {
+              changeScreen(1);
+            }),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 5.0,
+                bottom: 5,
+              ),
+              child: Divider(
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+            ),
+            drawerItems('CO2',2, () {
+              changeScreen(2);
+            }),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 5.0,
+                bottom: 5,
+              ),
+              child: Divider(
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+            ),
+            drawerItems('Favorites', 3,() {
+              changeScreen(3);
+            }),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 5.0,
+                bottom: 5,
+              ),
+              child: Divider(
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+            ),
+            drawerItems('Profile', 4, () {
+              changeScreen(4);
+            }),
+            Padding(
+              padding: const EdgeInsets.only(
                 top: 5.0,
                 bottom: 5,
               ),
@@ -171,49 +181,33 @@ class _HomeRouterState extends State<HomeRouter> {
               ),
             ),
 
-            drawerItems('CO2', () {changeScreen(2);}),
-             Padding(
-              padding: EdgeInsets.only(
-                top: 5.0,
-                bottom: 5,
-              ),
-              child: Divider(
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-
-            drawerItems('Favorites', () {changeScreen(3);}),
-             Padding(
-              padding: EdgeInsets.only(
-                top: 5.0,
-                bottom: 5,
-              ),
-              child: Divider(
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            drawerItems('Profile', () {changeScreen(4);}),
-             Padding(
-              padding: EdgeInsets.only(
-                top: 5.0,
-                bottom: 5,
-              ),
-              child: Divider(
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
+             Expanded(
+              child: Align(alignment: Alignment.bottomCenter,
+              child: Text('Copyright © | Ecodine by Dynamic Crew', style: Theme.of(context).textTheme.titleSmall,textAlign: TextAlign.center,),),
+            )
           ],
         ),
       ),
     );
   }
 
-  InkWell drawerItems(String name, Function ontap) {
+  InkWell drawerItems(String name, int index, Function ontap) {
     return InkWell(
-      onTap: () {ontap();},
+      onTap: () {
+        ontap();
+        Navigator.of(context).pop();
+      },
       child: Text(
         name,
-        style:  TextStyle(color: Theme.of(context).colorScheme.onBackground),
+        style: _currentIndex == index
+            ? Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Theme.of(context).colorScheme.onBackground)
+            : Theme.of(context)
+                .textTheme
+                .titleSmall!
+                .copyWith(color: Theme.of(context).colorScheme.onBackground),
       ),
     );
   }
@@ -268,57 +262,87 @@ class _HomeRouterState extends State<HomeRouter> {
               );
   }
 
-
-  Widget buildTopBar ()
-  {
+  Widget buildTopBar() {
     var screenSize = MediaQuery.of(context).size;
-    return Container(
-      child: Padding(padding: EdgeInsets.all(20),
-        child: Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(width: screenSize.width/4),
-              Text('EcoDine', style: Theme.of(context).textTheme.titleLarge,),
-              SizedBox(width: screenSize.width/15,),
-              buildTop('Home',0,() {changeScreen(0);}),
-              SizedBox(width: screenSize.width/15,),
-              buildTop('Reservation',1,() {changeScreen(1);}),
-              SizedBox(width: screenSize.width/15,),
-              buildTop('CO2',2,() {changeScreen(2);}),
-              SizedBox(width: screenSize.width/15,),
-              buildTop('Favorites',3,() {changeScreen(3);}),
-              SizedBox(width: screenSize.width/15,),
-              buildTop('Profile',4,() {changeScreen(4);})
-            ],
-          ) ,
-        ),),
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(width: screenSize.width / 4),
+            Text(
+              'EcoDine',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineLarge!
+                  .copyWith(fontSize: 30),
+            ),
+            SizedBox(
+              width: screenSize.width / 10,
+            ),
+            buildTop('Home', 0, () {
+              changeScreen(0);
+            }),
+            SizedBox(
+              width: screenSize.width / 15,
+            ),
+            buildTop('Reservation', 1, () {
+              changeScreen(1);
+            }),
+            SizedBox(
+              width: screenSize.width / 15,
+            ),
+            buildTop('CO2', 2, () {
+              changeScreen(2);
+            }),
+            SizedBox(
+              width: screenSize.width / 15,
+            ),
+            buildTop('Favorites', 3, () {
+              changeScreen(3);
+            }),
+            SizedBox(
+              width: screenSize.width / 15,
+            ),
+            buildTop('Profile', 4, () {
+              changeScreen(4);
+            })
+          ],
+        ),
+      ),
     );
   }
 
-  InkWell buildTop (String name, int index, Function ontap)
-  {
-    return  InkWell(
-      onHover: (value){
+  InkWell buildTop(String name, int index, Function ontap) {
+    return InkWell(
+      onHover: (value) {
         setState(() {
-          value ? _isHovering[index] = true
-              : _isHovering[index] = false;
+          value ? _isHovering[index] = true : _isHovering[index] = false;
         });
       },
-      onTap: () {ontap();},
+      onTap: () {
+        ontap();
+      },
       child: Column(
         children: [
-          Text(name),
+          Text(name,
+              style: _currentIndex == index
+                  ? Theme.of(context).textTheme.bodyMedium
+                  : Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 5),
-          Visibility( maintainAnimation: true,
+          Visibility(
+              maintainAnimation: true,
               maintainState: true,
               maintainSize: true,
-              visible: _isHovering[index],
-              child: Container(height: 2, color: Colors.black,width: 20,))
+              visible: _isHovering[index] || _currentIndex == index,
+              child: Container(
+                height: 2,
+                color: Theme.of(context).colorScheme.onBackground,
+                width: 20,
+              ))
         ],
-      ) ,
+      ),
     );
   }
 }
-
-
