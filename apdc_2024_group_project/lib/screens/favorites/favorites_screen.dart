@@ -141,26 +141,33 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       margin: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
                       child: ListTile(
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.network(
-                            restaurant.imageUrl ?? '',
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'assets/images/burger.png',
-                                fit: BoxFit.cover,
-                              );
-                            },
+                        leading: SizedBox(
+                          width: 100,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: Image.network(
+                              restaurant.imageUrl ?? '',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/images/burger.png',
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
                           ),
                         ),
                         title: Text(
                           restaurant.name,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        subtitle: Column(
+                        subtitle: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const Icon(
+                              Icons.star_half,
+                              color: Colors.amberAccent,
+                            ),
                             Icon(Icons.eco,
                                 color:
                                     CO2ColorCalculator.getColorForRestaurantCO2(
