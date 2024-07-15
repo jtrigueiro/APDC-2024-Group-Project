@@ -62,7 +62,7 @@ class RestaurantMenu extends StatelessWidget {
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text("${dish.co2} CO2e"),
+                                  Text("${dish.co2}g CO2e"),
                                   const SizedBox(width: 4),
                                   Icon(
                                     Icons.eco,
