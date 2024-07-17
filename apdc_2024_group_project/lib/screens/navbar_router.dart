@@ -9,6 +9,7 @@ import 'package:adc_group_project/services/firestore_database.dart';
 import 'package:adc_group_project/utils/loading_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class HomeRouter extends StatefulWidget {
   const HomeRouter({super.key});
@@ -265,7 +266,7 @@ class _HomeRouterState extends State<HomeRouter> {
   Widget buildTopBar() {
     var screenSize = MediaQuery.of(context).size;
     return Container(
-      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.background , border: const Border(bottom: BorderSide(color: Colors.black12))),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 15),
         child: Expanded(
