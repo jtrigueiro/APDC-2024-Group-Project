@@ -82,9 +82,9 @@ class _HomeRouterState extends State<HomeRouter> {
         : isAdmin
             ? BackOfficeHomeScreen()
             : Scaffold(
-                appBar: ResponsiveWidget.isSmallScreen(context) ||
+                appBar: /*ResponsiveWidget.isSmallScreen(context) ||
                         ResponsiveWidget.isMediumScreen(context)
-                    ? AppBar(
+                    ? */AppBar(
                         backgroundColor:
                             Theme.of(context).colorScheme.background,
                         title: Text(
@@ -92,11 +92,11 @@ class _HomeRouterState extends State<HomeRouter> {
                           style: Theme.of(context).textTheme.headlineLarge,
                         ),
                       )
-                    : PreferredSize(
+                   /* : PreferredSize(
                         preferredSize:
                             Size(MediaQuery.of(context).size.width, 70),
                         child: buildTopBar(),
-                      ),
+                      ),*/,
                 drawer: appDrawer(),
                 body: screens[_currentIndex],
 
