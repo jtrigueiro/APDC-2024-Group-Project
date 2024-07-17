@@ -1,0 +1,208 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+		
+    function isAuthed(request){
+    	return request.auth.uid != null;
+    }
+    
+    function isOwner(request, id){
+    	return request.auth.uid == id;
+    }
+		
+    //users done
+		match /users/{userId} {
+    	allow read: if isAuthed(request) && (isOwner(request, userId) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+      
+			allow create: if isAuthed(request) && isOwner(request, userId) &&
+      	request.resource.data.deslocatEmissions is number &&
+        request.resource.data.deslocatEmissions == 0 &&
+        request.resource.data.emissions is number &&
+        request.resource.data.emissions == 0 &&
+        request.resource.data.isAdmin is bool &&
+        request.resource.data.isAdmin == false &&
+        request.resource.data.name is string;
+        
+      allow update: if isAuthed(request) && isOwner(request, userId) &&
+      	request.resource.data.deslocatEmissions is number &&
+        request.resource.data.deslocatEmissions >= resource.data.deslocatEmissions &&
+        request.resource.data.emissions is number &&
+       	request.resource.data.emissions >= resource.data.emissions &&
+        request.resource.data.isAdmin is bool &&
+        request.resource.data.isAdmin == resource.data.isAdmin &&
+        request.resource.data.name is string &&
+        request.resource.data.name == resource.data.name;
+        
+      allow delete: if isAuthed(request) && isOwner(request, userId);
+      
+      match /favorites_restaurants/{restaurantId} {
+      	allow read, write: if isAuthed(request) && isOwner(request, userId);
+      }
+      match /user_promos/{userPromoId} {
+      	allow read: if isAuthed(request) && isOwner(request, userId);
+     		allow create: if isAuthed(request) && isOwner(request, userId) &&
+        	request.resource.data.redeemed_at is timestamp  &&
+          request.resource.data.reward is string;
+      }
+      
+      match /settings/{document = **} {
+      	allow read, create, update: if isAuthed(request) && isOwner(request, userId);
+      }
+    }
+    
+    //restaurants done
+    match /restaurants/{restaurantId} {
+    	allow read: if isAuthed(request) && resource.data.visible == true;
+			allow read: if isAuthed(request) && (isOwner(request, restaurantId) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+     	allow create: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      
+      allow update: if isAuthed(request) && (isOwner(request, restaurantId) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true) &&
+      	request.resource.data.address is string &&
+        request.resource.data.address == resource.data.address &&
+        request.resource.data.co2EmissionEstimate is number &&
+        request.resource.data.co2EmissionEstimate == resource.data.co2EmissionEstimate &&
+        request.resource.data.coordinates is string &&
+        request.resource.data.coordinates == resource.data.coordinates &&
+        request.resource.data.imageUrl is string &&
+        request.resource.data.isOpen is list &&
+        request.resource.data.location is string &&
+        request.resource.data.location == resource.data.location &&
+        request.resource.data.lowerCaseName is string &&
+        request.resource.data.name is string &&
+        request.resource.data.phone is string &&
+        request.resource.data.seats is number &&
+        request.resource.data.time is list &&
+        request.resource.data.visible is bool;
+   		
+      allow delete: if isAuthed(request) && (isOwner(request, restaurantId) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+      
+    	match /dishes/{dishId}{
+      	allow read: if isAuthed(request) && isOwner(request, restaurantId);
+        allow read: if isAuthed(request) && get(/databases/$(database)/documents/restaurants/$(restaurantId)).data.visible == true;
+        
+     		allow create: if isAuthed(request) && isOwner(request, restaurantId) &&
+        	request.resource.data.co2 is number &&
+          request.resource.data.description is string &&
+          request.resource.data.name is string &&
+          request.resource.data.price is number &&
+          request.resource.data.visible is bool;
+            
+        allow update: if isAuthed(request) && isOwner(request, restaurantId) &&
+          request.resource.data.co2 is number &&
+          request.resource.data.co2 == resource.data.co2 &&
+          request.resource.data.description is string &&
+          request.resource.data.description ==  resource.data.description &&
+          request.resource.data.name is string &&
+          request.resource.data.name ==  resource.data.name &&
+          request.resource.data.price is number &&
+          request.resource.data.price ==  resource.data.price &&
+          request.resource.data.visible is bool;
+
+        allow delete: if isAuthed(request) && isOwner(request, restaurantId);
+        
+      	match /ingredients/{ingredientName}{ 	
+          allow read: if isAuthed(request) && isOwner(request, restaurantId) ;
+          allow read: if isAuthed(request) && get(/databases/$(database)/documents/restaurants/$(restaurantId)).data.visible == true;
+          
+          allow create: if isAuthed(request) && isOwner(request, restaurantId) &&
+          	request.resource.data.co2 is number &&
+            request.resource.data.grams is number;
+          
+         	allow delete: if isAuthed(request) && isOwner(request, restaurantId);     
+        }
+      }
+    }
+    
+		//restaurants_applications done
+   	match /restaurants_applications/{restaurantId} {
+			allow read: if isAuthed(request) && (isOwner(request, restaurantId) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+    	
+      allow create: if isAuthed(request) && isOwner(request, restaurantId) && 
+      	request.resource.data.address is string &&
+        request.resource.data.coordinates is string &&
+        request.resource.data.location is string &&
+        request.resource.data.name is string &&
+        request.resource.data.phone is string &&
+        request.resource.data.seats is number;
+     
+     allow delete: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+     	
+      match /restaurant_types/{restaurantTypesId} {
+        allow read: if isAuthed(request) && (isOwner(request, restaurantId) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+        allow create: if isAuthed(request) && isOwner(request, restaurantId);
+        allow delete: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+        
+      }
+   	}
+    
+    //ingredients done
+    match /ingredients/{name} {
+			allow read: if isAuthed(request);
+     	allow write: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+   	}
+    
+    //promo_codes done
+    match /promo_codes/{promoCodeId} {
+			allow get: if isAuthed(request);
+     	allow read, write: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true; 
+   	}
+    
+    //support_messages done
+    match /support_messages/{supportMessageId}{
+			allow read: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      
+     	allow create: if isAuthed(request) && isOwner(request, request.resource.data.userId) &&
+      	request.resource.data.email is string &&
+				request.resource.data.message is string &&
+      	request.resource.data.timestamp is timestamp &&
+        request.resource.data.userId is string;
+        
+      allow delete: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+   	}
+    
+    //locations done
+    match /locations/{locationId}{
+    	allow read: if isAuthed(request);
+      allow write: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+   	}
+    
+    //reservations done
+    match /reservations/{reservationId}{
+    	allow read: if isAuthed(request) &&
+      	(isOwner(request, resource.data.userId) || isOwner(request, resource.data.restaurantId));
+      
+    	allow create: if isAuthed(request) && isOwner(request, request.resource.data.userId) &&
+        request.resource.data.cost is number &&
+        request.resource.data.end is timestamp &&
+        request.resource.data.order is list &&
+        request.resource.data.restaurantId is string &&
+        request.resource.data.restaurantName is string &&
+        request.resource.data.start is timestamp &&
+        request.resource.data.userId is string &&
+        request.resource.data.userName is string &&
+        request.resource.data.averageEmissions is number;
+      
+      allow delete: if isAuthed(request) &&
+      	(isOwner(request, resource.data.userId) || isOwner(request, resource.data.restaurantId));
+    }
+    
+    //restaurant_types done
+    match /restaurant_types/{restaurantTypeId}{
+    	allow read: if isAuthed(request); 
+      allow write: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      
+      match /restaurants/{restaurantId}{
+      	allow read: if isAuthed(request);
+        allow delete: if isAuthed(request) && isOwner(request, restaurantId);
+        allow write: if isAuthed(request) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      }
+    }
+    
+    // making if the user is authed the only restriction for the db, ONLY FOR TESTING!!!
+		//match /{document=**} {
+  	//	allow read, write: if request.auth != null;
+   // }  
+    
+	}
+}
